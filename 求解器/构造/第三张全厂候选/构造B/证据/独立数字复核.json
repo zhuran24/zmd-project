@@ -1,0 +1,48 @@
+{
+  "candidate_sha256": "de2176eee2f0b50693c8716d47c692e58abdafec9a7836e5f22e91849c273945",
+  "machine_counts": {
+    "精炼炉": 51,
+    "粉碎机": 71,
+    "种植机": 38,
+    "采种机": 19,
+    "研磨机": 32,
+    "配件机": 6,
+    "塑形机": 6,
+    "封装机": 3,
+    "灌装机": 4
+  },
+  "machine_area": 3567,
+  "occupied_area": 4211,
+  "area_by_kind": {
+    "machines": 3567,
+    "warehouse_outlets": 138,
+    "core": 81,
+    "power_poles": 100,
+    "transport": 325
+  },
+  "overlap": [],
+  "powered": 230,
+  "unpowered": [],
+  "power_poles": 25,
+  "maximum_empty_rectangle": {
+    "area": 36,
+    "short_side": 6,
+    "bounds": {
+      "x0": 18,
+      "y0": 18,
+      "x1": 23,
+      "y1": 23
+    }
+  },
+  "transport": 325,
+  "bridges": 6,
+  "adjacent_bridge_pairs": 1,
+  "route_count": 195,
+  "route_slots": 331,
+  "physical_channels": 527,
+  "reverse_channels": 1,
+  "identities": {
+    "slots_equals_transport_plus_bridges": true,
+    "channels_equals_slots_plus_routes_plus_reverse": true
+  }
+}

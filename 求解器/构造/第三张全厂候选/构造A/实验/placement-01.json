@@ -1,0 +1,23 @@
+{
+ "schema": "s2-placement-subproblem-v1",
+ "is_layout": false,
+ "seed": 1,
+ "workers": 4,
+ "fixed_empty_rectangle": [
+  64,
+  64,
+  6,
+  6
+ ],
+ "restrictions": [
+  "fixed outlet order and gap at corner",
+  "fixed 25 power poles",
+  "different first cells and different last cells"
+ ],
+ "build_seconds": 0.06346017000032589,
+ "variables": 11592,
+ "constraints": 28757,
+ "status": "UNKNOWN",
+ "wall_seconds": 600.0209254600001,
+ "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 1631\nbest_bound: 117\nintegers: 3627\nbooleans: 31352\nconflicts: 45405\nbranches: 4132028\npropagations: 78774874\ninteger_propagations: 42607328\nrestarts: 197\nlp_iterations: 0\nwalltime: 600.021\nusertime: 600.021\ndeterministic_time: 786.458\ngap_integral: 5746.99\n"
+}

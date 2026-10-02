@@ -1,0 +1,18 @@
+{
+  "W": 12,
+  "H": 12,
+  "status": "INFEASIBLE",
+  "wall": 3.4,
+  "build_s": 0.1,
+  "nvars": 5116,
+  "ncons": 24415,
+  "first_sol": null,
+  "trace": [],
+  "machine_ids": [
+    "QA1",
+    "QB1",
+    "QC1",
+    "KQ1",
+    "Q1"
+  ]
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "seat": "A",
+    "exit_code": 1,
+    "stdout_path": "旧CLI-A.json"
+  },
+  {
+    "seat": "B",
+    "exit_code": 2,
+    "stdout_path": "旧CLI-B.json"
+  }
+]

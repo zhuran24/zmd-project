@@ -1,0 +1,10 @@
+placements ('小', 1, 1) 2710 elapsed 0.0
+placements ('大', 3, 1) 4115 elapsed 0.1
+placements ('小', 2, 1) 5368 elapsed 0.1
+placements ('大', 2, 1) 4149 elapsed 0.2
+placements ('大', 5, 1) 3955 elapsed 0.2
+placements ('大', 4, 1) 4082 elapsed 0.3
+placements ('小', 1, 3) 5202 elapsed 0.3
+placements ('小', 1, 2) 5368 elapsed 0.4
+model 34949 build 0.9
+{'status': 'UNKNOWN', 'wall': 180.07037645300002, 'workers': 4, 'placement_variables': 34949, 'build_seconds': 0.9}

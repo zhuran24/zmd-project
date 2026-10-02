@@ -1,0 +1,124 @@
+{
+  "candidate_sha256": "de2176eee2f0b50693c8716d47c692e58abdafec9a7836e5f22e91849c273945",
+  "port_deficit_machine_count": 52,
+  "port_deficit_machine_ids": [
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B16",
+    "B17",
+    "B3",
+    "B5",
+    "B6",
+    "B7",
+    "B9",
+    "E3",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "KB1",
+    "KB12",
+    "KB13",
+    "KB14",
+    "KB22",
+    "KB28",
+    "KQ1",
+    "KQ5",
+    "KQ6",
+    "O2",
+    "O3",
+    "O4",
+    "O5",
+    "O6",
+    "O7",
+    "Q1",
+    "Q2",
+    "Q6",
+    "QB2",
+    "QB5",
+    "R10",
+    "R13",
+    "R16",
+    "R5",
+    "R6",
+    "R7",
+    "R9",
+    "S13",
+    "S5",
+    "U10",
+    "U13",
+    "U14",
+    "U15",
+    "U17",
+    "U4",
+    "U7"
+  ],
+  "missing_route_counts": {
+    "无合法起口邻格": 41,
+    "机身和供电桩阻断连通": 68,
+    "放宽为单路可达，联合布线未完成": 17,
+    "无合法终口邻格": 4
+  },
+  "ore_routes": 37,
+  "finished_routes": 0,
+  "core_incoming_channels": [],
+  "storage_boxes": 0,
+  "finished_delivery_rate_bound": {
+    "高容谷地电池": "0",
+    "精选荞愈胶囊": "0"
+  },
+  "E3": {
+    "machine": {
+      "id": "E3",
+      "model": "封装机",
+      "kind": "大",
+      "x0": 10,
+      "y0": 2,
+      "x1": 15,
+      "y1": 5,
+      "Din": 3,
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "output_neighbor_cells": [
+      {
+        "x": 10,
+        "y": 6,
+        "occupied_by": "CORE"
+      },
+      {
+        "x": 11,
+        "y": 6,
+        "occupied_by": "CORE"
+      },
+      {
+        "x": 12,
+        "y": 6,
+        "occupied_by": "CORE"
+      },
+      {
+        "x": 13,
+        "y": 6,
+        "occupied_by": "CORE"
+      },
+      {
+        "x": 14,
+        "y": 6,
+        "occupied_by": "CORE"
+      },
+      {
+        "x": 15,
+        "y": 6,
+        "occupied_by": "CORE"
+      }
+    ],
+    "all_occupied_by_core": true
+  },
+  "scope": "所有保持候选中非运输单位位置、朝向、供电桩和指定空矩形的布线；几何不可达判定已经撤掉全部运输障碍。不是对其他布局的不可行证明。"
+}

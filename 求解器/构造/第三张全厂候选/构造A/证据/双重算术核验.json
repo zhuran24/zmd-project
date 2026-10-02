@@ -1,0 +1,75 @@
+{
+  "all_agree": true,
+  "encoding_A": {
+    "counts": {
+      "精炼炉": 51,
+      "粉碎机": 71,
+      "研磨机": 32,
+      "采种机": 19,
+      "种植机": 38,
+      "配件机": 6,
+      "塑形机": 6,
+      "封装机": 3,
+      "灌装机": 4
+    },
+    "machines": 230,
+    "routes": 325,
+    "body_area": 3567,
+    "nontransport_area_without_poles": 3786,
+    "interface_count": 650,
+    "kinds": {
+      "小": 134,
+      "大": 39,
+      "中": 57
+    },
+    "balance_bad": [],
+    "finished_inflow": {
+      "高容谷地电池": "3/5",
+      "精选荞愈胶囊": "11/20"
+    }
+  },
+  "encoding_B": {
+    "counts": {
+      "粉碎机": 71,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 38,
+      "采种机": 19,
+      "封装机": 3,
+      "灌装机": 4
+    },
+    "machines": 230,
+    "body_area": 3567,
+    "routes": 325,
+    "interface_count": 650
+  },
+  "fixed_S2_budget": {
+    "omega": "203/2",
+    "weighted_machine_count": 556,
+    "free_before_power_transport": 1114,
+    "best_area_integer": 835,
+    "at_poles": 11,
+    "boundary_poles": 1,
+    "transport_minimum": 213,
+    "transport_plus_other_empty_minimum": 235,
+    "largest_allowed_product": [
+      833,
+      17,
+      49,
+      17
+    ],
+    "independent_integer_result": [
+      833,
+      17,
+      17,
+      49,
+      11,
+      1
+    ]
+  },
+  "not_a_layout": true,
+  "global_U_unchanged": 1110,
+  "global_L_unchanged": 0
+}

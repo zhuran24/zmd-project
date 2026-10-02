@@ -1,0 +1,7019 @@
+{
+  "seat": "B",
+  "scope": "unmodified geometry and average-flow modules only; full 77-condition/version gate not adapted",
+  "candidate_sha256": "e13ee80bb54090d88a6963f62360f36a99c6b71841e103dbd816f21d5ef5de70",
+  "static_pass": false,
+  "runtime_certified": false,
+  "geometry_checks": [
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF7",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF7",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF8",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF8",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF9",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF9",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF10",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF10",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF11",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF11",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF12",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF12",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF13",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF13",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF14",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF14",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF15",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF15",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF16",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF16",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF17",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF17",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF18",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF18",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF19",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF19",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF20",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF20",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF21",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF21",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF22",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF22",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF23",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF23",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF24",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF24",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF25",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF25",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF26",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF26",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF27",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF27",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF28",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF28",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF29",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF29",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF30",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF30",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF31",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF31",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF32",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF32",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF33",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF33",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "RF34",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KF34",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO7",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO8",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO9",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO10",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO11",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO12",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO13",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO14",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO15",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO16",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO17",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "KO18",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B1",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B2",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B3",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B4",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B5",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B6",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B7",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B8",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B9",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B10",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B11",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B12",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B13",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B14",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B15",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B16",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "B17",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O1",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O2",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O3",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O4",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O5",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O6",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O7",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O8",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "O9",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "Q1",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "Q2",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "Q3",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "Q4",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "Q5",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "Q6",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC1",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA1",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB1",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC2",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA2",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB2",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC3",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA3",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB3",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC4",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA4",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB4",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC5",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA5",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB5",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC6",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA6",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB6",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC7",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA7",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB7",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S7",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC8",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA8",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB8",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S8",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC9",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA9",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB9",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S9",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC10",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA10",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB10",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S10",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC11",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA11",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB11",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S11",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC12",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA12",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB12",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S12",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SC13",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SA13",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "SB13",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "S13",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QC1",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QA1",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QB1",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QK1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QC2",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QA2",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QB2",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QK2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QC3",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QA3",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QB3",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QK3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QC4",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QA4",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QB4",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QK4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QC5",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QA5",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QB5",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QK5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QC6",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QA6",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QB6",
+        "actual": [
+          5,
+          5
+        ],
+        "expected": [
+          5,
+          5
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "QK6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R7",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R8",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R9",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R10",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R11",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R12",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R13",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R14",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R15",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R16",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "R17",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "P1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "H1",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "P2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "H2",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "P3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "H3",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "P4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "H4",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "P5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "H5",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "P6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "H6",
+        "actual": [
+          3,
+          3
+        ],
+        "expected": [
+          3,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "E1",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "E2",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "E3",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "F1",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "F2",
+        "actual": [
+          6,
+          4
+        ],
+        "expected": [
+          6,
+          4
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "F3",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "F4",
+        "actual": [
+          4,
+          6
+        ],
+        "expected": [
+          4,
+          6
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE1",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE1",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE2",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE2",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE3",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE3",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE4",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE4",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE5",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE5",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE6",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE6",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE7",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE7",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE8",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE8",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE9",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE9",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE10",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE10",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE11",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE11",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE12",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE12",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE13",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE13",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE14",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE14",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE15",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE15",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE16",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE16",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE17",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE17",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE18",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE18",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE19",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE19",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE20",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE20",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE21",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE21",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE22",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE22",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE23",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE23",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE24",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE24",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE25",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE25",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE26",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE26",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE27",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE27",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE28",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE28",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE29",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE29",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE30",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE30",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE31",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE31",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE32",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE32",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE33",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE33",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WFE34",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WFE34",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO7",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO7",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO8",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO8",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO9",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO9",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO10",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO10",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO11",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO11",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO12",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO12",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO13",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO13",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO14",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO14",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO15",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO15",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO16",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO16",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO17",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO17",
+        "actual": [
+          3,
+          1
+        ],
+        "expected": [
+          3,
+          1
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "outlet-position",
+      "status": "PASS",
+      "basis": "规则·仓库取货口；任务·仓库取货口位置",
+      "evidence": "WO18",
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "WO18",
+        "actual": [
+          1,
+          3
+        ],
+        "expected": [
+          1,
+          3
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "CORE",
+        "actual": [
+          9,
+          9
+        ],
+        "expected": [
+          9,
+          9
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER0",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER1",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER2",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER3",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER4",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER5",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER6",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER7",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER8",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER9",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER10",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER11",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER12",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER13",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER14",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER15",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER16",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER17",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER18",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER19",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER20",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER21",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER22",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER23",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "shape",
+      "status": "PASS",
+      "basis": "规则·单位尺寸、制造单位端口边",
+      "evidence": {
+        "unit": "POWER24",
+        "actual": [
+          2,
+          2
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "occupancy",
+      "status": "PASS",
+      "basis": "规则·基地/各单位；格式 §2.2",
+      "evidence": {
+        "occupied": 4210,
+        "units": 626
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T24_19",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T24_19",
+        "axis": 0,
+        "facing": {
+          "0": "in",
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T24_19",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T36_13",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T36_13",
+        "axis": 0,
+        "facing": {
+          "0": "in",
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T36_13",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T49_52",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T49_52",
+        "axis": 0,
+        "facing": {
+          "0": "in",
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T49_52",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T49_63",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T49_63",
+        "axis": 0,
+        "facing": {
+          "0": "out",
+          "2": "in"
+        },
+        "derived": 0,
+        "claimed": 0
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T49_63",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T56_26",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T56_26",
+        "axis": 0,
+        "facing": {
+          "0": "in",
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T56_26",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T58_7",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T58_7",
+        "axis": 0,
+        "facing": {
+          "0": "in",
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T58_7",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T59_1",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T59_1",
+        "axis": 0,
+        "facing": {
+          "0": "out",
+          "2": "in"
+        },
+        "derived": 0,
+        "claimed": 0
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T59_1",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T59_53",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T59_53",
+        "axis": 0,
+        "facing": {
+          "0": "in",
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T59_53",
+        "axis": 1,
+        "facing": {
+          "1": "out",
+          "3": "in"
+        },
+        "derived": 1,
+        "claimed": 1
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T62_1",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T62_1",
+        "axis": 0,
+        "facing": {
+          "0": "out",
+          "2": "in"
+        },
+        "derived": 0,
+        "claimed": 0
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T62_1",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T62_45",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T62_45",
+        "axis": 0,
+        "facing": {
+          "0": "out",
+          "2": "in"
+        },
+        "derived": 0,
+        "claimed": 0
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T62_45",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4b",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+      "evidence": {
+        "unit": "T64_34",
+        "adjacent": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T64_34",
+        "axis": 0,
+        "facing": {
+          "0": "out",
+          "2": "in"
+        },
+        "derived": 0,
+        "claimed": 0
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "T64_34",
+        "axis": 1,
+        "facing": {
+          "1": "in",
+          "3": "out"
+        },
+        "derived": 3,
+        "claimed": 3
+      },
+      "remaining": ""
+    },
+    {
+      "check": "power-rebuild",
+      "status": "PASS",
+      "basis": "规则·供电桩/供电状态/需电功能；格式 §5.4",
+      "evidence": {
+        "RF1": [
+          "POWER15"
+        ],
+        "KF1": [
+          "POWER7"
+        ],
+        "RF2": [
+          "POWER16"
+        ],
+        "KF2": [
+          "POWER7"
+        ],
+        "RF3": [
+          "POWER2"
+        ],
+        "KF3": [
+          "POWER3"
+        ],
+        "RF4": [
+          "POWER4"
+        ],
+        "KF4": [
+          "POWER4"
+        ],
+        "RF5": [
+          "POWER23"
+        ],
+        "KF5": [
+          "POWER21"
+        ],
+        "RF6": [
+          "POWER16"
+        ],
+        "KF6": [
+          "POWER16"
+        ],
+        "RF7": [
+          "POWER17"
+        ],
+        "KF7": [
+          "POWER17"
+        ],
+        "RF8": [
+          "POWER16"
+        ],
+        "KF8": [
+          "POWER22"
+        ],
+        "RF9": [
+          "POWER2"
+        ],
+        "KF9": [
+          "POWER17"
+        ],
+        "RF10": [
+          "POWER5"
+        ],
+        "KF10": [
+          "POWER5"
+        ],
+        "RF11": [
+          "POWER13"
+        ],
+        "KF11": [
+          "POWER13"
+        ],
+        "RF12": [
+          "POWER15"
+        ],
+        "KF12": [
+          "POWER15"
+        ],
+        "RF13": [
+          "POWER4"
+        ],
+        "KF13": [
+          "POWER12"
+        ],
+        "RF14": [
+          "POWER17"
+        ],
+        "KF14": [
+          "POWER12"
+        ],
+        "RF15": [
+          "POWER11"
+        ],
+        "KF15": [
+          "POWER11"
+        ],
+        "RF16": [
+          "POWER22"
+        ],
+        "KF16": [
+          "POWER22"
+        ],
+        "RF17": [
+          "POWER15"
+        ],
+        "KF17": [
+          "POWER15"
+        ],
+        "RF18": [
+          "POWER10"
+        ],
+        "KF18": [
+          "POWER10"
+        ],
+        "RF19": [
+          "POWER4"
+        ],
+        "KF19": [
+          "POWER9"
+        ],
+        "RF20": [
+          "POWER9"
+        ],
+        "KF20": [
+          "POWER9"
+        ],
+        "RF21": [
+          "POWER22"
+        ],
+        "KF21": [
+          "POWER23"
+        ],
+        "RF22": [
+          "POWER20"
+        ],
+        "KF22": [
+          "POWER1"
+        ],
+        "RF23": [
+          "POWER8"
+        ],
+        "KF23": [
+          "POWER8"
+        ],
+        "RF24": [
+          "POWER15"
+        ],
+        "KF24": [
+          "POWER15"
+        ],
+        "RF25": [
+          "POWER7"
+        ],
+        "KF25": [
+          "POWER7"
+        ],
+        "RF26": [
+          "POWER18",
+          "POWER24"
+        ],
+        "KF26": [
+          "POWER23"
+        ],
+        "RF27": [
+          "POWER5"
+        ],
+        "KF27": [
+          "POWER5"
+        ],
+        "RF28": [
+          "POWER6"
+        ],
+        "KF28": [
+          "POWER6"
+        ],
+        "RF29": [
+          "POWER2"
+        ],
+        "KF29": [
+          "POWER5"
+        ],
+        "RF30": [
+          "POWER5"
+        ],
+        "KF30": [
+          "POWER6"
+        ],
+        "RF31": [
+          "POWER16"
+        ],
+        "KF31": [
+          "POWER17"
+        ],
+        "RF32": [
+          "POWER22"
+        ],
+        "KF32": [
+          "POWER22"
+        ],
+        "RF33": [
+          "POWER10"
+        ],
+        "KF33": [
+          "POWER10"
+        ],
+        "RF34": [
+          "POWER12"
+        ],
+        "KF34": [
+          "POWER17"
+        ],
+        "KO1": [
+          "POWER19"
+        ],
+        "KO2": [
+          "POWER18"
+        ],
+        "KO3": [
+          "POWER3"
+        ],
+        "KO4": [
+          "POWER19"
+        ],
+        "KO5": [
+          "POWER1"
+        ],
+        "KO6": [
+          "POWER16"
+        ],
+        "KO7": [
+          "POWER21"
+        ],
+        "KO8": [
+          "POWER5"
+        ],
+        "KO9": [
+          "POWER11"
+        ],
+        "KO10": [
+          "POWER11"
+        ],
+        "KO11": [
+          "POWER20"
+        ],
+        "KO12": [
+          "POWER15"
+        ],
+        "KO13": [
+          "POWER10"
+        ],
+        "KO14": [
+          "POWER10"
+        ],
+        "KO15": [
+          "POWER11"
+        ],
+        "KO16": [
+          "POWER11"
+        ],
+        "KO17": [
+          "POWER2"
+        ],
+        "KO18": [
+          "POWER2"
+        ],
+        "B1": [
+          "POWER7",
+          "POWER8"
+        ],
+        "B2": [
+          "POWER3"
+        ],
+        "B3": [
+          "POWER21"
+        ],
+        "B4": [
+          "POWER22"
+        ],
+        "B5": [
+          "POWER18"
+        ],
+        "B6": [
+          "POWER13"
+        ],
+        "B7": [
+          "POWER12"
+        ],
+        "B8": [
+          "POWER17"
+        ],
+        "B9": [
+          "POWER10"
+        ],
+        "B10": [
+          "POWER9"
+        ],
+        "B11": [
+          "POWER6"
+        ],
+        "B12": [
+          "POWER8"
+        ],
+        "B13": [
+          "POWER7"
+        ],
+        "B14": [
+          "POWER6"
+        ],
+        "B15": [
+          "POWER0",
+          "POWER5"
+        ],
+        "B16": [
+          "POWER17"
+        ],
+        "B17": [
+          "POWER14"
+        ],
+        "O1": [
+          "POWER19"
+        ],
+        "O2": [
+          "POWER3"
+        ],
+        "O3": [
+          "POWER0"
+        ],
+        "O4": [
+          "POWER21"
+        ],
+        "O5": [
+          "POWER11"
+        ],
+        "O6": [
+          "POWER15"
+        ],
+        "O7": [
+          "POWER14"
+        ],
+        "O8": [
+          "POWER11"
+        ],
+        "O9": [
+          "POWER2"
+        ],
+        "Q1": [
+          "POWER8"
+        ],
+        "Q2": [
+          "POWER6"
+        ],
+        "Q3": [
+          "POWER10"
+        ],
+        "Q4": [
+          "POWER21"
+        ],
+        "Q5": [
+          "POWER7"
+        ],
+        "Q6": [
+          "POWER18",
+          "POWER19",
+          "POWER24"
+        ],
+        "SC1": [
+          "POWER2",
+          "POWER7"
+        ],
+        "SA1": [
+          "POWER2"
+        ],
+        "SB1": [
+          "POWER2"
+        ],
+        "S1": [
+          "POWER7"
+        ],
+        "SC2": [
+          "POWER1"
+        ],
+        "SA2": [
+          "POWER1"
+        ],
+        "SB2": [
+          "POWER12"
+        ],
+        "S2": [
+          "POWER17"
+        ],
+        "SC3": [
+          "POWER14"
+        ],
+        "SA3": [
+          "POWER9"
+        ],
+        "SB3": [
+          "POWER16"
+        ],
+        "S3": [
+          "POWER21"
+        ],
+        "SC4": [
+          "POWER3"
+        ],
+        "SA4": [
+          "POWER3"
+        ],
+        "SB4": [
+          "POWER8"
+        ],
+        "S4": [
+          "POWER6"
+        ],
+        "SC5": [
+          "POWER11",
+          "POWER12"
+        ],
+        "SA5": [
+          "POWER11",
+          "POWER12",
+          "POWER16",
+          "POWER17"
+        ],
+        "SB5": [
+          "POWER14"
+        ],
+        "S5": [
+          "POWER14"
+        ],
+        "SC6": [
+          "POWER4"
+        ],
+        "SA6": [
+          "POWER4"
+        ],
+        "SB6": [
+          "POWER7",
+          "POWER8"
+        ],
+        "S6": [
+          "POWER2"
+        ],
+        "SC7": [
+          "POWER23"
+        ],
+        "SA7": [
+          "POWER22",
+          "POWER23"
+        ],
+        "SB7": [
+          "POWER22"
+        ],
+        "S7": [
+          "POWER22"
+        ],
+        "SC8": [
+          "POWER0"
+        ],
+        "SA8": [
+          "POWER3"
+        ],
+        "SB8": [
+          "POWER5",
+          "POWER10"
+        ],
+        "S8": [
+          "POWER6"
+        ],
+        "SC9": [
+          "POWER15"
+        ],
+        "SA9": [
+          "POWER20"
+        ],
+        "SB9": [
+          "POWER20"
+        ],
+        "S9": [
+          "POWER1"
+        ],
+        "SC10": [
+          "POWER4"
+        ],
+        "SA10": [
+          "POWER4"
+        ],
+        "SB10": [
+          "POWER3",
+          "POWER4"
+        ],
+        "S10": [
+          "POWER6"
+        ],
+        "SC11": [
+          "POWER9"
+        ],
+        "SA11": [
+          "POWER8",
+          "POWER9"
+        ],
+        "SB11": [
+          "POWER14"
+        ],
+        "S11": [
+          "POWER21"
+        ],
+        "SC12": [
+          "POWER23",
+          "POWER24"
+        ],
+        "SA12": [
+          "POWER22"
+        ],
+        "SB12": [
+          "POWER16"
+        ],
+        "S12": [
+          "POWER16"
+        ],
+        "SC13": [
+          "POWER12"
+        ],
+        "SA13": [
+          "POWER19",
+          "POWER24"
+        ],
+        "SB13": [
+          "POWER12",
+          "POWER13"
+        ],
+        "S13": [
+          "POWER12"
+        ],
+        "QC1": [
+          "POWER15",
+          "POWER16"
+        ],
+        "QA1": [
+          "POWER15"
+        ],
+        "QB1": [
+          "POWER19",
+          "POWER24"
+        ],
+        "QK1": [
+          "POWER13"
+        ],
+        "QC2": [
+          "POWER2"
+        ],
+        "QA2": [
+          "POWER0"
+        ],
+        "QB2": [
+          "POWER5"
+        ],
+        "QK2": [
+          "POWER6"
+        ],
+        "QC3": [
+          "POWER1"
+        ],
+        "QA3": [
+          "POWER0"
+        ],
+        "QB3": [
+          "POWER6"
+        ],
+        "QK3": [
+          "POWER11"
+        ],
+        "QC4": [
+          "POWER20"
+        ],
+        "QA4": [
+          "POWER20"
+        ],
+        "QB4": [
+          "POWER15"
+        ],
+        "QK4": [
+          "POWER21"
+        ],
+        "QC5": [
+          "POWER0"
+        ],
+        "QA5": [
+          "POWER5"
+        ],
+        "QB5": [
+          "POWER0"
+        ],
+        "QK5": [
+          "POWER7"
+        ],
+        "QC6": [
+          "POWER17"
+        ],
+        "QA6": [
+          "POWER13",
+          "POWER18"
+        ],
+        "QB6": [
+          "POWER18"
+        ],
+        "QK6": [
+          "POWER18"
+        ],
+        "R1": [
+          "POWER13"
+        ],
+        "R2": [
+          "POWER8"
+        ],
+        "R3": [
+          "POWER23"
+        ],
+        "R4": [
+          "POWER6"
+        ],
+        "R5": [
+          "POWER18"
+        ],
+        "R6": [
+          "POWER19",
+          "POWER24"
+        ],
+        "R7": [
+          "POWER12"
+        ],
+        "R8": [
+          "POWER17"
+        ],
+        "R9": [
+          "POWER7"
+        ],
+        "R10": [
+          "POWER7"
+        ],
+        "R11": [
+          "POWER6"
+        ],
+        "R12": [
+          "POWER5"
+        ],
+        "R13": [
+          "POWER10"
+        ],
+        "R14": [
+          "POWER10"
+        ],
+        "R15": [
+          "POWER5"
+        ],
+        "R16": [
+          "POWER23",
+          "POWER24"
+        ],
+        "R17": [
+          "POWER24"
+        ],
+        "P1": [
+          "POWER0"
+        ],
+        "H1": [
+          "POWER12"
+        ],
+        "P2": [
+          "POWER0"
+        ],
+        "H2": [
+          "POWER7"
+        ],
+        "P3": [
+          "POWER23",
+          "POWER24"
+        ],
+        "H3": [
+          "POWER10"
+        ],
+        "P4": [
+          "POWER7"
+        ],
+        "H4": [
+          "POWER10"
+        ],
+        "P5": [
+          "POWER13"
+        ],
+        "H5": [
+          "POWER24"
+        ],
+        "P6": [
+          "POWER18"
+        ],
+        "H6": [
+          "POWER24"
+        ],
+        "E1": [
+          "POWER1"
+        ],
+        "E2": [
+          "POWER21"
+        ],
+        "E3": [
+          "POWER13"
+        ],
+        "F1": [
+          "POWER8"
+        ],
+        "F2": [
+          "POWER10",
+          "POWER11"
+        ],
+        "F3": [
+          "POWER24"
+        ],
+        "F4": [
+          "POWER19"
+        ]
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N5a",
+      "status": "PASS",
+      "basis": "规则·通道；约束·端口对接；格式 §8.2 N5a",
+      "evidence": {
+        "missing": [],
+        "extra": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "port-references",
+      "status": "PASS",
+      "basis": "规则·端口/各单位；格式 §2.3",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "N1",
+      "status": "PASS",
+      "basis": "规则·取货优先级；约束·取货分级；格式 §8.2 N1",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "N2",
+      "status": "PASS",
+      "basis": "规则·存货优先级；约束·密集结点；格式 §8.2 N2",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "N3a",
+      "status": "PASS",
+      "basis": "规则·物品准入口；约束·准入累计；格式 §8.2 N3a",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "transport-terminal-reachability",
+      "status": "PASS",
+      "basis": "格式 §8.2 禁止无源无汇纯运输循环；约束·植物再生来路",
+      "evidence": {
+        "without_source": [],
+        "without_sink": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "wrong-material",
+      "status": "PASS",
+      "basis": "约束·存货误料停机与可用台数；规则·存货物品格；格式 §5.1/8.1",
+      "evidence": [],
+      "remaining": ""
+    },
+    {
+      "check": "outside-recipe",
+      "status": "PASS",
+      "basis": "规则·配方/制造；格式 §5.1/8.1（设计声明不是配方开关）",
+      "evidence": [],
+      "remaining": ""
+    },
+    {
+      "check": "outside-allowed-items",
+      "status": "PASS",
+      "basis": "规则·通道/准入口；格式 §8.1",
+      "evidence": [],
+      "remaining": ""
+    },
+    {
+      "check": "N3b",
+      "status": "PASS",
+      "basis": "规则·物品准入口/物品格；格式 §8.2 N3b",
+      "evidence": [],
+      "remaining": "仅排除身份拒绝且无替代出口图样；及时通过与活性另证。"
+    },
+    {
+      "check": "P1",
+      "status": "PASS",
+      "basis": "共识 §1.3 P1；格式 §8.2",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "P6",
+      "status": "PASS",
+      "basis": "共识 §1.3 P6；约束·满载配置；格式 §8.2",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "P2-paths",
+      "status": "PASS",
+      "basis": "共识 §1.3 P2；格式 §8.2/8.4",
+      "evidence": {
+        "paths": 146,
+        "covered": 481,
+        "edges": 481
+      },
+      "remaining": ""
+    },
+    {
+      "check": "P4",
+      "status": "PASS",
+      "basis": "共识 §1.3 P4；规则·桥接器；格式 §8.2",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "P5",
+      "status": "PASS",
+      "basis": "共识 §1.3 P5；规则·桥接器；格式 §8.2",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "empty-rectangle",
+      "status": "PASS",
+      "basis": "任务·目标（最大面积，同面积最长短边≥6）；格式 §7",
+      "evidence": {
+        "declared": {
+          "x0": 64,
+          "y0": 63,
+          "x1": 69,
+          "y1": 69
+        },
+        "recomputed": {
+          "area": 42,
+          "short_side": 6,
+          "rectangles": [
+            {
+              "x0": 64,
+              "y0": 63,
+              "x1": 69,
+              "y1": 69
+            }
+          ]
+        }
+      },
+      "remaining": ""
+    },
+    {
+      "check": "restrictions-required",
+      "status": "PASS",
+      "basis": "共识 §1.3；格式 §8.2/8.3",
+      "evidence": {
+        "missing": []
+      },
+      "remaining": ""
+    },
+    {
+      "check": "restriction:fixed-layout",
+      "status": "FAIL",
+      "basis": "格式 §8.3；检查器B 说明·支持的额外限制",
+      "evidence": {
+        "expected_statement": "本候选文件固定全部单位的位置、朝向与设定。"
+      },
+      "remaining": ""
+    },
+    {
+      "check": "restriction:fixed-logical-feeds",
+      "status": "FAIL",
+      "basis": "格式 §8.3；检查器B 说明·支持的额外限制",
+      "evidence": {
+        "expected_statement": "logical_feeds 固定端点、路径、物品与精确速率。"
+      },
+      "remaining": ""
+    },
+    {
+      "check": "restriction:single-recipe",
+      "status": "UNIMPLEMENTED",
+      "basis": "格式 §8.3",
+      "evidence": "未实现该额外限制的可执行解释；不能宣称覆盖。",
+      "remaining": ""
+    },
+    {
+      "check": "recipe-restriction-register",
+      "status": "FAIL",
+      "basis": "格式 §5.1/8.2 P6/8.3",
+      "evidence": [
+        "RF1",
+        "RF2",
+        "RF3",
+        "RF4",
+        "RF5",
+        "RF6",
+        "RF7",
+        "RF8",
+        "RF9",
+        "RF10",
+        "RF11",
+        "RF12",
+        "RF13",
+        "RF14",
+        "RF15",
+        "RF16",
+        "RF17",
+        "RF18",
+        "RF19",
+        "RF20",
+        "RF21",
+        "RF22",
+        "RF23",
+        "RF24",
+        "RF25",
+        "RF26",
+        "RF27",
+        "RF28",
+        "RF29",
+        "RF30",
+        "RF31",
+        "RF32",
+        "RF33",
+        "RF34",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "B12",
+        "B13",
+        "B14",
+        "B15",
+        "B16",
+        "B17",
+        "O1",
+        "O2",
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7",
+        "O8",
+        "O9",
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "Q5",
+        "Q6",
+        "SA1",
+        "SB1",
+        "SA2",
+        "SB2",
+        "SA3",
+        "SB3",
+        "SA4",
+        "SB4",
+        "SA5",
+        "SB5",
+        "SA6",
+        "SB6",
+        "SA7",
+        "SB7",
+        "SA8",
+        "SB8",
+        "SA9",
+        "SB9",
+        "SA10",
+        "SB10",
+        "SA11",
+        "SB11",
+        "SA12",
+        "SB12",
+        "SA13",
+        "SB13",
+        "QA1",
+        "QB1",
+        "QA2",
+        "QB2",
+        "QA3",
+        "QB3",
+        "QA4",
+        "QB4",
+        "QA5",
+        "QB5",
+        "QA6",
+        "QB6",
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7",
+        "R8",
+        "R9",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R14",
+        "R15",
+        "R16",
+        "R17"
+      ],
+      "remaining": ""
+    },
+    {
+      "check": "logical-restriction-register",
+      "status": "PASS",
+      "basis": "格式 §8.4（固定路径与数值速率须登记）",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "source-bindings",
+      "status": "PASS",
+      "basis": "格式 §8.4 真实矿石物理身份",
+      "evidence": null,
+      "remaining": ""
+    },
+    {
+      "check": "logical-feeds",
+      "status": "PASS",
+      "basis": "格式 §8.4；规则·桥接器/通道",
+      "evidence": [],
+      "remaining": ""
+    }
+  ],
+  "geometry": {
+    "occupied_cells": 4210,
+    "channels": 481,
+    "paths": 146,
+    "maximum": {
+      "area": 42,
+      "short_side": 6,
+      "rectangles": [
+        {
+          "x0": 64,
+          "y0": 63,
+          "x1": 69,
+          "y1": 69
+        }
+      ]
+    },
+    "power_all": true
+  },
+  "interfaces_ok": true,
+  "flow": {
+    "status": "INFEASIBLE_EXACT",
+    "certificate": {
+      "zero_row": "source:('WFE2', 0, 1)",
+      "rhs": "1",
+      "relation": "eq",
+      "basis": "约束·取货口配置/矿石需求；格式 §9.2"
+    }
+  },
+  "implementation_sha256": {
+    "catalog.py": "7d83cf061f40f5157b03384c5e4501cccd14c92ffc5d0e8f66469857bf622a27",
+    "flow.py": "64455bd7b92d4b73a3e88a7a22e63543ac8704abb66ef804858b7e8c098c72cd",
+    "interfaces.py": "78b1ed7d9a66a1810767d4a0d37b9d0a6acebf92f5c8732e61eafee7bd603cdd",
+    "geometry.py": "db7667d9229d0f49148a95b08130970fbc04698d31e83562834c71409573ca36"
+  }
+}

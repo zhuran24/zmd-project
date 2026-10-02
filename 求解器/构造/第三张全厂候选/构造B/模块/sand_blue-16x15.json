@@ -1,0 +1,23 @@
+{
+  "W": 16,
+  "H": 15,
+  "status": "UNKNOWN",
+  "wall": 180.9,
+  "build_s": 0.4,
+  "nvars": 16556,
+  "ncons": 74784,
+  "first_sol": null,
+  "trace": [],
+  "machine_ids": [
+    "SA1",
+    "SB1",
+    "SC1",
+    "S1",
+    "T1",
+    "KB1",
+    "T2",
+    "KB2",
+    "B1",
+    "R1"
+  ]
+}

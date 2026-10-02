@@ -1,0 +1,17 @@
+{
+  "start_utc": "2026-10-02T13:15:05+00:00",
+  "end_utc": "2026-10-02T16:07:13.878911+00:00",
+  "elapsed_seconds": 10328.878911,
+  "within_stricter_three_hour_limit": true,
+  "search_affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "maximum_cpsat_workers_per_process": 4,
+  "no_kernel_cargo_tests": true,
+  "no_git_commands": true,
+  "no_running_search_records": true,
+  "static_pass": false
+}

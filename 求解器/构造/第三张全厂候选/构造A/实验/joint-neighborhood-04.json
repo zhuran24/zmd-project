@@ -1,0 +1,27 @@
+{
+ "schema": "joint-cp-run-v1",
+ "W": 70,
+ "H": 70,
+ "routes": 325,
+ "machines": 230,
+ "fixed_rectangle": [
+  64,
+  64,
+  6,
+  6
+ ],
+ "bridge_restriction": "two used axes; no adjacent bridges",
+ "near_placement_radius": 4,
+ "power_poles": 25,
+ "seed": 1,
+ "workers": 4,
+ "build_seconds": 7.555587483999261,
+ "variables": 183792,
+ "constraints": 464435,
+ "validation": "",
+ "status": "INFEASIBLE",
+ "wall_seconds": 1.1712929179993807,
+ "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 1.16902\nusertime: 1.16902\ndeterministic_time: 0\ngap_integral: 0\n",
+ "is_valid_search_result": false,
+ "invalid_reason": "固定供电桩沿x优先编号，但仍叠加按y优先排序的对称性约束，排除了给定桩位；本记录不作不可行证据。后续05已撤去该排序。"
+}

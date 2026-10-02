@@ -1,0 +1,32 @@
+{
+ "schema": "s2-polyline-joint-v1",
+ "is_layout": false,
+ "partial_search": true,
+ "W": 70,
+ "H": 70,
+ "machines": 230,
+ "routes_count": 325,
+ "rect": [
+  64,
+  64,
+  6,
+  6
+ ],
+ "fixed_poles": true,
+ "poles": 25,
+ "regions": false,
+ "restrictions": [
+  "three segments per route",
+  "no bridge on any waypoint",
+  "fixed outlet order and corner gaps"
+ ],
+ "workers": 4,
+ "seed": 1,
+ "variables": 32717,
+ "constraints": 68083,
+ "build_seconds": 0.32441079200361855,
+ "validation": "",
+ "status": "UNKNOWN",
+ "wall_seconds": 314.000471146,
+ "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 88294\nbest_bound: -32500000\nintegers: 14455\nbooleans: 42739\nconflicts: 577\nbranches: 283120\npropagations: 3325020\ninteger_propagations: 4568023\nrestarts: 6\nlp_iterations: 0\nwalltime: 314\nusertime: 314\ndeterministic_time: 225.307\ngap_integral: 3845.03\n"
+}

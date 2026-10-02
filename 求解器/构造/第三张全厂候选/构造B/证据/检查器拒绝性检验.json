@@ -1,0 +1,27 @@
+[
+  {
+    "name": "删除真实通道声明",
+    "expected_rejection": "exact_automatic_channels",
+    "detected": true
+  },
+  {
+    "name": "反写桥水平轴方向",
+    "expected_rejection": "bridge_axis_direction_declarations",
+    "detected": true
+  },
+  {
+    "name": "移除全部供电桩",
+    "expected_rejection": "all_machines_powered",
+    "detected": true
+  },
+  {
+    "name": "把正向边冒充桥间反向边",
+    "expected_rejection": "exact_bridge_reverse_channels",
+    "detected": true
+  },
+  {
+    "name": "声明含机身的空矩形",
+    "expected_rejection": "maximum_empty_rectangle",
+    "detected": true
+  }
+]

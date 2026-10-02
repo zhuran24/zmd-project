@@ -1,0 +1,17840 @@
+{
+ "scope": "exact fixed nontransport coordinates and rotations; all attempted transport removed; no empty rectangle forbidden",
+ "candidate_sha256": "e13ee80bb54090d88a6963f62360f36a99c6b71841e103dbd816f21d5ef5de70",
+ "all_agree": true,
+ "body_cells": 3886,
+ "free_cells": 1014,
+ "component_count": 120,
+ "component_sizes": [
+  127,
+  67,
+  50,
+  49,
+  34,
+  28,
+  22,
+  22,
+  21,
+  20,
+  18,
+  18,
+  17,
+  17,
+  16,
+  16,
+  14,
+  14,
+  14,
+  12,
+  11,
+  10,
+  10,
+  10,
+  9,
+  9,
+  9,
+  8,
+  8,
+  8,
+  8,
+  8,
+  8,
+  8,
+  8,
+  7,
+  7,
+  7,
+  7,
+  6,
+  6,
+  6,
+  6,
+  6,
+  6,
+  6,
+  6,
+  6,
+  5,
+  5,
+  5,
+  5,
+  5,
+  5,
+  5,
+  5,
+  5,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1
+ ],
+ "unreachable_count": 147,
+ "unreachable_route_ids": [
+  "LF001",
+  "LF002",
+  "LF003",
+  "LF005",
+  "LF006",
+  "LF008",
+  "LF009",
+  "LF010",
+  "LF012",
+  "LF014",
+  "LF017",
+  "LF020",
+  "LF025",
+  "LF026",
+  "LF028",
+  "LF030",
+  "LF034",
+  "LF036",
+  "LF038",
+  "LF040",
+  "LF043",
+  "LF044",
+  "LF046",
+  "LF048",
+  "LF050",
+  "LF052",
+  "LF054",
+  "LF057",
+  "LF058",
+  "LF060",
+  "LF062",
+  "LF066",
+  "LF070",
+  "LF072",
+  "LF073",
+  "LF074",
+  "LF076",
+  "LF077",
+  "LF080",
+  "LF082",
+  "LF083",
+  "LF084",
+  "LF092",
+  "LF095",
+  "LF097",
+  "LF100",
+  "LF106",
+  "LF109",
+  "LF111",
+  "LF114",
+  "LF115",
+  "LF118",
+  "LF119",
+  "LF121",
+  "LF123",
+  "LF124",
+  "LF125",
+  "LF127",
+  "LF132",
+  "LF133",
+  "LF140",
+  "LF141",
+  "LF143",
+  "LF146",
+  "LF147",
+  "LF150",
+  "LF153",
+  "LF155",
+  "LF159",
+  "LF163",
+  "LF164",
+  "LF168",
+  "LF169",
+  "LF173",
+  "LF177",
+  "LF178",
+  "LF181",
+  "LF183",
+  "LF184",
+  "LF186",
+  "LF188",
+  "LF191",
+  "LF192",
+  "LF193",
+  "LF195",
+  "LF198",
+  "LF201",
+  "LF202",
+  "LF205",
+  "LF206",
+  "LF209",
+  "LF210",
+  "LF215",
+  "LF216",
+  "LF217",
+  "LF218",
+  "LF220",
+  "LF222",
+  "LF223",
+  "LF224",
+  "LF227",
+  "LF229",
+  "LF231",
+  "LF232",
+  "LF233",
+  "LF236",
+  "LF237",
+  "LF240",
+  "LF241",
+  "LF243",
+  "LF244",
+  "LF245",
+  "LF259",
+  "LF260",
+  "LF262",
+  "LF265",
+  "LF266",
+  "LF268",
+  "LF269",
+  "LF272",
+  "LF273",
+  "LF274",
+  "LF275",
+  "LF278",
+  "LF281",
+  "LF284",
+  "LF287",
+  "LF288",
+  "LF293",
+  "LF296",
+  "LF297",
+  "LF298",
+  "LF300",
+  "LF301",
+  "LF302",
+  "LF304",
+  "LF306",
+  "LF307",
+  "LF309",
+  "LF311",
+  "LF312",
+  "LF313",
+  "LF317",
+  "LF318",
+  "LF320",
+  "LF321",
+  "LF322"
+ ],
+ "second_encoding_unreachable_route_ids": [
+  "LF001",
+  "LF002",
+  "LF003",
+  "LF005",
+  "LF006",
+  "LF008",
+  "LF009",
+  "LF010",
+  "LF012",
+  "LF014",
+  "LF017",
+  "LF020",
+  "LF025",
+  "LF026",
+  "LF028",
+  "LF030",
+  "LF034",
+  "LF036",
+  "LF038",
+  "LF040",
+  "LF043",
+  "LF044",
+  "LF046",
+  "LF048",
+  "LF050",
+  "LF052",
+  "LF054",
+  "LF057",
+  "LF058",
+  "LF060",
+  "LF062",
+  "LF066",
+  "LF070",
+  "LF072",
+  "LF073",
+  "LF074",
+  "LF076",
+  "LF077",
+  "LF080",
+  "LF082",
+  "LF083",
+  "LF084",
+  "LF092",
+  "LF095",
+  "LF097",
+  "LF100",
+  "LF106",
+  "LF109",
+  "LF111",
+  "LF114",
+  "LF115",
+  "LF118",
+  "LF119",
+  "LF121",
+  "LF123",
+  "LF124",
+  "LF125",
+  "LF127",
+  "LF132",
+  "LF133",
+  "LF140",
+  "LF141",
+  "LF143",
+  "LF146",
+  "LF147",
+  "LF150",
+  "LF153",
+  "LF155",
+  "LF159",
+  "LF163",
+  "LF164",
+  "LF168",
+  "LF169",
+  "LF173",
+  "LF177",
+  "LF178",
+  "LF181",
+  "LF183",
+  "LF184",
+  "LF186",
+  "LF188",
+  "LF191",
+  "LF192",
+  "LF193",
+  "LF195",
+  "LF198",
+  "LF201",
+  "LF202",
+  "LF205",
+  "LF206",
+  "LF209",
+  "LF210",
+  "LF215",
+  "LF216",
+  "LF217",
+  "LF218",
+  "LF220",
+  "LF222",
+  "LF223",
+  "LF224",
+  "LF227",
+  "LF229",
+  "LF231",
+  "LF232",
+  "LF233",
+  "LF236",
+  "LF237",
+  "LF240",
+  "LF241",
+  "LF243",
+  "LF244",
+  "LF245",
+  "LF259",
+  "LF260",
+  "LF262",
+  "LF265",
+  "LF266",
+  "LF268",
+  "LF269",
+  "LF272",
+  "LF273",
+  "LF274",
+  "LF275",
+  "LF278",
+  "LF281",
+  "LF284",
+  "LF287",
+  "LF288",
+  "LF293",
+  "LF296",
+  "LF297",
+  "LF298",
+  "LF300",
+  "LF301",
+  "LF302",
+  "LF304",
+  "LF306",
+  "LF307",
+  "LF309",
+  "LF311",
+  "LF312",
+  "LF313",
+  "LF317",
+  "LF318",
+  "LF320",
+  "LF321",
+  "LF322"
+ ],
+ "necessary_route_reachability": [
+  {
+   "id": "LF000",
+   "source": "WFE1",
+   "target": "RF1",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     44,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     1
+    ],
+    [
+     44,
+     1
+    ],
+    [
+     45,
+     1
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF001",
+   "source": "RF1",
+   "target": "KF1",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     45
+    ],
+    [
+     26,
+     45
+    ]
+   ],
+   "source_components": [
+    74
+   ],
+   "target_components": [
+    43
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF002",
+   "source": "WFE2",
+   "target": "RF2",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     2
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     54,
+     20
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    96
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF003",
+   "source": "RF2",
+   "target": "KF2",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     50,
+     18
+    ],
+    [
+     50,
+     19
+    ],
+    [
+     50,
+     20
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     20,
+     41
+    ],
+    [
+     20,
+     42
+    ],
+    [
+     20,
+     43
+    ]
+   ],
+   "source_components": [
+    88
+   ],
+   "target_components": [
+    28
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF004",
+   "source": "WFE3",
+   "target": "RF3",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     41
+    ],
+    [
+     1,
+     42
+    ],
+    [
+     1,
+     43
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF005",
+   "source": "RF3",
+   "target": "KF3",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     5,
+     41
+    ],
+    [
+     5,
+     42
+    ],
+    [
+     5,
+     43
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     10,
+     51
+    ],
+    [
+     11,
+     51
+    ],
+    [
+     12,
+     51
+    ]
+   ],
+   "source_components": [
+    3
+   ],
+   "target_components": [
+    15
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF006",
+   "source": "WFE4",
+   "target": "RF4",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     67
+    ],
+    [
+     11,
+     68
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    11
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF007",
+   "source": "RF4",
+   "target": "KF4",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     7,
+     66
+    ],
+    [
+     7,
+     67
+    ],
+    [
+     7,
+     68
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     61
+    ],
+    [
+     7,
+     62
+    ],
+    [
+     7,
+     63
+    ]
+   ],
+   "source_components": [
+    11
+   ],
+   "target_components": [
+    11
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF008",
+   "source": "WFE5",
+   "target": "RF5",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     8
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     61,
+     50
+    ],
+    [
+     62,
+     50
+    ],
+    [
+     63,
+     50
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    100
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF009",
+   "source": "RF5",
+   "target": "KF5",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     61,
+     46
+    ],
+    [
+     62,
+     46
+    ],
+    [
+     63,
+     46
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     59,
+     16
+    ]
+   ],
+   "source_components": [
+    109
+   ],
+   "target_components": [
+    105
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF010",
+   "source": "WFE6",
+   "target": "RF6",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     11
+    ]
+   ],
+   "target_free_neighbors": [],
+   "source_components": [
+    1
+   ],
+   "target_components": [],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF011",
+   "source": "RF6",
+   "target": "KF6",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     54,
+     20
+    ],
+    [
+     55,
+     20
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     55,
+     20
+    ]
+   ],
+   "source_components": [
+    96
+   ],
+   "target_components": [
+    96
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF012",
+   "source": "WFE7",
+   "target": "RF7",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     14
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     44
+    ],
+    [
+     50,
+     44
+    ],
+    [
+     51,
+     44
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    86
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF013",
+   "source": "RF7",
+   "target": "KF7",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     49,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     46,
+     32
+    ],
+    [
+     46,
+     33
+    ]
+   ],
+   "source_components": [
+    59
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF014",
+   "source": "WFE8",
+   "target": "RF8",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     17
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     52,
+     21
+    ],
+    [
+     52,
+     22
+    ],
+    [
+     52,
+     23
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    88
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF015",
+   "source": "RF8",
+   "target": "KF8",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     29
+    ],
+    [
+     57,
+     30
+    ],
+    [
+     57,
+     31
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    97
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF016",
+   "source": "WFE9",
+   "target": "RF9",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     38
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     38
+    ],
+    [
+     1,
+     39
+    ],
+    [
+     1,
+     40
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF017",
+   "source": "RF9",
+   "target": "KF9",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     5,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     51,
+     44
+    ]
+   ],
+   "source_components": [
+    3
+   ],
+   "target_components": [
+    86
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF018",
+   "source": "WFE10",
+   "target": "RF10",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     23,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     23,
+     4
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF019",
+   "source": "RF10",
+   "target": "KF10",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     8
+    ],
+    [
+     25,
+     8
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     8
+    ]
+   ],
+   "source_components": [
+    39
+   ],
+   "target_components": [
+    39
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF020",
+   "source": "WFE11",
+   "target": "RF11",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     20
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     54
+    ],
+    [
+     32,
+     54
+    ],
+    [
+     33,
+     54
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF021",
+   "source": "RF11",
+   "target": "KF11",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     50
+    ]
+   ],
+   "source_components": [
+    49
+   ],
+   "target_components": [
+    49
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF022",
+   "source": "WFE12",
+   "target": "RF12",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     50,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     4
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF023",
+   "source": "RF12",
+   "target": "KF12",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     49,
+     8
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     10
+    ],
+    [
+     49,
+     11
+    ],
+    [
+     49,
+     12
+    ]
+   ],
+   "source_components": [
+    85
+   ],
+   "target_components": [
+    85
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF024",
+   "source": "WFE13",
+   "target": "RF13",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     59
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     57
+    ],
+    [
+     1,
+     58
+    ],
+    [
+     1,
+     59
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF025",
+   "source": "RF13",
+   "target": "KF13",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     5,
+     57
+    ],
+    [
+     5,
+     58
+    ],
+    [
+     5,
+     59
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     38
+    ],
+    [
+     39,
+     39
+    ],
+    [
+     39,
+     40
+    ]
+   ],
+   "source_components": [
+    4
+   ],
+   "target_components": [
+    71
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF026",
+   "source": "WFE14",
+   "target": "RF14",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     36
+    ],
+    [
+     44,
+     36
+    ],
+    [
+     45,
+     36
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF027",
+   "source": "RF14",
+   "target": "KF14",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     32
+    ],
+    [
+     44,
+     32
+    ],
+    [
+     45,
+     32
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     32
+    ],
+    [
+     36,
+     32
+    ],
+    [
+     37,
+     32
+    ]
+   ],
+   "source_components": [
+    59
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF028",
+   "source": "WFE15",
+   "target": "RF15",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     25
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    61
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF029",
+   "source": "RF15",
+   "target": "KF15",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     33,
+     29
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     33,
+     29
+    ],
+    [
+     33,
+     30
+    ]
+   ],
+   "source_components": [
+    58
+   ],
+   "target_components": [
+    58
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF030",
+   "source": "WFE16",
+   "target": "RF16",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     68
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     38
+    ],
+    [
+     65,
+     39
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    117
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF031",
+   "source": "RF16",
+   "target": "KF16",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     61,
+     38
+    ],
+    [
+     61,
+     39
+    ],
+    [
+     61,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     61,
+     38
+    ]
+   ],
+   "source_components": [
+    101
+   ],
+   "target_components": [
+    101
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF032",
+   "source": "WFE17",
+   "target": "RF17",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     47,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     46,
+     1
+    ],
+    [
+     47,
+     1
+    ],
+    [
+     48,
+     1
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF033",
+   "source": "RF17",
+   "target": "KF17",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     47,
+     5
+    ],
+    [
+     48,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     47,
+     5
+    ],
+    [
+     47,
+     6
+    ],
+    [
+     47,
+     7
+    ]
+   ],
+   "source_components": [
+    82
+   ],
+   "target_components": [
+    82
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF034",
+   "source": "WFE18",
+   "target": "RF18",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     38,
+     3
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    67
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF035",
+   "source": "RF18",
+   "target": "KF18",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     36,
+     7
+    ],
+    [
+     37,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     37,
+     7
+    ]
+   ],
+   "source_components": [
+    64
+   ],
+   "target_components": [
+    64
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF036",
+   "source": "WFE19",
+   "target": "RF19",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     32
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     67
+    ],
+    [
+     11,
+     68
+    ],
+    [
+     11,
+     69
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    11
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF037",
+   "source": "RF19",
+   "target": "KF19",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     15,
+     67
+    ],
+    [
+     15,
+     68
+    ],
+    [
+     15,
+     69
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     17,
+     61
+    ],
+    [
+     17,
+     62
+    ],
+    [
+     17,
+     63
+    ]
+   ],
+   "source_components": [
+    21
+   ],
+   "target_components": [
+    21
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF038",
+   "source": "WFE20",
+   "target": "RF20",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     68,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     59
+    ],
+    [
+     23,
+     59
+    ],
+    [
+     24,
+     59
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    37
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF039",
+   "source": "RF20",
+   "target": "KF20",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     22,
+     63
+    ],
+    [
+     23,
+     63
+    ],
+    [
+     24,
+     63
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     65
+    ]
+   ],
+   "source_components": [
+    31
+   ],
+   "target_components": [
+    31
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF040",
+   "source": "WFE21",
+   "target": "RF21",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     62,
+     41
+    ],
+    [
+     63,
+     41
+    ],
+    [
+     64,
+     41
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    110
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF041",
+   "source": "RF21",
+   "target": "KF21",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     62,
+     45
+    ],
+    [
+     63,
+     45
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     61,
+     46
+    ]
+   ],
+   "source_components": [
+    109
+   ],
+   "target_components": [
+    109
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF042",
+   "source": "WFE22",
+   "target": "RF22",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     62,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     61,
+     1
+    ],
+    [
+     62,
+     1
+    ],
+    [
+     63,
+     1
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF043",
+   "source": "RF22",
+   "target": "KF22",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     61,
+     5
+    ],
+    [
+     62,
+     5
+    ],
+    [
+     63,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     19
+    ]
+   ],
+   "source_components": [
+    90
+   ],
+   "target_components": [
+    8
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF044",
+   "source": "WFE23",
+   "target": "RF23",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     47
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     27,
+     53
+    ],
+    [
+     27,
+     54
+    ],
+    [
+     27,
+     55
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    46
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF045",
+   "source": "RF23",
+   "target": "KF23",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     54
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     58
+    ]
+   ],
+   "source_components": [
+    55
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF046",
+   "source": "WFE24",
+   "target": "RF24",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     46,
+     17
+    ],
+    [
+     47,
+     17
+    ],
+    [
+     48,
+     17
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    80
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF047",
+   "source": "RF24",
+   "target": "KF24",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     46,
+     13
+    ],
+    [
+     47,
+     13
+    ],
+    [
+     48,
+     13
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     46,
+     13
+    ]
+   ],
+   "source_components": [
+    81
+   ],
+   "target_components": [
+    81
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF048",
+   "source": "WFE25",
+   "target": "RF25",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     53
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     27,
+     35
+    ],
+    [
+     27,
+     36
+    ],
+    [
+     27,
+     37
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    45
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF049",
+   "source": "RF25",
+   "target": "KF25",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     23,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     35
+    ],
+    [
+     23,
+     35
+    ]
+   ],
+   "source_components": [
+    35
+   ],
+   "target_components": [
+    35
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF050",
+   "source": "WFE26",
+   "target": "RF26",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     56
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     55,
+     55
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    95
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF051",
+   "source": "RF26",
+   "target": "KF26",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     53
+    ],
+    [
+     59,
+     54
+    ],
+    [
+     59,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     60,
+     51
+    ],
+    [
+     60,
+     52
+    ],
+    [
+     60,
+     53
+    ]
+   ],
+   "source_components": [
+    100
+   ],
+   "target_components": [
+    100
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF052",
+   "source": "WFE27",
+   "target": "RF27",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     62
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     8
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    39
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF053",
+   "source": "RF27",
+   "target": "KF27",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     6
+    ],
+    [
+     29,
+     7
+    ],
+    [
+     29,
+     8
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     29,
+     8
+    ]
+   ],
+   "source_components": [
+    47
+   ],
+   "target_components": [
+    47
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF054",
+   "source": "WFE28",
+   "target": "RF28",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     65
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     24,
+     16
+    ],
+    [
+     24,
+     17
+    ],
+    [
+     24,
+     18
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    29
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF055",
+   "source": "RF28",
+   "target": "KF28",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     20,
+     18
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     20,
+     19
+    ],
+    [
+     20,
+     20
+    ],
+    [
+     20,
+     21
+    ]
+   ],
+   "source_components": [
+    27
+   ],
+   "target_components": [
+    27
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF056",
+   "source": "WFE29",
+   "target": "RF29",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     29
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     29
+    ],
+    [
+     2,
+     30
+    ],
+    [
+     2,
+     31
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF057",
+   "source": "RF29",
+   "target": "KF29",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     29
+    ],
+    [
+     6,
+     30
+    ],
+    [
+     6,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     15,
+     11
+    ]
+   ],
+   "source_components": [
+    6
+   ],
+   "target_components": [
+    17
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF058",
+   "source": "WFE30",
+   "target": "RF30",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     2,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     19,
+     11
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    25
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF059",
+   "source": "RF30",
+   "target": "KF30",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     17,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     17,
+     15
+    ],
+    [
+     17,
+     16
+    ],
+    [
+     17,
+     17
+    ]
+   ],
+   "source_components": [
+    20
+   ],
+   "target_components": [
+    20
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF060",
+   "source": "WFE31",
+   "target": "RF31",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     5,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     48,
+     23
+    ],
+    [
+     49,
+     23
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    70
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF061",
+   "source": "RF31",
+   "target": "KF31",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     50,
+     27
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     50,
+     29
+    ],
+    [
+     50,
+     30
+    ],
+    [
+     50,
+     31
+    ]
+   ],
+   "source_components": [
+    83
+   ],
+   "target_components": [
+    83
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF062",
+   "source": "WFE32",
+   "target": "RF32",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     8,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     35
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    108
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF063",
+   "source": "RF32",
+   "target": "KF32",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     35
+    ],
+    [
+     58,
+     35
+    ],
+    [
+     59,
+     35
+    ]
+   ],
+   "source_components": [
+    101
+   ],
+   "target_components": [
+    101
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF064",
+   "source": "WFE33",
+   "target": "RF33",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     32,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     32,
+     1
+    ],
+    [
+     33,
+     1
+    ],
+    [
+     34,
+     1
+    ]
+   ],
+   "source_components": [
+    56
+   ],
+   "target_components": [
+    56
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF065",
+   "source": "RF33",
+   "target": "KF33",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     32,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     32,
+     5
+    ]
+   ],
+   "source_components": [
+    57
+   ],
+   "target_components": [
+    57
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF066",
+   "source": "WFE34",
+   "target": "RF34",
+   "item": "蓝铁矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     11,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     38
+    ],
+    [
+     39,
+     39
+    ],
+    [
+     39,
+     40
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    71
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF067",
+   "source": "RF34",
+   "target": "KF34",
+   "item": "蓝铁块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     40
+    ]
+   ],
+   "source_components": [
+    79
+   ],
+   "target_components": [
+    79
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF068",
+   "source": "CORE",
+   "target": "KO1",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     58
+    ],
+    [
+     49,
+     52
+    ],
+    [
+     49,
+     55
+    ],
+    [
+     49,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     59
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF069",
+   "source": "CORE",
+   "target": "KO2",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     58
+    ],
+    [
+     49,
+     52
+    ],
+    [
+     49,
+     55
+    ],
+    [
+     49,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     52,
+     52
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF070",
+   "source": "CORE",
+   "target": "KO3",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     58
+    ],
+    [
+     49,
+     52
+    ],
+    [
+     49,
+     55
+    ],
+    [
+     49,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     54
+    ],
+    [
+     2,
+     55
+    ],
+    [
+     2,
+     56
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF071",
+   "source": "CORE",
+   "target": "KO4",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     58
+    ],
+    [
+     49,
+     52
+    ],
+    [
+     49,
+     55
+    ],
+    [
+     49,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     43,
+     61
+    ],
+    [
+     43,
+     62
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF072",
+   "source": "CORE",
+   "target": "KO5",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     58
+    ],
+    [
+     49,
+     52
+    ],
+    [
+     49,
+     55
+    ],
+    [
+     49,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     17
+    ],
+    [
+     11,
+     18
+    ],
+    [
+     11,
+     19
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    8
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF073",
+   "source": "CORE",
+   "target": "KO6",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     58
+    ],
+    [
+     49,
+     52
+    ],
+    [
+     49,
+     55
+    ],
+    [
+     49,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     47,
+     30
+    ],
+    [
+     48,
+     30
+    ],
+    [
+     49,
+     30
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    83
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF074",
+   "source": "WO7",
+   "target": "KO7",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     14,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     24
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF075",
+   "source": "WO8",
+   "target": "KO8",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     24,
+     1
+    ],
+    [
+     25,
+     1
+    ],
+    [
+     26,
+     1
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF076",
+   "source": "WO9",
+   "target": "KO9",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     17,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     18
+    ],
+    [
+     35,
+     19
+    ],
+    [
+     35,
+     20
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    61
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF077",
+   "source": "WO10",
+   "target": "KO10",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     20,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     45,
+     16
+    ],
+    [
+     45,
+     17
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    80
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF078",
+   "source": "WO11",
+   "target": "KO11",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     58,
+     1
+    ],
+    [
+     59,
+     1
+    ],
+    [
+     60,
+     1
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF079",
+   "source": "WO12",
+   "target": "KO12",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     50,
+     1
+    ],
+    [
+     51,
+     1
+    ],
+    [
+     52,
+     1
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF080",
+   "source": "WO13",
+   "target": "KO13",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     40,
+     10
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    72
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF081",
+   "source": "WO14",
+   "target": "KO14",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     38,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     38,
+     1
+    ],
+    [
+     38,
+     2
+    ],
+    [
+     38,
+     3
+    ]
+   ],
+   "source_components": [
+    67
+   ],
+   "target_components": [
+    67
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF082",
+   "source": "WO15",
+   "target": "KO15",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     42,
+     23
+    ],
+    [
+     42,
+     24
+    ],
+    [
+     42,
+     25
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    70
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF083",
+   "source": "WO16",
+   "target": "KO16",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     26
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    70
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF084",
+   "source": "WO17",
+   "target": "KO17",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     10,
+     35
+    ],
+    [
+     11,
+     35
+    ],
+    [
+     12,
+     35
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    9
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF085",
+   "source": "WO18",
+   "target": "KO18",
+   "item": "源矿",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     4,
+     37
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF086",
+   "source": "KF1",
+   "target": "B1",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     41
+    ],
+    [
+     25,
+     41
+    ],
+    [
+     26,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     41
+    ],
+    [
+     26,
+     45
+    ],
+    [
+     26,
+     46
+    ]
+   ],
+   "source_components": [
+    41
+   ],
+   "target_components": [
+    41,
+    43
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF087",
+   "source": "KF2",
+   "target": "B1",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     41
+    ],
+    [
+     26,
+     45
+    ],
+    [
+     26,
+     46
+    ]
+   ],
+   "source_components": [
+    41
+   ],
+   "target_components": [
+    41,
+    43
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF088",
+   "source": "KF3",
+   "target": "B2",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     11,
+     55
+    ],
+    [
+     12,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     51
+    ],
+    [
+     12,
+     55
+    ],
+    [
+     12,
+     56
+    ]
+   ],
+   "source_components": [
+    11
+   ],
+   "target_components": [
+    11,
+    15
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF089",
+   "source": "KF4",
+   "target": "B2",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     11,
+     61
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     51
+    ],
+    [
+     12,
+     55
+    ],
+    [
+     12,
+     56
+    ]
+   ],
+   "source_components": [
+    11
+   ],
+   "target_components": [
+    11,
+    15
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF090",
+   "source": "KF5",
+   "target": "B3",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     20
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     59,
+     16
+    ],
+    [
+     59,
+     20
+    ],
+    [
+     59,
+     21
+    ]
+   ],
+   "source_components": [
+    106
+   ],
+   "target_components": [
+    105,
+    106
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF091",
+   "source": "KF6",
+   "target": "B3",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     20
+    ],
+    [
+     59,
+     21
+    ],
+    [
+     59,
+     22
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     59,
+     16
+    ],
+    [
+     59,
+     20
+    ],
+    [
+     59,
+     21
+    ]
+   ],
+   "source_components": [
+    106
+   ],
+   "target_components": [
+    105,
+    106
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF092",
+   "source": "KF7",
+   "target": "B4",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     50,
+     31
+    ],
+    [
+     50,
+     32
+    ],
+    [
+     50,
+     33
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     34
+    ],
+    [
+     65,
+     35
+    ],
+    [
+     65,
+     38
+    ],
+    [
+     65,
+     39
+    ]
+   ],
+   "source_components": [
+    83
+   ],
+   "target_components": [
+    108,
+    117
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF093",
+   "source": "KF8",
+   "target": "B4",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     61,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     34
+    ],
+    [
+     65,
+     35
+    ],
+    [
+     65,
+     38
+    ],
+    [
+     65,
+     39
+    ]
+   ],
+   "source_components": [
+    108
+   ],
+   "target_components": [
+    108,
+    117
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF094",
+   "source": "KF9",
+   "target": "B5",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     55,
+     42
+    ],
+    [
+     55,
+     43
+    ],
+    [
+     55,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     51,
+     44
+    ],
+    [
+     55,
+     44
+    ],
+    [
+     56,
+     44
+    ]
+   ],
+   "source_components": [
+    98
+   ],
+   "target_components": [
+    86,
+    98
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF095",
+   "source": "KF10",
+   "target": "B5",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     25,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     51,
+     44
+    ],
+    [
+     55,
+     44
+    ],
+    [
+     56,
+     44
+    ]
+   ],
+   "source_components": [
+    42
+   ],
+   "target_components": [
+    86,
+    98
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF096",
+   "source": "KF11",
+   "target": "B6",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     35,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     50
+    ],
+    [
+     38,
+     50
+    ],
+    [
+     39,
+     50
+    ],
+    [
+     40,
+     50
+    ]
+   ],
+   "source_components": [
+    55
+   ],
+   "target_components": [
+    55,
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF097",
+   "source": "KF12",
+   "target": "B6",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     50
+    ],
+    [
+     38,
+     50
+    ],
+    [
+     39,
+     50
+    ],
+    [
+     40,
+     50
+    ]
+   ],
+   "source_components": [
+    94
+   ],
+   "target_components": [
+    55,
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF098",
+   "source": "KF13",
+   "target": "B7",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     35,
+     38
+    ],
+    [
+     35,
+     39
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     36
+    ],
+    [
+     35,
+     37
+    ],
+    [
+     35,
+     38
+    ],
+    [
+     35,
+     39
+    ]
+   ],
+   "source_components": [
+    62
+   ],
+   "target_components": [
+    62
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF099",
+   "source": "KF14",
+   "target": "B7",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     35,
+     36
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     36
+    ],
+    [
+     35,
+     37
+    ],
+    [
+     35,
+     38
+    ],
+    [
+     35,
+     39
+    ]
+   ],
+   "source_components": [
+    62
+   ],
+   "target_components": [
+    62
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF100",
+   "source": "KF15",
+   "target": "B8",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     36
+    ],
+    [
+     57,
+     37
+    ],
+    [
+     57,
+     38
+    ],
+    [
+     57,
+     39
+    ],
+    [
+     57,
+     40
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    101
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF101",
+   "source": "KF16",
+   "target": "B8",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     57,
+     36
+    ],
+    [
+     57,
+     37
+    ],
+    [
+     57,
+     38
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     36
+    ],
+    [
+     57,
+     37
+    ],
+    [
+     57,
+     38
+    ],
+    [
+     57,
+     39
+    ],
+    [
+     57,
+     40
+    ]
+   ],
+   "source_components": [
+    101
+   ],
+   "target_components": [
+    101
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF102",
+   "source": "KF17",
+   "target": "B9",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     5
+    ],
+    [
+     43,
+     6
+    ],
+    [
+     43,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     1
+    ],
+    [
+     43,
+     5
+    ],
+    [
+     43,
+     6
+    ]
+   ],
+   "source_components": [
+    74
+   ],
+   "target_components": [
+    74,
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF103",
+   "source": "KF18",
+   "target": "B9",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     41,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     1
+    ],
+    [
+     43,
+     5
+    ],
+    [
+     43,
+     6
+    ]
+   ],
+   "source_components": [
+    74
+   ],
+   "target_components": [
+    74,
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF104",
+   "source": "KF19",
+   "target": "B10",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     21,
+     61
+    ],
+    [
+     21,
+     62
+    ],
+    [
+     21,
+     63
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     64
+    ],
+    [
+     21,
+     65
+    ],
+    [
+     21,
+     69
+    ]
+   ],
+   "source_components": [
+    31
+   ],
+   "target_components": [
+    31,
+    32
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF105",
+   "source": "KF20",
+   "target": "B10",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     21,
+     69
+    ],
+    [
+     22,
+     69
+    ],
+    [
+     23,
+     69
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     64
+    ],
+    [
+     21,
+     65
+    ],
+    [
+     21,
+     69
+    ]
+   ],
+   "source_components": [
+    32
+   ],
+   "target_components": [
+    31,
+    32
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF106",
+   "source": "KF21",
+   "target": "B11",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     57,
+     46
+    ],
+    [
+     57,
+     47
+    ],
+    [
+     57,
+     48
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     14,
+     23
+    ],
+    [
+     14,
+     27
+    ],
+    [
+     14,
+     28
+    ]
+   ],
+   "source_components": [
+    102
+   ],
+   "target_components": [
+    14,
+    18
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF107",
+   "source": "KF22",
+   "target": "B11",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     11,
+     23
+    ],
+    [
+     12,
+     23
+    ],
+    [
+     13,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     14,
+     23
+    ],
+    [
+     14,
+     27
+    ],
+    [
+     14,
+     28
+    ]
+   ],
+   "source_components": [
+    14
+   ],
+   "target_components": [
+    14,
+    18
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF108",
+   "source": "KF23",
+   "target": "B12",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     27,
+     56
+    ],
+    [
+     27,
+     57
+    ],
+    [
+     27,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     27,
+     53
+    ],
+    [
+     27,
+     54
+    ],
+    [
+     27,
+     55
+    ],
+    [
+     27,
+     56
+    ],
+    [
+     27,
+     57
+    ],
+    [
+     27,
+     58
+    ]
+   ],
+   "source_components": [
+    46
+   ],
+   "target_components": [
+    46
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF109",
+   "source": "KF24",
+   "target": "B12",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     42,
+     14
+    ],
+    [
+     42,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     27,
+     53
+    ],
+    [
+     27,
+     54
+    ],
+    [
+     27,
+     55
+    ],
+    [
+     27,
+     56
+    ],
+    [
+     27,
+     57
+    ],
+    [
+     27,
+     58
+    ]
+   ],
+   "source_components": [
+    76
+   ],
+   "target_components": [
+    46
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF110",
+   "source": "KF25",
+   "target": "B13",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     21,
+     31
+    ],
+    [
+     22,
+     31
+    ],
+    [
+     23,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     29
+    ],
+    [
+     21,
+     30
+    ],
+    [
+     21,
+     31
+    ]
+   ],
+   "source_components": [
+    30
+   ],
+   "target_components": [
+    30
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF111",
+   "source": "KF26",
+   "target": "B13",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     64,
+     52
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     29
+    ],
+    [
+     21,
+     30
+    ],
+    [
+     21,
+     31
+    ]
+   ],
+   "source_components": [
+    115
+   ],
+   "target_components": [
+    30
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF112",
+   "source": "KF27",
+   "target": "B14",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     12
+    ],
+    [
+     30,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     19
+    ],
+    [
+     26,
+     19
+    ],
+    [
+     30,
+     19
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    29,
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF113",
+   "source": "KF28",
+   "target": "B14",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     19
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     19
+    ],
+    [
+     26,
+     19
+    ],
+    [
+     30,
+     19
+    ]
+   ],
+   "source_components": [
+    29
+   ],
+   "target_components": [
+    29,
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF114",
+   "source": "KF29",
+   "target": "B15",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     19,
+     10
+    ],
+    [
+     19,
+     11
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     1
+    ],
+    [
+     13,
+     1
+    ],
+    [
+     14,
+     1
+    ],
+    [
+     15,
+     1
+    ],
+    [
+     16,
+     1
+    ],
+    [
+     17,
+     1
+    ]
+   ],
+   "source_components": [
+    25
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF115",
+   "source": "KF30",
+   "target": "B15",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     21,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     1
+    ],
+    [
+     13,
+     1
+    ],
+    [
+     14,
+     1
+    ],
+    [
+     15,
+     1
+    ],
+    [
+     16,
+     1
+    ],
+    [
+     17,
+     1
+    ]
+   ],
+   "source_components": [
+    29
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF116",
+   "source": "KF31",
+   "target": "B16",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     54,
+     29
+    ],
+    [
+     54,
+     30
+    ],
+    [
+     54,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     54,
+     31
+    ],
+    [
+     55,
+     31
+    ],
+    [
+     56,
+     31
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    97
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF117",
+   "source": "KF32",
+   "target": "B16",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     57,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     54,
+     31
+    ],
+    [
+     55,
+     31
+    ],
+    [
+     56,
+     31
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    97
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF118",
+   "source": "KF33",
+   "target": "B17",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     36,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     65
+    ],
+    [
+     35,
+     65
+    ],
+    [
+     38,
+     65
+    ],
+    [
+     39,
+     65
+    ]
+   ],
+   "source_components": [
+    64
+   ],
+   "target_components": [
+    50,
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF119",
+   "source": "KF34",
+   "target": "B17",
+   "item": "蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     36
+    ],
+    [
+     44,
+     36
+    ],
+    [
+     45,
+     36
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     65
+    ],
+    [
+     35,
+     65
+    ],
+    [
+     38,
+     65
+    ],
+    [
+     39,
+     65
+    ]
+   ],
+   "source_components": [
+    59
+   ],
+   "target_components": [
+    50,
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF120",
+   "source": "KO1",
+   "target": "O1",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     49,
+     63
+    ],
+    [
+     50,
+     63
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     65
+    ],
+    [
+     52,
+     65
+    ],
+    [
+     53,
+     65
+    ],
+    [
+     54,
+     65
+    ]
+   ],
+   "source_components": [
+    87
+   ],
+   "target_components": [
+    87,
+    93
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF121",
+   "source": "KO2",
+   "target": "O1",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     52
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     65
+    ],
+    [
+     52,
+     65
+    ],
+    [
+     53,
+     65
+    ],
+    [
+     54,
+     65
+    ]
+   ],
+   "source_components": [
+    100
+   ],
+   "target_components": [
+    87,
+    93
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF122",
+   "source": "KO3",
+   "target": "O2",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     54
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     54
+    ],
+    [
+     6,
+     54
+    ],
+    [
+     7,
+     54
+    ]
+   ],
+   "source_components": [
+    7
+   ],
+   "target_components": [
+    1,
+    7
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF123",
+   "source": "KO4",
+   "target": "O2",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     47,
+     60
+    ],
+    [
+     47,
+     61
+    ],
+    [
+     47,
+     62
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     54
+    ],
+    [
+     6,
+     54
+    ],
+    [
+     7,
+     54
+    ]
+   ],
+   "source_components": [
+    84
+   ],
+   "target_components": [
+    1,
+    7
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF124",
+   "source": "KO5",
+   "target": "O3",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     15,
+     17
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     2
+    ],
+    [
+     11,
+     3
+    ],
+    [
+     11,
+     4
+    ],
+    [
+     11,
+     5
+    ]
+   ],
+   "source_components": [
+    20
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF125",
+   "source": "KO6",
+   "target": "O3",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     47,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     2
+    ],
+    [
+     11,
+     3
+    ],
+    [
+     11,
+     4
+    ],
+    [
+     11,
+     5
+    ]
+   ],
+   "source_components": [
+    70
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF126",
+   "source": "KO7",
+   "target": "O4",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     22
+    ],
+    [
+     60,
+     23
+    ],
+    [
+     60,
+     24
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     60,
+     25
+    ],
+    [
+     60,
+     26
+    ],
+    [
+     60,
+     27
+    ],
+    [
+     60,
+     28
+    ]
+   ],
+   "source_components": [
+    106
+   ],
+   "target_components": [
+    106
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF127",
+   "source": "KO8",
+   "target": "O4",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     60,
+     25
+    ],
+    [
+     60,
+     26
+    ],
+    [
+     60,
+     27
+    ],
+    [
+     60,
+     28
+    ]
+   ],
+   "source_components": [
+    44
+   ],
+   "target_components": [
+    106
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF128",
+   "source": "KO9",
+   "target": "O5",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     18
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     18
+    ],
+    [
+     40,
+     18
+    ],
+    [
+     41,
+     18
+    ]
+   ],
+   "source_components": [
+    69
+   ],
+   "target_components": [
+    69
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF129",
+   "source": "KO10",
+   "target": "O5",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     41,
+     18
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     18
+    ],
+    [
+     40,
+     18
+    ],
+    [
+     41,
+     18
+    ]
+   ],
+   "source_components": [
+    69
+   ],
+   "target_components": [
+    69
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF130",
+   "source": "KO11",
+   "target": "O6",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     58,
+     5
+    ],
+    [
+     59,
+     5
+    ],
+    [
+     60,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     53,
+     7
+    ],
+    [
+     54,
+     7
+    ],
+    [
+     55,
+     7
+    ],
+    [
+     56,
+     7
+    ],
+    [
+     57,
+     7
+    ],
+    [
+     58,
+     7
+    ]
+   ],
+   "source_components": [
+    90
+   ],
+   "target_components": [
+    90
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF131",
+   "source": "KO12",
+   "target": "O6",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     52,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     53,
+     7
+    ],
+    [
+     54,
+     7
+    ],
+    [
+     55,
+     7
+    ],
+    [
+     56,
+     7
+    ],
+    [
+     57,
+     7
+    ],
+    [
+     58,
+     7
+    ]
+   ],
+   "source_components": [
+    90
+   ],
+   "target_components": [
+    90
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF132",
+   "source": "KO13",
+   "target": "O7",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     36,
+     10
+    ],
+    [
+     36,
+     11
+    ],
+    [
+     36,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     58
+    ],
+    [
+     39,
+     59
+    ],
+    [
+     39,
+     60
+    ],
+    [
+     39,
+     61
+    ],
+    [
+     39,
+     62
+    ],
+    [
+     39,
+     63
+    ]
+   ],
+   "source_components": [
+    65
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF133",
+   "source": "KO14",
+   "target": "O7",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     34,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     58
+    ],
+    [
+     39,
+     59
+    ],
+    [
+     39,
+     60
+    ],
+    [
+     39,
+     61
+    ],
+    [
+     39,
+     62
+    ],
+    [
+     39,
+     63
+    ]
+   ],
+   "source_components": [
+    56
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF134",
+   "source": "KO15",
+   "target": "O8",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     38,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     20
+    ],
+    [
+     35,
+     21
+    ],
+    [
+     35,
+     22
+    ],
+    [
+     35,
+     23
+    ],
+    [
+     35,
+     24
+    ],
+    [
+     35,
+     25
+    ]
+   ],
+   "source_components": [
+    61
+   ],
+   "target_components": [
+    61
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF135",
+   "source": "KO16",
+   "target": "O8",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     35,
+     24
+    ],
+    [
+     35,
+     25
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     20
+    ],
+    [
+     35,
+     21
+    ],
+    [
+     35,
+     22
+    ],
+    [
+     35,
+     23
+    ],
+    [
+     35,
+     24
+    ],
+    [
+     35,
+     25
+    ]
+   ],
+   "source_components": [
+    61
+   ],
+   "target_components": [
+    61
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF136",
+   "source": "KO17",
+   "target": "O9",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     10,
+     39
+    ],
+    [
+     11,
+     39
+    ],
+    [
+     12,
+     39
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     8,
+     39
+    ],
+    [
+     9,
+     39
+    ],
+    [
+     10,
+     39
+    ],
+    [
+     11,
+     39
+    ]
+   ],
+   "source_components": [
+    13
+   ],
+   "target_components": [
+    13
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF137",
+   "source": "KO18",
+   "target": "O9",
+   "item": "源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     8,
+     38
+    ],
+    [
+     8,
+     39
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     8,
+     39
+    ],
+    [
+     9,
+     39
+    ],
+    [
+     10,
+     39
+    ],
+    [
+     11,
+     39
+    ]
+   ],
+   "source_components": [
+    13
+   ],
+   "target_components": [
+    13
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF138",
+   "source": "SC1",
+   "target": "SA1",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     13,
+     35
+    ],
+    [
+     14,
+     35
+    ],
+    [
+     15,
+     35
+    ],
+    [
+     16,
+     35
+    ],
+    [
+     17,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     34
+    ],
+    [
+     13,
+     34
+    ],
+    [
+     14,
+     34
+    ],
+    [
+     15,
+     34
+    ],
+    [
+     16,
+     34
+    ]
+   ],
+   "source_components": [
+    9
+   ],
+   "target_components": [
+    9
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF139",
+   "source": "SC1",
+   "target": "SB1",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     13,
+     35
+    ],
+    [
+     14,
+     35
+    ],
+    [
+     15,
+     35
+    ],
+    [
+     16,
+     35
+    ],
+    [
+     17,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     34
+    ]
+   ],
+   "source_components": [
+    9
+   ],
+   "target_components": [
+    9
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF140",
+   "source": "SA1",
+   "target": "SC1",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     28
+    ],
+    [
+     13,
+     28
+    ],
+    [
+     14,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     13,
+     41
+    ],
+    [
+     14,
+     41
+    ]
+   ],
+   "source_components": [
+    18
+   ],
+   "target_components": [
+    13
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF141",
+   "source": "SB1",
+   "target": "S1",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     30
+    ],
+    [
+     6,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     30,
+     38
+    ],
+    [
+     30,
+     39
+    ],
+    [
+     30,
+     40
+    ]
+   ],
+   "source_components": [
+    6
+   ],
+   "target_components": [
+    52
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF142",
+   "source": "SC2",
+   "target": "SA2",
+   "item": "砂叶种子",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     7,
+     29
+    ],
+    [
+     8,
+     29
+    ],
+    [
+     9,
+     29
+    ],
+    [
+     10,
+     29
+    ],
+    [
+     11,
+     29
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     29
+    ],
+    [
+     6,
+     29
+    ]
+   ],
+   "source_components": [
+    6
+   ],
+   "target_components": [
+    1,
+    6
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF143",
+   "source": "SC2",
+   "target": "SB2",
+   "item": "砂叶种子",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     7,
+     29
+    ],
+    [
+     8,
+     29
+    ],
+    [
+     9,
+     29
+    ],
+    [
+     10,
+     29
+    ],
+    [
+     11,
+     29
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     38
+    ]
+   ],
+   "source_components": [
+    6
+   ],
+   "target_components": [
+    71
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF144",
+   "source": "SA2",
+   "target": "SC2",
+   "item": "砂叶",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     6,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     23
+    ],
+    [
+     10,
+     23
+    ],
+    [
+     11,
+     23
+    ]
+   ],
+   "source_components": [
+    5
+   ],
+   "target_components": [
+    5,
+    14
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF145",
+   "source": "SB2",
+   "target": "S2",
+   "item": "砂叶",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     38,
+     32
+    ],
+    [
+     39,
+     32
+    ],
+    [
+     40,
+     32
+    ],
+    [
+     41,
+     32
+    ],
+    [
+     42,
+     32
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     46,
+     34
+    ],
+    [
+     46,
+     35
+    ],
+    [
+     46,
+     36
+    ]
+   ],
+   "source_components": [
+    59
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF146",
+   "source": "SC3",
+   "target": "SA3",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     58
+    ],
+    [
+     32,
+     58
+    ],
+    [
+     33,
+     58
+    ],
+    [
+     34,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     27,
+     58
+    ]
+   ],
+   "source_components": [
+    55
+   ],
+   "target_components": [
+    46
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF147",
+   "source": "SC3",
+   "target": "SB3",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     58
+    ],
+    [
+     32,
+     58
+    ],
+    [
+     33,
+     58
+    ],
+    [
+     34,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     50,
+     27
+    ],
+    [
+     50,
+     28
+    ]
+   ],
+   "source_components": [
+    55
+   ],
+   "target_components": [
+    83
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF148",
+   "source": "SA3",
+   "target": "SC3",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     64
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     30,
+     64
+    ],
+    [
+     31,
+     64
+    ],
+    [
+     32,
+     64
+    ],
+    [
+     33,
+     64
+    ],
+    [
+     34,
+     64
+    ]
+   ],
+   "source_components": [
+    50
+   ],
+   "target_components": [
+    50
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF149",
+   "source": "SB3",
+   "target": "S3",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     24
+    ],
+    [
+     56,
+     25
+    ],
+    [
+     56,
+     26
+    ],
+    [
+     56,
+     27
+    ],
+    [
+     56,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     56,
+     26
+    ],
+    [
+     56,
+     27
+    ],
+    [
+     56,
+     28
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    97
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF150",
+   "source": "SC4",
+   "target": "SA4",
+   "item": "砂叶种子",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     17,
+     46
+    ],
+    [
+     17,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     44
+    ],
+    [
+     8,
+     44
+    ],
+    [
+     9,
+     44
+    ],
+    [
+     10,
+     44
+    ],
+    [
+     11,
+     44
+    ]
+   ],
+   "source_components": [
+    23,
+    24
+   ],
+   "target_components": [
+    10
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF151",
+   "source": "SC4",
+   "target": "SB4",
+   "item": "砂叶种子",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     17,
+     46
+    ],
+    [
+     17,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     19,
+     46
+    ]
+   ],
+   "source_components": [
+    23,
+    24
+   ],
+   "target_components": [
+    23
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF152",
+   "source": "SA4",
+   "target": "SC4",
+   "item": "砂叶",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     10,
+     50
+    ],
+    [
+     11,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     50
+    ]
+   ],
+   "source_components": [
+    15
+   ],
+   "target_components": [
+    15
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF153",
+   "source": "SB4",
+   "target": "S4",
+   "item": "砂叶",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     25,
+     45
+    ],
+    [
+     25,
+     46
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     19,
+     26
+    ]
+   ],
+   "source_components": [
+    43
+   ],
+   "target_components": [
+    26
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF154",
+   "source": "SC5",
+   "target": "SA5",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     26
+    ],
+    [
+     40,
+     26
+    ],
+    [
+     41,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     42,
+     26
+    ],
+    [
+     43,
+     26
+    ],
+    [
+     44,
+     26
+    ],
+    [
+     45,
+     26
+    ],
+    [
+     46,
+     26
+    ]
+   ],
+   "source_components": [
+    70
+   ],
+   "target_components": [
+    70
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF155",
+   "source": "SC5",
+   "target": "SB5",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     26
+    ],
+    [
+     40,
+     26
+    ],
+    [
+     41,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     40,
+     69
+    ],
+    [
+     41,
+     69
+    ],
+    [
+     42,
+     69
+    ],
+    [
+     43,
+     69
+    ],
+    [
+     44,
+     69
+    ]
+   ],
+   "source_components": [
+    70
+   ],
+   "target_components": [
+    73
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF156",
+   "source": "SA5",
+   "target": "SC5",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     42,
+     32
+    ],
+    [
+     43,
+     32
+    ],
+    [
+     44,
+     32
+    ],
+    [
+     45,
+     32
+    ],
+    [
+     46,
+     32
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     37,
+     32
+    ],
+    [
+     38,
+     32
+    ],
+    [
+     39,
+     32
+    ],
+    [
+     40,
+     32
+    ],
+    [
+     41,
+     32
+    ]
+   ],
+   "source_components": [
+    59
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF157",
+   "source": "SB5",
+   "target": "S5",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     40,
+     63
+    ],
+    [
+     41,
+     63
+    ],
+    [
+     42,
+     63
+    ],
+    [
+     43,
+     63
+    ],
+    [
+     44,
+     63
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     43,
+     61
+    ],
+    [
+     43,
+     62
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF158",
+   "source": "SC6",
+   "target": "SA6",
+   "item": "砂叶种子",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     11,
+     67
+    ],
+    [
+     15,
+     67
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     17,
+     61
+    ]
+   ],
+   "source_components": [
+    11,
+    21
+   ],
+   "target_components": [
+    21
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF159",
+   "source": "SC6",
+   "target": "SB6",
+   "item": "砂叶种子",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     11,
+     67
+    ],
+    [
+     15,
+     67
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     20,
+     41
+    ],
+    [
+     20,
+     42
+    ],
+    [
+     20,
+     43
+    ],
+    [
+     20,
+     44
+    ]
+   ],
+   "source_components": [
+    11,
+    21
+   ],
+   "target_components": [
+    28
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF160",
+   "source": "SA6",
+   "target": "SC6",
+   "item": "砂叶",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     11,
+     57
+    ],
+    [
+     11,
+     58
+    ],
+    [
+     11,
+     59
+    ],
+    [
+     11,
+     60
+    ],
+    [
+     11,
+     61
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     61
+    ]
+   ],
+   "source_components": [
+    11
+   ],
+   "target_components": [
+    11
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF161",
+   "source": "SB6",
+   "target": "S6",
+   "item": "砂叶",
+   "rate": "2/3",
+   "source_free_neighbors": [
+    [
+     14,
+     41
+    ],
+    [
+     14,
+     45
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     45
+    ],
+    [
+     13,
+     45
+    ],
+    [
+     14,
+     45
+    ]
+   ],
+   "source_components": [
+    13,
+    19
+   ],
+   "target_components": [
+    19
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF162",
+   "source": "SC7",
+   "target": "SA7",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     63,
+     45
+    ],
+    [
+     63,
+     46
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     62,
+     41
+    ],
+    [
+     62,
+     45
+    ]
+   ],
+   "source_components": [
+    109
+   ],
+   "target_components": [
+    109,
+    110
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF163",
+   "source": "SC7",
+   "target": "SB7",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     63,
+     45
+    ],
+    [
+     63,
+     46
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     28
+    ]
+   ],
+   "source_components": [
+    109
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF164",
+   "source": "SA7",
+   "target": "SC7",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     42
+    ],
+    [
+     56,
+     43
+    ],
+    [
+     56,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     69,
+     45
+    ],
+    [
+     69,
+     46
+    ],
+    [
+     69,
+     47
+    ],
+    [
+     69,
+     48
+    ],
+    [
+     69,
+     49
+    ]
+   ],
+   "source_components": [
+    98
+   ],
+   "target_components": [
+    118
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF165",
+   "source": "SB7",
+   "target": "S7",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     32
+    ],
+    [
+     64,
+     33
+    ],
+    [
+     64,
+     34
+    ]
+   ],
+   "source_components": [
+    108
+   ],
+   "target_components": [
+    108
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF166",
+   "source": "SC8",
+   "target": "SA8",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     12
+    ],
+    [
+     1,
+     13
+    ],
+    [
+     1,
+     14
+    ],
+    [
+     1,
+     15
+    ],
+    [
+     1,
+     16
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     44
+    ],
+    [
+     1,
+     45
+    ],
+    [
+     1,
+     46
+    ],
+    [
+     1,
+     47
+    ],
+    [
+     1,
+     48
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF167",
+   "source": "SC8",
+   "target": "SB8",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     12
+    ],
+    [
+     1,
+     13
+    ],
+    [
+     1,
+     14
+    ],
+    [
+     1,
+     15
+    ],
+    [
+     1,
+     16
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     1
+    ],
+    [
+     26,
+     5
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1,
+    44
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF168",
+   "source": "SA8",
+   "target": "SC8",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     7,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     16
+    ]
+   ],
+   "source_components": [
+    10
+   ],
+   "target_components": [
+    8
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF169",
+   "source": "SB8",
+   "target": "S8",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     32,
+     1
+    ],
+    [
+     32,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     24
+    ],
+    [
+     22,
+     25
+    ]
+   ],
+   "source_components": [
+    56,
+    57
+   ],
+   "target_components": [
+    34
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF170",
+   "source": "SC9",
+   "target": "SA9",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     7
+    ],
+    [
+     54,
+     7
+    ],
+    [
+     55,
+     7
+    ],
+    [
+     56,
+     7
+    ],
+    [
+     57,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     63,
+     5
+    ]
+   ],
+   "source_components": [
+    90
+   ],
+   "target_components": [
+    90
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF171",
+   "source": "SC9",
+   "target": "SB9",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     7
+    ],
+    [
+     54,
+     7
+    ],
+    [
+     55,
+     7
+    ],
+    [
+     56,
+     7
+    ],
+    [
+     57,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     58,
+     6
+    ],
+    [
+     58,
+     7
+    ]
+   ],
+   "source_components": [
+    90
+   ],
+   "target_components": [
+    90
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF172",
+   "source": "SA9",
+   "target": "SC9",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     69,
+     3
+    ],
+    [
+     69,
+     4
+    ],
+    [
+     69,
+     5
+    ],
+    [
+     69,
+     6
+    ],
+    [
+     69,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     53,
+     1
+    ],
+    [
+     54,
+     1
+    ],
+    [
+     55,
+     1
+    ],
+    [
+     56,
+     1
+    ],
+    [
+     57,
+     1
+    ]
+   ],
+   "source_components": [
+    77
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF173",
+   "source": "SB9",
+   "target": "S9",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     64,
+     10
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     27
+    ],
+    [
+     13,
+     27
+    ],
+    [
+     14,
+     27
+    ]
+   ],
+   "source_components": [
+    112
+   ],
+   "target_components": [
+    18
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF174",
+   "source": "SC10",
+   "target": "SA10",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     7,
+     60
+    ],
+    [
+     7,
+     61
+    ],
+    [
+     7,
+     62
+    ],
+    [
+     7,
+     63
+    ],
+    [
+     7,
+     64
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     65
+    ],
+    [
+     7,
+     66
+    ],
+    [
+     7,
+     67
+    ],
+    [
+     7,
+     68
+    ],
+    [
+     7,
+     69
+    ]
+   ],
+   "source_components": [
+    11
+   ],
+   "target_components": [
+    11
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF175",
+   "source": "SC10",
+   "target": "SB10",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     7,
+     60
+    ],
+    [
+     7,
+     61
+    ],
+    [
+     7,
+     62
+    ],
+    [
+     7,
+     63
+    ],
+    [
+     7,
+     64
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     60
+    ],
+    [
+     8,
+     60
+    ],
+    [
+     9,
+     60
+    ],
+    [
+     10,
+     60
+    ]
+   ],
+   "source_components": [
+    11
+   ],
+   "target_components": [
+    11
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF176",
+   "source": "SA10",
+   "target": "SC10",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     65
+    ],
+    [
+     1,
+     66
+    ],
+    [
+     1,
+     67
+    ],
+    [
+     1,
+     68
+    ],
+    [
+     1,
+     69
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     60
+    ],
+    [
+     1,
+     61
+    ],
+    [
+     1,
+     62
+    ],
+    [
+     1,
+     63
+    ],
+    [
+     1,
+     64
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF177",
+   "source": "SB10",
+   "target": "S10",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     54
+    ],
+    [
+     7,
+     54
+    ],
+    [
+     8,
+     54
+    ],
+    [
+     9,
+     54
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     19
+    ]
+   ],
+   "source_components": [
+    7
+   ],
+   "target_components": [
+    29
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF178",
+   "source": "SC11",
+   "target": "SA11",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     69
+    ],
+    [
+     25,
+     69
+    ],
+    [
+     26,
+     69
+    ],
+    [
+     27,
+     69
+    ],
+    [
+     28,
+     69
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     17,
+     55
+    ]
+   ],
+   "source_components": [
+    32
+   ],
+   "target_components": [
+    24
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF179",
+   "source": "SC11",
+   "target": "SB11",
+   "item": "砂叶种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     69
+    ],
+    [
+     25,
+     69
+    ],
+    [
+     26,
+     69
+    ],
+    [
+     27,
+     69
+    ],
+    [
+     28,
+     69
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     28,
+     69
+    ]
+   ],
+   "source_components": [
+    32
+   ],
+   "target_components": [
+    32
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF180",
+   "source": "SA11",
+   "target": "SC11",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     17,
+     61
+    ],
+    [
+     21,
+     61
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     24,
+     63
+    ]
+   ],
+   "source_components": [
+    21,
+    31
+   ],
+   "target_components": [
+    31
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF181",
+   "source": "SB11",
+   "target": "S11",
+   "item": "砂叶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     34,
+     65
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     60,
+     23
+    ],
+    [
+     60,
+     24
+    ],
+    [
+     60,
+     25
+    ]
+   ],
+   "source_components": [
+    50
+   ],
+   "target_components": [
+    106
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF182",
+   "source": "SC12",
+   "target": "SA12",
+   "item": "砂叶种子",
+   "rate": "1/3",
+   "source_free_neighbors": [
+    [
+     67,
+     55
+    ],
+    [
+     68,
+     55
+    ],
+    [
+     69,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     69,
+     45
+    ]
+   ],
+   "source_components": [
+    118
+   ],
+   "target_components": [
+    118
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF183",
+   "source": "SC12",
+   "target": "SB12",
+   "item": "砂叶种子",
+   "rate": "1/3",
+   "source_free_neighbors": [
+    [
+     67,
+     55
+    ],
+    [
+     68,
+     55
+    ],
+    [
+     69,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     45,
+     17
+    ],
+    [
+     46,
+     17
+    ],
+    [
+     47,
+     17
+    ],
+    [
+     48,
+     17
+    ]
+   ],
+   "source_components": [
+    118
+   ],
+   "target_components": [
+    80
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF184",
+   "source": "SA12",
+   "target": "SC12",
+   "item": "砂叶",
+   "rate": "1/3",
+   "source_free_neighbors": [
+    [
+     65,
+     39
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     61
+    ],
+    [
+     66,
+     61
+    ],
+    [
+     67,
+     61
+    ],
+    [
+     68,
+     61
+    ],
+    [
+     69,
+     61
+    ]
+   ],
+   "source_components": [
+    117
+   ],
+   "target_components": [
+    107
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF185",
+   "source": "SB12",
+   "target": "S12",
+   "item": "砂叶",
+   "rate": "1/3",
+   "source_free_neighbors": [
+    [
+     47,
+     23
+    ],
+    [
+     48,
+     23
+    ],
+    [
+     49,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     47,
+     23
+    ],
+    [
+     47,
+     24
+    ],
+    [
+     47,
+     25
+    ]
+   ],
+   "source_components": [
+    70
+   ],
+   "target_components": [
+    70
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF186",
+   "source": "SC13",
+   "target": "SA13",
+   "item": "砂叶种子",
+   "rate": "1/6",
+   "source_free_neighbors": [
+    [
+     31,
+     45
+    ],
+    [
+     35,
+     45
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     51,
+     60
+    ],
+    [
+     51,
+     61
+    ],
+    [
+     51,
+     62
+    ],
+    [
+     51,
+     63
+    ]
+   ],
+   "source_components": [
+    54,
+    63
+   ],
+   "target_components": [
+    87
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF187",
+   "source": "SC13",
+   "target": "SB13",
+   "item": "砂叶种子",
+   "rate": "1/6",
+   "source_free_neighbors": [
+    [
+     31,
+     45
+    ],
+    [
+     35,
+     45
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     45
+    ]
+   ],
+   "source_components": [
+    54,
+    63
+   ],
+   "target_components": [
+    63
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF188",
+   "source": "SA13",
+   "target": "SC13",
+   "item": "砂叶",
+   "rate": "1/6",
+   "source_free_neighbors": [
+    [
+     57,
+     60
+    ],
+    [
+     57,
+     64
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     39
+    ]
+   ],
+   "source_components": [
+    103,
+    104
+   ],
+   "target_components": [
+    62
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF189",
+   "source": "SB13",
+   "target": "S13",
+   "item": "砂叶",
+   "rate": "1/6",
+   "source_free_neighbors": [
+    [
+     41,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     41,
+     44
+    ],
+    [
+     42,
+     44
+    ],
+    [
+     43,
+     44
+    ]
+   ],
+   "source_components": [
+    75
+   ],
+   "target_components": [
+    75
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF190",
+   "source": "QC1",
+   "target": "QA1",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     49,
+     12
+    ],
+    [
+     53,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     8
+    ],
+    [
+     49,
+     9
+    ],
+    [
+     49,
+     10
+    ],
+    [
+     49,
+     11
+    ],
+    [
+     49,
+     12
+    ]
+   ],
+   "source_components": [
+    85,
+    94
+   ],
+   "target_components": [
+    85
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF191",
+   "source": "QC1",
+   "target": "QB1",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     49,
+     12
+    ],
+    [
+     53,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     60,
+     68
+    ],
+    [
+     60,
+     69
+    ]
+   ],
+   "source_components": [
+    85,
+    94
+   ],
+   "target_components": [
+    107
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF192",
+   "source": "QA1",
+   "target": "QC1",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     11
+    ],
+    [
+     43,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     50,
+     18
+    ]
+   ],
+   "source_components": [
+    78
+   ],
+   "target_components": [
+    88
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF193",
+   "source": "QB1",
+   "target": "QK1",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     54,
+     65
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     46
+    ]
+   ],
+   "source_components": [
+    93
+   ],
+   "target_components": [
+    54
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF194",
+   "source": "QC2",
+   "target": "QA2",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     2,
+     31
+    ],
+    [
+     6,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     7
+    ],
+    [
+     3,
+     7
+    ],
+    [
+     4,
+     7
+    ],
+    [
+     5,
+     7
+    ],
+    [
+     6,
+     7
+    ]
+   ],
+   "source_components": [
+    1,
+    6
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF195",
+   "source": "QC2",
+   "target": "QB2",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     2,
+     31
+    ],
+    [
+     6,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     24,
+     9
+    ]
+   ],
+   "source_components": [
+    1,
+    6
+   ],
+   "target_components": [
+    39
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF196",
+   "source": "QA2",
+   "target": "QC2",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     2,
+     1
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     5,
+     1
+    ],
+    [
+     6,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     37
+    ],
+    [
+     3,
+     37
+    ],
+    [
+     4,
+     37
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF197",
+   "source": "QB2",
+   "target": "QK2",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     21,
+     15
+    ],
+    [
+     22,
+     15
+    ],
+    [
+     23,
+     15
+    ],
+    [
+     24,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     24,
+     19
+    ],
+    [
+     25,
+     19
+    ],
+    [
+     26,
+     19
+    ]
+   ],
+   "source_components": [
+    29
+   ],
+   "target_components": [
+    29
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF198",
+   "source": "QC3",
+   "target": "QA3",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     22
+    ],
+    [
+     7,
+     22
+    ],
+    [
+     10,
+     22
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     8,
+     10
+    ],
+    [
+     9,
+     10
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "source_components": [
+    5,
+    14
+   ],
+   "target_components": [
+    12
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF199",
+   "source": "QC3",
+   "target": "QB3",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     22
+    ],
+    [
+     7,
+     22
+    ],
+    [
+     10,
+     22
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     14,
+     20
+    ],
+    [
+     14,
+     21
+    ],
+    [
+     14,
+     22
+    ]
+   ],
+   "source_components": [
+    5,
+    14
+   ],
+   "target_components": [
+    14
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF200",
+   "source": "QA3",
+   "target": "QC3",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     7,
+     16
+    ],
+    [
+     8,
+     16
+    ],
+    [
+     9,
+     16
+    ],
+    [
+     10,
+     16
+    ],
+    [
+     11,
+     16
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     7,
+     16
+    ],
+    [
+     8,
+     16
+    ],
+    [
+     9,
+     16
+    ],
+    [
+     10,
+     16
+    ]
+   ],
+   "source_components": [
+    8
+   ],
+   "target_components": [
+    8
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF201",
+   "source": "QB3",
+   "target": "QK3",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     20,
+     18
+    ],
+    [
+     20,
+     19
+    ],
+    [
+     20,
+     20
+    ],
+    [
+     20,
+     21
+    ],
+    [
+     20,
+     22
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     17
+    ],
+    [
+     35,
+     18
+    ],
+    [
+     35,
+     19
+    ]
+   ],
+   "source_components": [
+    27
+   ],
+   "target_components": [
+    61
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF202",
+   "source": "QC4",
+   "target": "QA4",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     11
+    ],
+    [
+     59,
+     12
+    ],
+    [
+     59,
+     13
+    ],
+    [
+     59,
+     14
+    ],
+    [
+     59,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     66,
+     9
+    ],
+    [
+     67,
+     9
+    ],
+    [
+     68,
+     9
+    ],
+    [
+     69,
+     9
+    ]
+   ],
+   "source_components": [
+    105
+   ],
+   "target_components": [
+    77
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF203",
+   "source": "QC4",
+   "target": "QB4",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     11
+    ],
+    [
+     59,
+     12
+    ],
+    [
+     59,
+     13
+    ],
+    [
+     59,
+     14
+    ],
+    [
+     59,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     59,
+     12
+    ],
+    [
+     59,
+     13
+    ],
+    [
+     59,
+     14
+    ],
+    [
+     59,
+     15
+    ],
+    [
+     59,
+     16
+    ]
+   ],
+   "source_components": [
+    105
+   ],
+   "target_components": [
+    105
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF204",
+   "source": "QA4",
+   "target": "QC4",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     15
+    ],
+    [
+     66,
+     15
+    ],
+    [
+     67,
+     15
+    ],
+    [
+     68,
+     15
+    ],
+    [
+     69,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     15
+    ]
+   ],
+   "source_components": [
+    116
+   ],
+   "target_components": [
+    116
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF205",
+   "source": "QB4",
+   "target": "QK4",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     69,
+     20
+    ],
+    [
+     69,
+     21
+    ],
+    [
+     69,
+     22
+    ]
+   ],
+   "source_components": [
+    94
+   ],
+   "target_components": [
+    119
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF206",
+   "source": "QC5",
+   "target": "QA5",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     11
+    ],
+    [
+     13,
+     11
+    ],
+    [
+     14,
+     11
+    ],
+    [
+     15,
+     11
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     18,
+     7
+    ],
+    [
+     22,
+     7
+    ]
+   ],
+   "source_components": [
+    17
+   ],
+   "target_components": [
+    22,
+    33
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF207",
+   "source": "QC5",
+   "target": "QB5",
+   "item": "荞花种子",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     11
+    ],
+    [
+     13,
+     11
+    ],
+    [
+     14,
+     11
+    ],
+    [
+     15,
+     11
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     11
+    ],
+    [
+     13,
+     11
+    ],
+    [
+     14,
+     11
+    ],
+    [
+     15,
+     11
+    ]
+   ],
+   "source_components": [
+    17
+   ],
+   "target_components": [
+    17
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF208",
+   "source": "QA5",
+   "target": "QC5",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     18,
+     1
+    ],
+    [
+     19,
+     1
+    ],
+    [
+     20,
+     1
+    ],
+    [
+     21,
+     1
+    ],
+    [
+     22,
+     1
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     5
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF209",
+   "source": "QB5",
+   "target": "QK5",
+   "item": "荞花",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     15,
+     17
+    ],
+    [
+     16,
+     17
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     38
+    ],
+    [
+     26,
+     39
+    ],
+    [
+     26,
+     40
+    ]
+   ],
+   "source_components": [
+    20
+   ],
+   "target_components": [
+    41
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF210",
+   "source": "QC6",
+   "target": "QA6",
+   "item": "荞花种子",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     49,
+     40
+    ],
+    [
+     49,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ]
+   ],
+   "source_components": [
+    59,
+    86
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF211",
+   "source": "QC6",
+   "target": "QB6",
+   "item": "荞花种子",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     49,
+     40
+    ],
+    [
+     49,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     44
+    ],
+    [
+     50,
+     44
+    ]
+   ],
+   "source_components": [
+    59,
+    86
+   ],
+   "target_components": [
+    86
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF212",
+   "source": "QA6",
+   "target": "QC6",
+   "item": "荞花",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     41,
+     44
+    ],
+    [
+     42,
+     44
+    ],
+    [
+     43,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     40
+    ],
+    [
+     43,
+     44
+    ]
+   ],
+   "source_components": [
+    75
+   ],
+   "target_components": [
+    75,
+    79
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF213",
+   "source": "QB6",
+   "target": "QK6",
+   "item": "荞花",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ],
+    [
+     48,
+     50
+    ],
+    [
+     49,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     53
+    ],
+    [
+     49,
+     54
+    ],
+    [
+     49,
+     55
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF214",
+   "source": "S1",
+   "target": "B1",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     38
+    ],
+    [
+     26,
+     39
+    ],
+    [
+     26,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     41
+    ],
+    [
+     26,
+     45
+    ],
+    [
+     26,
+     46
+    ]
+   ],
+   "source_components": [
+    41
+   ],
+   "target_components": [
+    41,
+    43
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF215",
+   "source": "S1",
+   "target": "B2",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     38
+    ],
+    [
+     26,
+     39
+    ],
+    [
+     26,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     51
+    ],
+    [
+     12,
+     55
+    ],
+    [
+     12,
+     56
+    ]
+   ],
+   "source_components": [
+    41
+   ],
+   "target_components": [
+    11,
+    15
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF216",
+   "source": "S1",
+   "target": "O1",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     38
+    ],
+    [
+     26,
+     39
+    ],
+    [
+     26,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     65
+    ],
+    [
+     52,
+     65
+    ],
+    [
+     53,
+     65
+    ],
+    [
+     54,
+     65
+    ]
+   ],
+   "source_components": [
+    41
+   ],
+   "target_components": [
+    87,
+    93
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF217",
+   "source": "S2",
+   "target": "O2",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     50,
+     34
+    ],
+    [
+     50,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     2,
+     54
+    ],
+    [
+     6,
+     54
+    ],
+    [
+     7,
+     54
+    ]
+   ],
+   "source_components": [
+    83
+   ],
+   "target_components": [
+    1,
+    7
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF218",
+   "source": "S2",
+   "target": "O3",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     50,
+     34
+    ],
+    [
+     50,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     11,
+     2
+    ],
+    [
+     11,
+     3
+    ],
+    [
+     11,
+     4
+    ],
+    [
+     11,
+     5
+    ]
+   ],
+   "source_components": [
+    83
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF219",
+   "source": "S3",
+   "target": "B3",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     26
+    ],
+    [
+     60,
+     27
+    ],
+    [
+     60,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     59,
+     16
+    ],
+    [
+     59,
+     20
+    ],
+    [
+     59,
+     21
+    ]
+   ],
+   "source_components": [
+    106
+   ],
+   "target_components": [
+    105,
+    106
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF220",
+   "source": "S3",
+   "target": "B4",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     26
+    ],
+    [
+     60,
+     27
+    ],
+    [
+     60,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     34
+    ],
+    [
+     65,
+     35
+    ],
+    [
+     65,
+     38
+    ],
+    [
+     65,
+     39
+    ]
+   ],
+   "source_components": [
+    106
+   ],
+   "target_components": [
+    108,
+    117
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF221",
+   "source": "S3",
+   "target": "O4",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     26
+    ],
+    [
+     60,
+     27
+    ],
+    [
+     60,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     60,
+     25
+    ],
+    [
+     60,
+     26
+    ],
+    [
+     60,
+     27
+    ],
+    [
+     60,
+     28
+    ]
+   ],
+   "source_components": [
+    106
+   ],
+   "target_components": [
+    106
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF222",
+   "source": "S4",
+   "target": "O5",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     20,
+     22
+    ],
+    [
+     21,
+     22
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     18
+    ],
+    [
+     40,
+     18
+    ],
+    [
+     41,
+     18
+    ]
+   ],
+   "source_components": [
+    27
+   ],
+   "target_components": [
+    69
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF223",
+   "source": "S4",
+   "target": "O6",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     20,
+     22
+    ],
+    [
+     21,
+     22
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     53,
+     7
+    ],
+    [
+     54,
+     7
+    ],
+    [
+     55,
+     7
+    ],
+    [
+     56,
+     7
+    ],
+    [
+     57,
+     7
+    ],
+    [
+     58,
+     7
+    ]
+   ],
+   "source_components": [
+    27
+   ],
+   "target_components": [
+    90
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF224",
+   "source": "S5",
+   "target": "B5",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     60
+    ],
+    [
+     39,
+     61
+    ],
+    [
+     39,
+     62
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     51,
+     44
+    ],
+    [
+     55,
+     44
+    ],
+    [
+     56,
+     44
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    86,
+    98
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF225",
+   "source": "S5",
+   "target": "B6",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     60
+    ],
+    [
+     39,
+     61
+    ],
+    [
+     39,
+     62
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     50
+    ],
+    [
+     38,
+     50
+    ],
+    [
+     39,
+     50
+    ],
+    [
+     40,
+     50
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    55,
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF226",
+   "source": "S5",
+   "target": "O7",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     60
+    ],
+    [
+     39,
+     61
+    ],
+    [
+     39,
+     62
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     39,
+     58
+    ],
+    [
+     39,
+     59
+    ],
+    [
+     39,
+     60
+    ],
+    [
+     39,
+     61
+    ],
+    [
+     39,
+     62
+    ],
+    [
+     39,
+     63
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF227",
+   "source": "S6",
+   "target": "O8",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     41
+    ],
+    [
+     13,
+     41
+    ],
+    [
+     14,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     20
+    ],
+    [
+     35,
+     21
+    ],
+    [
+     35,
+     22
+    ],
+    [
+     35,
+     23
+    ],
+    [
+     35,
+     24
+    ],
+    [
+     35,
+     25
+    ]
+   ],
+   "source_components": [
+    13
+   ],
+   "target_components": [
+    61
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF228",
+   "source": "S6",
+   "target": "O9",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     41
+    ],
+    [
+     13,
+     41
+    ],
+    [
+     14,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     8,
+     39
+    ],
+    [
+     9,
+     39
+    ],
+    [
+     10,
+     39
+    ],
+    [
+     11,
+     39
+    ]
+   ],
+   "source_components": [
+    13
+   ],
+   "target_components": [
+    13
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF229",
+   "source": "S7",
+   "target": "B7",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     32
+    ],
+    [
+     60,
+     33
+    ],
+    [
+     60,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     35,
+     36
+    ],
+    [
+     35,
+     37
+    ],
+    [
+     35,
+     38
+    ],
+    [
+     35,
+     39
+    ]
+   ],
+   "source_components": [
+    101
+   ],
+   "target_components": [
+    62
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF230",
+   "source": "S7",
+   "target": "B8",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     32
+    ],
+    [
+     60,
+     33
+    ],
+    [
+     60,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     36
+    ],
+    [
+     57,
+     37
+    ],
+    [
+     57,
+     38
+    ],
+    [
+     57,
+     39
+    ],
+    [
+     57,
+     40
+    ]
+   ],
+   "source_components": [
+    101
+   ],
+   "target_components": [
+    101
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF231",
+   "source": "S7",
+   "target": "B9",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     60,
+     32
+    ],
+    [
+     60,
+     33
+    ],
+    [
+     60,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     1
+    ],
+    [
+     43,
+     5
+    ],
+    [
+     43,
+     6
+    ]
+   ],
+   "source_components": [
+    101
+   ],
+   "target_components": [
+    74,
+    77
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF232",
+   "source": "S8",
+   "target": "B10",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     24
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     26,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     64
+    ],
+    [
+     21,
+     65
+    ],
+    [
+     21,
+     69
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    31,
+    32
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF233",
+   "source": "S8",
+   "target": "Q1",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     24
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     26,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     29,
+     50
+    ],
+    [
+     29,
+     51
+    ],
+    [
+     29,
+     52
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    49
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF234",
+   "source": "S8",
+   "target": "Q2",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     24
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     26,
+     26
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     23
+    ],
+    [
+     26,
+     24
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     26,
+     26
+    ],
+    [
+     26,
+     27
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    38
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF235",
+   "source": "S9",
+   "target": "B11",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     23
+    ],
+    [
+     13,
+     23
+    ],
+    [
+     14,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     14,
+     23
+    ],
+    [
+     14,
+     27
+    ],
+    [
+     14,
+     28
+    ]
+   ],
+   "source_components": [
+    14
+   ],
+   "target_components": [
+    14,
+    18
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF236",
+   "source": "S9",
+   "target": "B12",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     23
+    ],
+    [
+     13,
+     23
+    ],
+    [
+     14,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     27,
+     53
+    ],
+    [
+     27,
+     54
+    ],
+    [
+     27,
+     55
+    ],
+    [
+     27,
+     56
+    ],
+    [
+     27,
+     57
+    ],
+    [
+     27,
+     58
+    ]
+   ],
+   "source_components": [
+    14
+   ],
+   "target_components": [
+    46
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF237",
+   "source": "S9",
+   "target": "B13",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     12,
+     23
+    ],
+    [
+     13,
+     23
+    ],
+    [
+     14,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     21,
+     29
+    ],
+    [
+     21,
+     30
+    ],
+    [
+     21,
+     31
+    ]
+   ],
+   "source_components": [
+    14
+   ],
+   "target_components": [
+    30
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF238",
+   "source": "S10",
+   "target": "B14",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     19
+    ],
+    [
+     30,
+     20
+    ],
+    [
+     30,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     19
+    ],
+    [
+     26,
+     19
+    ],
+    [
+     30,
+     19
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    29,
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF239",
+   "source": "S10",
+   "target": "Q3",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     19
+    ],
+    [
+     30,
+     20
+    ],
+    [
+     30,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     11
+    ],
+    [
+     31,
+     12
+    ],
+    [
+     31,
+     13
+    ],
+    [
+     31,
+     14
+    ],
+    [
+     31,
+     15
+    ],
+    [
+     31,
+     16
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF240",
+   "source": "S10",
+   "target": "Q4",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     19
+    ],
+    [
+     30,
+     20
+    ],
+    [
+     30,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     20
+    ],
+    [
+     65,
+     20
+    ],
+    [
+     69,
+     20
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    113,
+    119
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF241",
+   "source": "S11",
+   "target": "B15",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     23
+    ],
+    [
+     56,
+     24
+    ],
+    [
+     56,
+     25
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     12,
+     1
+    ],
+    [
+     13,
+     1
+    ],
+    [
+     14,
+     1
+    ],
+    [
+     15,
+     1
+    ],
+    [
+     16,
+     1
+    ],
+    [
+     17,
+     1
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF242",
+   "source": "S11",
+   "target": "B16",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     23
+    ],
+    [
+     56,
+     24
+    ],
+    [
+     56,
+     25
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     54,
+     31
+    ],
+    [
+     55,
+     31
+    ],
+    [
+     56,
+     31
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    97
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF243",
+   "source": "S11",
+   "target": "Q5",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     23
+    ],
+    [
+     56,
+     24
+    ],
+    [
+     56,
+     25
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     35
+    ],
+    [
+     22,
+     38
+    ],
+    [
+     22,
+     39
+    ],
+    [
+     22,
+     40
+    ]
+   ],
+   "source_components": [
+    97
+   ],
+   "target_components": [
+    35,
+    36
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF244",
+   "source": "S12",
+   "target": "B17",
+   "item": "砂叶粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     23
+    ],
+    [
+     43,
+     24
+    ],
+    [
+     43,
+     25
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     65
+    ],
+    [
+     35,
+     65
+    ],
+    [
+     38,
+     65
+    ],
+    [
+     39,
+     65
+    ]
+   ],
+   "source_components": [
+    70
+   ],
+   "target_components": [
+    50,
+    68
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF245",
+   "source": "S13",
+   "target": "Q6",
+   "item": "砂叶粉末",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     43,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     53,
+     55
+    ],
+    [
+     54,
+     55
+    ],
+    [
+     55,
+     55
+    ]
+   ],
+   "source_components": [
+    79
+   ],
+   "target_components": [
+    95
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF246",
+   "source": "QK1",
+   "target": "Q1",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     50
+    ],
+    [
+     30,
+     50
+    ],
+    [
+     31,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     29,
+     50
+    ],
+    [
+     29,
+     51
+    ],
+    [
+     29,
+     52
+    ]
+   ],
+   "source_components": [
+    49
+   ],
+   "target_components": [
+    49
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF247",
+   "source": "QK1",
+   "target": "Q1",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     50
+    ],
+    [
+     30,
+     50
+    ],
+    [
+     31,
+     50
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     29,
+     50
+    ],
+    [
+     29,
+     51
+    ],
+    [
+     29,
+     52
+    ]
+   ],
+   "source_components": [
+    49
+   ],
+   "target_components": [
+    49
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF248",
+   "source": "QK2",
+   "target": "Q2",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     23
+    ],
+    [
+     25,
+     23
+    ],
+    [
+     26,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     23
+    ],
+    [
+     26,
+     24
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     26,
+     26
+    ],
+    [
+     26,
+     27
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    38
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF249",
+   "source": "QK2",
+   "target": "Q2",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     23
+    ],
+    [
+     25,
+     23
+    ],
+    [
+     26,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     23
+    ],
+    [
+     26,
+     24
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     26,
+     26
+    ],
+    [
+     26,
+     27
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    38
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF250",
+   "source": "QK3",
+   "target": "Q3",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     17
+    ],
+    [
+     31,
+     18
+    ],
+    [
+     31,
+     19
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     11
+    ],
+    [
+     31,
+     12
+    ],
+    [
+     31,
+     13
+    ],
+    [
+     31,
+     14
+    ],
+    [
+     31,
+     15
+    ],
+    [
+     31,
+     16
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF251",
+   "source": "QK3",
+   "target": "Q3",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     17
+    ],
+    [
+     31,
+     18
+    ],
+    [
+     31,
+     19
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     11
+    ],
+    [
+     31,
+     12
+    ],
+    [
+     31,
+     13
+    ],
+    [
+     31,
+     14
+    ],
+    [
+     31,
+     15
+    ],
+    [
+     31,
+     16
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF252",
+   "source": "QK4",
+   "target": "Q4",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     20
+    ],
+    [
+     65,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     20
+    ],
+    [
+     65,
+     20
+    ],
+    [
+     69,
+     20
+    ]
+   ],
+   "source_components": [
+    113
+   ],
+   "target_components": [
+    113,
+    119
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF253",
+   "source": "QK4",
+   "target": "Q4",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     20
+    ],
+    [
+     65,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     20
+    ],
+    [
+     65,
+     20
+    ],
+    [
+     69,
+     20
+    ]
+   ],
+   "source_components": [
+    113
+   ],
+   "target_components": [
+    113,
+    119
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF254",
+   "source": "QK5",
+   "target": "Q5",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     22,
+     38
+    ],
+    [
+     22,
+     39
+    ],
+    [
+     22,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     35
+    ],
+    [
+     22,
+     38
+    ],
+    [
+     22,
+     39
+    ],
+    [
+     22,
+     40
+    ]
+   ],
+   "source_components": [
+    36
+   ],
+   "target_components": [
+    35,
+    36
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF255",
+   "source": "QK5",
+   "target": "Q5",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     22,
+     38
+    ],
+    [
+     22,
+     39
+    ],
+    [
+     22,
+     40
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     35
+    ],
+    [
+     22,
+     38
+    ],
+    [
+     22,
+     39
+    ],
+    [
+     22,
+     40
+    ]
+   ],
+   "source_components": [
+    36
+   ],
+   "target_components": [
+    35,
+    36
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF256",
+   "source": "QK6",
+   "target": "Q6",
+   "item": "荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     53,
+     55
+    ],
+    [
+     54,
+     55
+    ],
+    [
+     55,
+     55
+    ]
+   ],
+   "source_components": [
+    95
+   ],
+   "target_components": [
+    95
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF257",
+   "source": "B1",
+   "target": "R1",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     45
+    ],
+    [
+     31,
+     46
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     45
+    ],
+    [
+     31,
+     46
+    ]
+   ],
+   "source_components": [
+    54
+   ],
+   "target_components": [
+    54
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF258",
+   "source": "B2",
+   "target": "R2",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     17,
+     51
+    ],
+    [
+     17,
+     52
+    ],
+    [
+     17,
+     53
+    ],
+    [
+     17,
+     54
+    ],
+    [
+     17,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     17,
+     50
+    ]
+   ],
+   "source_components": [
+    24
+   ],
+   "target_components": [
+    24
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF259",
+   "source": "B3",
+   "target": "R3",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     64,
+     20
+    ],
+    [
+     64,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     69,
+     50
+    ],
+    [
+     69,
+     51
+    ],
+    [
+     69,
+     52
+    ]
+   ],
+   "source_components": [
+    113
+   ],
+   "target_components": [
+    118
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF260",
+   "source": "B4",
+   "target": "R4",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     22,
+     29
+    ],
+    [
+     22,
+     30
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    30
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF261",
+   "source": "B5",
+   "target": "R5",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     51,
+     49
+    ],
+    [
+     55,
+     49
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     51,
+     49
+    ]
+   ],
+   "source_components": [
+    89,
+    99
+   ],
+   "target_components": [
+    89
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF262",
+   "source": "B6",
+   "target": "R6",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     35,
+     45
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     60
+    ],
+    [
+     58,
+     60
+    ]
+   ],
+   "source_components": [
+    63
+   ],
+   "target_components": [
+    103
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF263",
+   "source": "B7",
+   "target": "R7",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     34
+    ],
+    [
+     30,
+     38
+    ],
+    [
+     30,
+     39
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     30,
+     31
+    ],
+    [
+     30,
+     32
+    ],
+    [
+     30,
+     33
+    ]
+   ],
+   "source_components": [
+    51,
+    52
+   ],
+   "target_components": [
+    51
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF264",
+   "source": "B8",
+   "target": "R8",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     52,
+     36
+    ],
+    [
+     52,
+     37
+    ],
+    [
+     52,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     52,
+     37
+    ]
+   ],
+   "source_components": [
+    91,
+    92
+   ],
+   "target_components": [
+    91
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF265",
+   "source": "B9",
+   "target": "R9",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     38,
+     1
+    ],
+    [
+     38,
+     2
+    ],
+    [
+     38,
+     3
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     30,
+     38
+    ]
+   ],
+   "source_components": [
+    67
+   ],
+   "target_components": [
+    52
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF266",
+   "source": "B10",
+   "target": "R10",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     16,
+     64
+    ],
+    [
+     16,
+     65
+    ],
+    [
+     16,
+     66
+    ],
+    [
+     16,
+     67
+    ],
+    [
+     16,
+     68
+    ],
+    [
+     16,
+     69
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     29
+    ],
+    [
+     26,
+     30
+    ]
+   ],
+   "source_components": [
+    21
+   ],
+   "target_components": [
+    38
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF267",
+   "source": "B11",
+   "target": "R11",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     19,
+     26
+    ],
+    [
+     19,
+     27
+    ],
+    [
+     19,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     19,
+     26
+    ],
+    [
+     19,
+     27
+    ],
+    [
+     19,
+     28
+    ]
+   ],
+   "source_components": [
+    26
+   ],
+   "target_components": [
+    26
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF268",
+   "source": "B12",
+   "target": "R12",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     22,
+     53
+    ],
+    [
+     22,
+     54
+    ],
+    [
+     22,
+     55
+    ],
+    [
+     22,
+     56
+    ],
+    [
+     22,
+     57
+    ],
+    [
+     22,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     25,
+     12
+    ],
+    [
+     25,
+     13
+    ],
+    [
+     25,
+     14
+    ]
+   ],
+   "source_components": [
+    37
+   ],
+   "target_components": [
+    42
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF269",
+   "source": "B13",
+   "target": "R13",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     16,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     41,
+     7
+    ],
+    [
+     42,
+     7
+    ],
+    [
+     43,
+     7
+    ]
+   ],
+   "source_components": [
+    9
+   ],
+   "target_components": [
+    74
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF270",
+   "source": "B14",
+   "target": "R14",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     25,
+     14
+    ],
+    [
+     29,
+     14
+    ],
+    [
+     30,
+     14
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     9
+    ],
+    [
+     32,
+     9
+    ]
+   ],
+   "source_components": [
+    42,
+    48
+   ],
+   "target_components": [
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF271",
+   "source": "B15",
+   "target": "R15",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     16,
+     6
+    ],
+    [
+     17,
+     6
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     18,
+     7
+    ],
+    [
+     18,
+     8
+    ]
+   ],
+   "source_components": [
+    22
+   ],
+   "target_components": [
+    22
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF272",
+   "source": "B16",
+   "target": "R16",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     52,
+     36
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     59,
+     54
+    ],
+    [
+     59,
+     55
+    ],
+    [
+     59,
+     56
+    ]
+   ],
+   "source_components": [
+    91
+   ],
+   "target_components": [
+    100
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF273",
+   "source": "B17",
+   "target": "R17",
+   "item": "致密蓝铁粉末",
+   "rate": "1",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     59,
+     56
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    100
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF274",
+   "source": "R1",
+   "target": "P1",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     35,
+     45
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     5,
+     11
+    ]
+   ],
+   "source_components": [
+    63
+   ],
+   "target_components": [
+    2
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF275",
+   "source": "R2",
+   "target": "P2",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     17,
+     46
+    ],
+    [
+     18,
+     46
+    ],
+    [
+     19,
+     46
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     8,
+     10
+    ]
+   ],
+   "source_components": [
+    23
+   ],
+   "target_components": [
+    12
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF276",
+   "source": "R3",
+   "target": "P3",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     52
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     52
+    ],
+    [
+     65,
+     52
+    ]
+   ],
+   "source_components": [
+    115
+   ],
+   "target_components": [
+    115
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF277",
+   "source": "R4",
+   "target": "P4",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     28
+    ],
+    [
+     26,
+     29
+    ],
+    [
+     26,
+     30
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     26,
+     30
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    38
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF278",
+   "source": "R5",
+   "target": "P5",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     55,
+     49
+    ],
+    [
+     55,
+     50
+    ],
+    [
+     55,
+     51
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     31,
+     58
+    ],
+    [
+     32,
+     58
+    ],
+    [
+     33,
+     58
+    ]
+   ],
+   "source_components": [
+    99
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF279",
+   "source": "R6",
+   "target": "P6",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     56,
+     56
+    ],
+    [
+     57,
+     56
+    ],
+    [
+     58,
+     56
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     56,
+     52
+    ],
+    [
+     57,
+     52
+    ],
+    [
+     58,
+     52
+    ]
+   ],
+   "source_components": [
+    100
+   ],
+   "target_components": [
+    100
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF280",
+   "source": "R7",
+   "target": "H1",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     34,
+     32
+    ],
+    [
+     34,
+     33
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     32
+    ],
+    [
+     35,
+     32
+    ],
+    [
+     36,
+     32
+    ]
+   ],
+   "source_components": [
+    59
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF281",
+   "source": "R8",
+   "target": "H1",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     52,
+     41
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     32
+    ],
+    [
+     35,
+     32
+    ],
+    [
+     36,
+     32
+    ]
+   ],
+   "source_components": [
+    92
+   ],
+   "target_components": [
+    59
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF282",
+   "source": "R9",
+   "target": "H2",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     30,
+     32
+    ],
+    [
+     30,
+     33
+    ],
+    [
+     30,
+     34
+    ]
+   ],
+   "source_components": [
+    51
+   ],
+   "target_components": [
+    51
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF283",
+   "source": "R10",
+   "target": "H2",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     31
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     30,
+     32
+    ],
+    [
+     30,
+     33
+    ],
+    [
+     30,
+     34
+    ]
+   ],
+   "source_components": [
+    51
+   ],
+   "target_components": [
+    51
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF284",
+   "source": "R11",
+   "target": "H3",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     23,
+     27
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     32,
+     9
+    ],
+    [
+     32,
+     10
+    ]
+   ],
+   "source_components": [
+    38
+   ],
+   "target_components": [
+    48
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF285",
+   "source": "R12",
+   "target": "H3",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     29,
+     12
+    ],
+    [
+     29,
+     13
+    ],
+    [
+     29,
+     14
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     32,
+     9
+    ],
+    [
+     32,
+     10
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    48
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF286",
+   "source": "R13",
+   "target": "H4",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     43,
+     11
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     11
+    ],
+    [
+     43,
+     12
+    ]
+   ],
+   "source_components": [
+    78
+   ],
+   "target_components": [
+    78
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF287",
+   "source": "R14",
+   "target": "H4",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     32,
+     5
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     11
+    ],
+    [
+     43,
+     12
+    ]
+   ],
+   "source_components": [
+    57
+   ],
+   "target_components": [
+    78
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF288",
+   "source": "R15",
+   "target": "H5",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     22,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     63,
+     56
+    ],
+    [
+     64,
+     56
+    ]
+   ],
+   "source_components": [
+    33
+   ],
+   "target_components": [
+    111
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF289",
+   "source": "R16",
+   "target": "H5",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     63,
+     54
+    ],
+    [
+     63,
+     55
+    ],
+    [
+     63,
+     56
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     63,
+     56
+    ],
+    [
+     64,
+     56
+    ]
+   ],
+   "source_components": [
+    111
+   ],
+   "target_components": [
+    111
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF290",
+   "source": "R17",
+   "target": "H6",
+   "item": "钢块",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     59,
+     60
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     57,
+     60
+    ],
+    [
+     58,
+     60
+    ],
+    [
+     59,
+     60
+    ]
+   ],
+   "source_components": [
+    103
+   ],
+   "target_components": [
+    103
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF291",
+   "source": "P1",
+   "target": "E1",
+   "item": "钢制零件",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     1,
+     9
+    ],
+    [
+     1,
+     10
+    ],
+    [
+     1,
+     11
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     18
+    ],
+    [
+     1,
+     19
+    ],
+    [
+     1,
+     20
+    ],
+    [
+     1,
+     21
+    ],
+    [
+     1,
+     22
+    ],
+    [
+     1,
+     23
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF292",
+   "source": "P2",
+   "target": "E1",
+   "item": "钢制零件",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     4,
+     8
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     18
+    ],
+    [
+     1,
+     19
+    ],
+    [
+     1,
+     20
+    ],
+    [
+     1,
+     21
+    ],
+    [
+     1,
+     22
+    ],
+    [
+     1,
+     23
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF293",
+   "source": "O1",
+   "target": "E1",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     1,
+     18
+    ],
+    [
+     1,
+     19
+    ],
+    [
+     1,
+     20
+    ],
+    [
+     1,
+     21
+    ],
+    [
+     1,
+     22
+    ],
+    [
+     1,
+     23
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF294",
+   "source": "O2",
+   "target": "E1",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     2,
+     49
+    ],
+    [
+     3,
+     49
+    ],
+    [
+     4,
+     49
+    ],
+    [
+     5,
+     49
+    ],
+    [
+     6,
+     49
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     18
+    ],
+    [
+     1,
+     19
+    ],
+    [
+     1,
+     20
+    ],
+    [
+     1,
+     21
+    ],
+    [
+     1,
+     22
+    ],
+    [
+     1,
+     23
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF295",
+   "source": "O3",
+   "target": "E1",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     6,
+     7
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     1,
+     18
+    ],
+    [
+     1,
+     19
+    ],
+    [
+     1,
+     20
+    ],
+    [
+     1,
+     21
+    ],
+    [
+     1,
+     22
+    ],
+    [
+     1,
+     23
+    ]
+   ],
+   "source_components": [
+    1
+   ],
+   "target_components": [
+    1
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF296",
+   "source": "E1",
+   "target": "CORE",
+   "item": "高容谷地电池",
+   "rate": "1/5",
+   "source_free_neighbors": [
+    [
+     6,
+     22
+    ],
+    [
+     6,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [
+    5
+   ],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF297",
+   "source": "P3",
+   "target": "E2",
+   "item": "钢制零件",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     64,
+     56
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     24
+    ],
+    [
+     65,
+     25
+    ],
+    [
+     65,
+     26
+    ],
+    [
+     65,
+     27
+    ],
+    [
+     65,
+     28
+    ]
+   ],
+   "source_components": [
+    111
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF298",
+   "source": "P4",
+   "target": "E2",
+   "item": "钢制零件",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     34
+    ],
+    [
+     25,
+     34
+    ],
+    [
+     26,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     24
+    ],
+    [
+     65,
+     25
+    ],
+    [
+     65,
+     26
+    ],
+    [
+     65,
+     27
+    ],
+    [
+     65,
+     28
+    ]
+   ],
+   "source_components": [
+    40
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF299",
+   "source": "O4",
+   "target": "E2",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     25
+    ],
+    [
+     65,
+     26
+    ],
+    [
+     65,
+     27
+    ],
+    [
+     65,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     24
+    ],
+    [
+     65,
+     25
+    ],
+    [
+     65,
+     26
+    ],
+    [
+     65,
+     27
+    ],
+    [
+     65,
+     28
+    ]
+   ],
+   "source_components": [
+    114
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF300",
+   "source": "O5",
+   "target": "E2",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     42,
+     23
+    ],
+    [
+     43,
+     23
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     24
+    ],
+    [
+     65,
+     25
+    ],
+    [
+     65,
+     26
+    ],
+    [
+     65,
+     27
+    ],
+    [
+     65,
+     28
+    ]
+   ],
+   "source_components": [
+    70
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF301",
+   "source": "O6",
+   "target": "E2",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     53,
+     12
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     65,
+     24
+    ],
+    [
+     65,
+     25
+    ],
+    [
+     65,
+     26
+    ],
+    [
+     65,
+     27
+    ],
+    [
+     65,
+     28
+    ]
+   ],
+   "source_components": [
+    94
+   ],
+   "target_components": [
+    114
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF302",
+   "source": "E2",
+   "target": "CORE",
+   "item": "高容谷地电池",
+   "rate": "1/5",
+   "source_free_neighbors": [],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF303",
+   "source": "P5",
+   "target": "E3",
+   "item": "钢制零件",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     54
+    ],
+    [
+     32,
+     54
+    ],
+    [
+     33,
+     54
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     52
+    ],
+    [
+     34,
+     53
+    ],
+    [
+     34,
+     54
+    ],
+    [
+     34,
+     55
+    ],
+    [
+     34,
+     56
+    ],
+    [
+     34,
+     57
+    ]
+   ],
+   "source_components": [
+    55
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF304",
+   "source": "P6",
+   "target": "E3",
+   "item": "钢制零件",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     57,
+     48
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     52
+    ],
+    [
+     34,
+     53
+    ],
+    [
+     34,
+     54
+    ],
+    [
+     34,
+     55
+    ],
+    [
+     34,
+     56
+    ],
+    [
+     34,
+     57
+    ]
+   ],
+   "source_components": [
+    102
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF305",
+   "source": "O7",
+   "target": "E3",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     34,
+     58
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     52
+    ],
+    [
+     34,
+     53
+    ],
+    [
+     34,
+     54
+    ],
+    [
+     34,
+     55
+    ],
+    [
+     34,
+     56
+    ],
+    [
+     34,
+     57
+    ]
+   ],
+   "source_components": [
+    55
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF306",
+   "source": "O8",
+   "target": "E3",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     30,
+     20
+    ],
+    [
+     30,
+     21
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     52
+    ],
+    [
+     34,
+     53
+    ],
+    [
+     34,
+     54
+    ],
+    [
+     34,
+     55
+    ],
+    [
+     34,
+     56
+    ],
+    [
+     34,
+     57
+    ]
+   ],
+   "source_components": [
+    48
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF307",
+   "source": "O9",
+   "target": "E3",
+   "item": "致密源石粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     7,
+     44
+    ],
+    [
+     8,
+     44
+    ],
+    [
+     9,
+     44
+    ],
+    [
+     10,
+     44
+    ],
+    [
+     11,
+     44
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     34,
+     52
+    ],
+    [
+     34,
+     53
+    ],
+    [
+     34,
+     54
+    ],
+    [
+     34,
+     55
+    ],
+    [
+     34,
+     56
+    ],
+    [
+     34,
+     57
+    ]
+   ],
+   "source_components": [
+    10
+   ],
+   "target_components": [
+    55
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF308",
+   "source": "E3",
+   "target": "CORE",
+   "item": "高容谷地电池",
+   "rate": "1/5",
+   "source_free_neighbors": [
+    [
+     39,
+     52
+    ],
+    [
+     39,
+     53
+    ],
+    [
+     39,
+     54
+    ],
+    [
+     39,
+     55
+    ],
+    [
+     39,
+     56
+    ],
+    [
+     39,
+     57
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF309",
+   "source": "H1",
+   "target": "F1",
+   "item": "钢质瓶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     36,
+     28
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     52
+    ],
+    [
+     22,
+     53
+    ],
+    [
+     22,
+     54
+    ],
+    [
+     22,
+     55
+    ]
+   ],
+   "source_components": [
+    66
+   ],
+   "target_components": [
+    37
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF310",
+   "source": "Q1",
+   "target": "F1",
+   "item": "细磨荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     24,
+     50
+    ],
+    [
+     24,
+     51
+    ],
+    [
+     24,
+     52
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     52
+    ],
+    [
+     22,
+     53
+    ],
+    [
+     22,
+     54
+    ],
+    [
+     22,
+     55
+    ]
+   ],
+   "source_components": [
+    37
+   ],
+   "target_components": [
+    37
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF311",
+   "source": "H2",
+   "target": "F1",
+   "item": "钢质瓶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     26,
+     34
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     52
+    ],
+    [
+     22,
+     53
+    ],
+    [
+     22,
+     54
+    ],
+    [
+     22,
+     55
+    ]
+   ],
+   "source_components": [
+    40
+   ],
+   "target_components": [
+    37
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF312",
+   "source": "Q2",
+   "target": "F1",
+   "item": "细磨荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     31,
+     26
+    ],
+    [
+     31,
+     27
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     22,
+     52
+    ],
+    [
+     22,
+     53
+    ],
+    [
+     22,
+     54
+    ],
+    [
+     22,
+     55
+    ]
+   ],
+   "source_components": [
+    53
+   ],
+   "target_components": [
+    37
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF313",
+   "source": "F1",
+   "target": "CORE",
+   "item": "精选荞愈胶囊",
+   "rate": "1/5",
+   "source_free_neighbors": [
+    [
+     17,
+     50
+    ],
+    [
+     17,
+     51
+    ],
+    [
+     17,
+     52
+    ],
+    [
+     17,
+     53
+    ],
+    [
+     17,
+     54
+    ],
+    [
+     17,
+     55
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [
+    24
+   ],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF314",
+   "source": "H3",
+   "target": "F2",
+   "item": "钢质瓶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     36,
+     10
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     36,
+     13
+    ],
+    [
+     37,
+     13
+    ],
+    [
+     38,
+     13
+    ],
+    [
+     39,
+     13
+    ]
+   ],
+   "source_components": [
+    65
+   ],
+   "target_components": [
+    65
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF315",
+   "source": "Q3",
+   "target": "F2",
+   "item": "细磨荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     36,
+     11
+    ],
+    [
+     36,
+     12
+    ],
+    [
+     36,
+     13
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     36,
+     13
+    ],
+    [
+     37,
+     13
+    ],
+    [
+     38,
+     13
+    ],
+    [
+     39,
+     13
+    ]
+   ],
+   "source_components": [
+    65
+   ],
+   "target_components": [
+    65
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF316",
+   "source": "H4",
+   "target": "F2",
+   "item": "钢质瓶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     39,
+     13
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     36,
+     13
+    ],
+    [
+     37,
+     13
+    ],
+    [
+     38,
+     13
+    ],
+    [
+     39,
+     13
+    ]
+   ],
+   "source_components": [
+    65
+   ],
+   "target_components": [
+    65
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF317",
+   "source": "Q4",
+   "target": "F2",
+   "item": "细磨荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     65,
+     15
+    ],
+    [
+     66,
+     15
+    ],
+    [
+     67,
+     15
+    ],
+    [
+     68,
+     15
+    ],
+    [
+     69,
+     15
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     36,
+     13
+    ],
+    [
+     37,
+     13
+    ],
+    [
+     38,
+     13
+    ],
+    [
+     39,
+     13
+    ]
+   ],
+   "source_components": [
+    116
+   ],
+   "target_components": [
+    65
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF318",
+   "source": "F2",
+   "target": "CORE",
+   "item": "精选荞愈胶囊",
+   "rate": "1/5",
+   "source_free_neighbors": [
+    [
+     39,
+     18
+    ],
+    [
+     40,
+     18
+    ],
+    [
+     41,
+     18
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [
+    69
+   ],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF319",
+   "source": "H5",
+   "target": "F3",
+   "item": "钢质瓶",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     62,
+     60
+    ],
+    [
+     63,
+     60
+    ],
+    [
+     64,
+     60
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     62
+    ],
+    [
+     64,
+     63
+    ],
+    [
+     64,
+     64
+    ],
+    [
+     64,
+     65
+    ],
+    [
+     64,
+     66
+    ],
+    [
+     64,
+     67
+    ]
+   ],
+   "source_components": [
+    107
+   ],
+   "target_components": [
+    107
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF320",
+   "source": "Q5",
+   "target": "F3",
+   "item": "细磨荞花粉末",
+   "rate": "1",
+   "source_free_neighbors": [
+    [
+     17,
+     35
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     64,
+     62
+    ],
+    [
+     64,
+     63
+    ],
+    [
+     64,
+     64
+    ],
+    [
+     64,
+     65
+    ],
+    [
+     64,
+     66
+    ],
+    [
+     64,
+     67
+    ]
+   ],
+   "source_components": [
+    9
+   ],
+   "target_components": [
+    107
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF321",
+   "source": "F3",
+   "target": "CORE",
+   "item": "精选荞愈胶囊",
+   "rate": "1/10",
+   "source_free_neighbors": [
+    [
+     59,
+     64
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [
+    104
+   ],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF322",
+   "source": "H6",
+   "target": "F4",
+   "item": "钢质瓶",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     57,
+     64
+    ],
+    [
+     58,
+     64
+    ],
+    [
+     59,
+     64
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     63
+    ],
+    [
+     49,
+     64
+    ],
+    [
+     49,
+     65
+    ]
+   ],
+   "source_components": [
+    104
+   ],
+   "target_components": [
+    87
+   ],
+   "reachable_in_relaxation": false
+  },
+  {
+   "id": "LF323",
+   "source": "Q6",
+   "target": "F4",
+   "item": "细磨荞花粉末",
+   "rate": "1/2",
+   "source_free_neighbors": [
+    [
+     51,
+     60
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     49,
+     63
+    ],
+    [
+     49,
+     64
+    ],
+    [
+     49,
+     65
+    ]
+   ],
+   "source_components": [
+    87
+   ],
+   "target_components": [
+    87
+   ],
+   "reachable_in_relaxation": true
+  },
+  {
+   "id": "LF324",
+   "source": "F4",
+   "target": "CORE",
+   "item": "精选荞愈胶囊",
+   "rate": "1/20",
+   "source_free_neighbors": [
+    [
+     44,
+     63
+    ]
+   ],
+   "target_free_neighbors": [
+    [
+     43,
+     60
+    ],
+    [
+     47,
+     60
+    ],
+    [
+     41,
+     50
+    ],
+    [
+     42,
+     50
+    ],
+    [
+     43,
+     50
+    ],
+    [
+     44,
+     50
+    ],
+    [
+     45,
+     50
+    ],
+    [
+     46,
+     50
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "source_components": [
+    68
+   ],
+   "target_components": [
+    68,
+    84
+   ],
+   "reachable_in_relaxation": true
+  }
+ ],
+ "components": [
+  [
+   [
+    0,
+    0
+   ]
+  ],
+  [
+   [
+    1,
+    1
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    5,
+    1
+   ],
+   [
+    1,
+    5
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    1,
+    6
+   ],
+   [
+    7,
+    1
+   ],
+   [
+    1,
+    7
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    2,
+    7
+   ],
+   [
+    1,
+    8
+   ],
+   [
+    9,
+    1
+   ],
+   [
+    3,
+    7
+   ],
+   [
+    2,
+    8
+   ],
+   [
+    1,
+    9
+   ],
+   [
+    10,
+    1
+   ],
+   [
+    4,
+    7
+   ],
+   [
+    3,
+    8
+   ],
+   [
+    1,
+    10
+   ],
+   [
+    11,
+    1
+   ],
+   [
+    5,
+    7
+   ],
+   [
+    4,
+    8
+   ],
+   [
+    1,
+    11
+   ],
+   [
+    12,
+    1
+   ],
+   [
+    11,
+    2
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    1,
+    12
+   ],
+   [
+    13,
+    1
+   ],
+   [
+    11,
+    3
+   ],
+   [
+    1,
+    13
+   ],
+   [
+    14,
+    1
+   ],
+   [
+    11,
+    4
+   ],
+   [
+    1,
+    14
+   ],
+   [
+    15,
+    1
+   ],
+   [
+    11,
+    5
+   ],
+   [
+    1,
+    15
+   ],
+   [
+    16,
+    1
+   ],
+   [
+    1,
+    16
+   ],
+   [
+    17,
+    1
+   ],
+   [
+    1,
+    17
+   ],
+   [
+    18,
+    1
+   ],
+   [
+    2,
+    17
+   ],
+   [
+    1,
+    18
+   ],
+   [
+    19,
+    1
+   ],
+   [
+    3,
+    17
+   ],
+   [
+    1,
+    19
+   ],
+   [
+    20,
+    1
+   ],
+   [
+    4,
+    17
+   ],
+   [
+    1,
+    20
+   ],
+   [
+    21,
+    1
+   ],
+   [
+    5,
+    17
+   ],
+   [
+    1,
+    21
+   ],
+   [
+    22,
+    1
+   ],
+   [
+    1,
+    22
+   ],
+   [
+    23,
+    1
+   ],
+   [
+    1,
+    23
+   ],
+   [
+    24,
+    1
+   ],
+   [
+    23,
+    2
+   ],
+   [
+    1,
+    24
+   ],
+   [
+    25,
+    1
+   ],
+   [
+    23,
+    3
+   ],
+   [
+    1,
+    25
+   ],
+   [
+    26,
+    1
+   ],
+   [
+    23,
+    4
+   ],
+   [
+    1,
+    26
+   ],
+   [
+    1,
+    27
+   ],
+   [
+    1,
+    28
+   ],
+   [
+    1,
+    29
+   ],
+   [
+    2,
+    29
+   ],
+   [
+    1,
+    30
+   ],
+   [
+    2,
+    30
+   ],
+   [
+    1,
+    31
+   ],
+   [
+    2,
+    31
+   ],
+   [
+    1,
+    32
+   ],
+   [
+    1,
+    33
+   ],
+   [
+    1,
+    34
+   ],
+   [
+    1,
+    35
+   ],
+   [
+    1,
+    36
+   ],
+   [
+    1,
+    37
+   ],
+   [
+    2,
+    37
+   ],
+   [
+    1,
+    38
+   ],
+   [
+    3,
+    37
+   ],
+   [
+    1,
+    39
+   ],
+   [
+    4,
+    37
+   ],
+   [
+    1,
+    40
+   ],
+   [
+    1,
+    41
+   ],
+   [
+    1,
+    42
+   ],
+   [
+    1,
+    43
+   ],
+   [
+    1,
+    44
+   ],
+   [
+    1,
+    45
+   ],
+   [
+    1,
+    46
+   ],
+   [
+    1,
+    47
+   ],
+   [
+    1,
+    48
+   ],
+   [
+    1,
+    49
+   ],
+   [
+    2,
+    49
+   ],
+   [
+    1,
+    50
+   ],
+   [
+    3,
+    49
+   ],
+   [
+    1,
+    51
+   ],
+   [
+    4,
+    49
+   ],
+   [
+    1,
+    52
+   ],
+   [
+    5,
+    49
+   ],
+   [
+    1,
+    53
+   ],
+   [
+    6,
+    49
+   ],
+   [
+    1,
+    54
+   ],
+   [
+    2,
+    54
+   ],
+   [
+    1,
+    55
+   ],
+   [
+    2,
+    55
+   ],
+   [
+    1,
+    56
+   ],
+   [
+    2,
+    56
+   ],
+   [
+    1,
+    57
+   ],
+   [
+    1,
+    58
+   ],
+   [
+    1,
+    59
+   ],
+   [
+    1,
+    60
+   ],
+   [
+    1,
+    61
+   ],
+   [
+    1,
+    62
+   ],
+   [
+    1,
+    63
+   ],
+   [
+    1,
+    64
+   ],
+   [
+    1,
+    65
+   ],
+   [
+    1,
+    66
+   ],
+   [
+    1,
+    67
+   ],
+   [
+    1,
+    68
+   ],
+   [
+    1,
+    69
+   ]
+  ],
+  [
+   [
+    5,
+    11
+   ],
+   [
+    6,
+    11
+   ]
+  ],
+  [
+   [
+    5,
+    40
+   ],
+   [
+    5,
+    41
+   ],
+   [
+    5,
+    42
+   ],
+   [
+    5,
+    43
+   ]
+  ],
+  [
+   [
+    5,
+    57
+   ],
+   [
+    5,
+    58
+   ],
+   [
+    5,
+    59
+   ]
+  ],
+  [
+   [
+    6,
+    22
+   ],
+   [
+    7,
+    22
+   ],
+   [
+    6,
+    23
+   ],
+   [
+    7,
+    23
+   ]
+  ],
+  [
+   [
+    6,
+    29
+   ],
+   [
+    7,
+    29
+   ],
+   [
+    6,
+    30
+   ],
+   [
+    8,
+    29
+   ],
+   [
+    6,
+    31
+   ],
+   [
+    9,
+    29
+   ],
+   [
+    10,
+    29
+   ],
+   [
+    11,
+    29
+   ]
+  ],
+  [
+   [
+    6,
+    54
+   ],
+   [
+    7,
+    54
+   ],
+   [
+    8,
+    54
+   ],
+   [
+    9,
+    54
+   ],
+   [
+    8,
+    53
+   ],
+   [
+    9,
+    53
+   ],
+   [
+    8,
+    52
+   ],
+   [
+    9,
+    52
+   ]
+  ],
+  [
+   [
+    7,
+    16
+   ],
+   [
+    8,
+    16
+   ],
+   [
+    9,
+    16
+   ],
+   [
+    10,
+    16
+   ],
+   [
+    11,
+    16
+   ],
+   [
+    11,
+    17
+   ],
+   [
+    11,
+    18
+   ],
+   [
+    11,
+    19
+   ]
+  ],
+  [
+   [
+    7,
+    35
+   ],
+   [
+    8,
+    35
+   ],
+   [
+    7,
+    36
+   ],
+   [
+    9,
+    35
+   ],
+   [
+    10,
+    35
+   ],
+   [
+    11,
+    35
+   ],
+   [
+    12,
+    35
+   ],
+   [
+    13,
+    35
+   ],
+   [
+    12,
+    34
+   ],
+   [
+    14,
+    35
+   ],
+   [
+    13,
+    34
+   ],
+   [
+    15,
+    35
+   ],
+   [
+    14,
+    34
+   ],
+   [
+    16,
+    35
+   ],
+   [
+    15,
+    34
+   ],
+   [
+    17,
+    35
+   ],
+   [
+    16,
+    34
+   ]
+  ],
+  [
+   [
+    7,
+    44
+   ],
+   [
+    8,
+    44
+   ],
+   [
+    9,
+    44
+   ],
+   [
+    10,
+    44
+   ],
+   [
+    11,
+    44
+   ]
+  ],
+  [
+   [
+    7,
+    60
+   ],
+   [
+    8,
+    60
+   ],
+   [
+    7,
+    61
+   ],
+   [
+    9,
+    60
+   ],
+   [
+    7,
+    62
+   ],
+   [
+    10,
+    60
+   ],
+   [
+    7,
+    63
+   ],
+   [
+    11,
+    60
+   ],
+   [
+    7,
+    64
+   ],
+   [
+    11,
+    59
+   ],
+   [
+    11,
+    61
+   ],
+   [
+    7,
+    65
+   ],
+   [
+    11,
+    58
+   ],
+   [
+    7,
+    66
+   ],
+   [
+    11,
+    57
+   ],
+   [
+    7,
+    67
+   ],
+   [
+    11,
+    56
+   ],
+   [
+    7,
+    68
+   ],
+   [
+    12,
+    56
+   ],
+   [
+    11,
+    55
+   ],
+   [
+    7,
+    69
+   ],
+   [
+    12,
+    55
+   ],
+   [
+    8,
+    69
+   ],
+   [
+    9,
+    69
+   ],
+   [
+    10,
+    69
+   ],
+   [
+    11,
+    69
+   ],
+   [
+    11,
+    68
+   ],
+   [
+    11,
+    67
+   ]
+  ],
+  [
+   [
+    8,
+    10
+   ],
+   [
+    9,
+    10
+   ],
+   [
+    10,
+    10
+   ],
+   [
+    10,
+    9
+   ],
+   [
+    10,
+    8
+   ]
+  ],
+  [
+   [
+    8,
+    38
+   ],
+   [
+    9,
+    38
+   ],
+   [
+    8,
+    39
+   ],
+   [
+    9,
+    39
+   ],
+   [
+    10,
+    39
+   ],
+   [
+    11,
+    39
+   ],
+   [
+    12,
+    39
+   ],
+   [
+    12,
+    40
+   ],
+   [
+    12,
+    41
+   ],
+   [
+    13,
+    41
+   ],
+   [
+    14,
+    41
+   ]
+  ],
+  [
+   [
+    10,
+    22
+   ],
+   [
+    10,
+    23
+   ],
+   [
+    11,
+    23
+   ],
+   [
+    12,
+    23
+   ],
+   [
+    13,
+    23
+   ],
+   [
+    14,
+    23
+   ],
+   [
+    14,
+    22
+   ],
+   [
+    14,
+    21
+   ],
+   [
+    14,
+    20
+   ]
+  ],
+  [
+   [
+    10,
+    50
+   ],
+   [
+    11,
+    50
+   ],
+   [
+    10,
+    51
+   ],
+   [
+    11,
+    51
+   ],
+   [
+    12,
+    51
+   ]
+  ],
+  [
+   [
+    10,
+    64
+   ],
+   [
+    10,
+    65
+   ]
+  ],
+  [
+   [
+    12,
+    11
+   ],
+   [
+    13,
+    11
+   ],
+   [
+    14,
+    11
+   ],
+   [
+    15,
+    11
+   ]
+  ],
+  [
+   [
+    12,
+    27
+   ],
+   [
+    13,
+    27
+   ],
+   [
+    12,
+    28
+   ],
+   [
+    14,
+    27
+   ],
+   [
+    13,
+    28
+   ],
+   [
+    14,
+    28
+   ]
+  ],
+  [
+   [
+    12,
+    45
+   ],
+   [
+    13,
+    45
+   ],
+   [
+    14,
+    45
+   ]
+  ],
+  [
+   [
+    15,
+    17
+   ],
+   [
+    16,
+    17
+   ],
+   [
+    17,
+    17
+   ],
+   [
+    17,
+    16
+   ],
+   [
+    17,
+    15
+   ]
+  ],
+  [
+   [
+    15,
+    67
+   ],
+   [
+    16,
+    67
+   ],
+   [
+    15,
+    68
+   ],
+   [
+    16,
+    66
+   ],
+   [
+    16,
+    68
+   ],
+   [
+    15,
+    69
+   ],
+   [
+    16,
+    65
+   ],
+   [
+    16,
+    69
+   ],
+   [
+    16,
+    64
+   ],
+   [
+    16,
+    63
+   ],
+   [
+    17,
+    63
+   ],
+   [
+    16,
+    62
+   ],
+   [
+    17,
+    62
+   ],
+   [
+    17,
+    61
+   ]
+  ],
+  [
+   [
+    16,
+    6
+   ],
+   [
+    17,
+    6
+   ],
+   [
+    16,
+    7
+   ],
+   [
+    17,
+    7
+   ],
+   [
+    16,
+    8
+   ],
+   [
+    18,
+    7
+   ],
+   [
+    17,
+    8
+   ],
+   [
+    18,
+    8
+   ]
+  ],
+  [
+   [
+    17,
+    46
+   ],
+   [
+    18,
+    46
+   ],
+   [
+    19,
+    46
+   ]
+  ],
+  [
+   [
+    17,
+    50
+   ],
+   [
+    17,
+    51
+   ],
+   [
+    17,
+    52
+   ],
+   [
+    17,
+    53
+   ],
+   [
+    17,
+    54
+   ],
+   [
+    17,
+    55
+   ]
+  ],
+  [
+   [
+    19,
+    10
+   ],
+   [
+    19,
+    11
+   ]
+  ],
+  [
+   [
+    19,
+    26
+   ],
+   [
+    19,
+    27
+   ],
+   [
+    19,
+    28
+   ]
+  ],
+  [
+   [
+    20,
+    18
+   ],
+   [
+    20,
+    19
+   ],
+   [
+    20,
+    20
+   ],
+   [
+    20,
+    21
+   ],
+   [
+    20,
+    22
+   ],
+   [
+    21,
+    22
+   ]
+  ],
+  [
+   [
+    20,
+    41
+   ],
+   [
+    20,
+    42
+   ],
+   [
+    20,
+    43
+   ],
+   [
+    20,
+    44
+   ],
+   [
+    21,
+    44
+   ],
+   [
+    22,
+    44
+   ],
+   [
+    23,
+    44
+   ]
+  ],
+  [
+   [
+    21,
+    15
+   ],
+   [
+    22,
+    15
+   ],
+   [
+    23,
+    15
+   ],
+   [
+    24,
+    15
+   ],
+   [
+    24,
+    16
+   ],
+   [
+    24,
+    17
+   ],
+   [
+    24,
+    18
+   ],
+   [
+    24,
+    19
+   ],
+   [
+    25,
+    19
+   ],
+   [
+    26,
+    19
+   ]
+  ],
+  [
+   [
+    21,
+    29
+   ],
+   [
+    22,
+    29
+   ],
+   [
+    21,
+    30
+   ],
+   [
+    22,
+    30
+   ],
+   [
+    21,
+    31
+   ],
+   [
+    22,
+    31
+   ],
+   [
+    23,
+    31
+   ]
+  ],
+  [
+   [
+    21,
+    61
+   ],
+   [
+    21,
+    62
+   ],
+   [
+    21,
+    63
+   ],
+   [
+    22,
+    63
+   ],
+   [
+    21,
+    64
+   ],
+   [
+    23,
+    63
+   ],
+   [
+    21,
+    65
+   ],
+   [
+    24,
+    63
+   ]
+  ],
+  [
+   [
+    21,
+    69
+   ],
+   [
+    22,
+    69
+   ],
+   [
+    23,
+    69
+   ],
+   [
+    24,
+    69
+   ],
+   [
+    25,
+    69
+   ],
+   [
+    26,
+    69
+   ],
+   [
+    27,
+    69
+   ],
+   [
+    28,
+    69
+   ]
+  ],
+  [
+   [
+    22,
+    7
+   ]
+  ],
+  [
+   [
+    22,
+    24
+   ],
+   [
+    22,
+    25
+   ]
+  ],
+  [
+   [
+    22,
+    35
+   ],
+   [
+    23,
+    35
+   ]
+  ],
+  [
+   [
+    22,
+    38
+   ],
+   [
+    22,
+    39
+   ],
+   [
+    22,
+    40
+   ]
+  ],
+  [
+   [
+    22,
+    52
+   ],
+   [
+    23,
+    52
+   ],
+   [
+    22,
+    53
+   ],
+   [
+    24,
+    52
+   ],
+   [
+    22,
+    54
+   ],
+   [
+    24,
+    51
+   ],
+   [
+    22,
+    55
+   ],
+   [
+    24,
+    50
+   ],
+   [
+    22,
+    56
+   ],
+   [
+    22,
+    57
+   ],
+   [
+    22,
+    58
+   ],
+   [
+    22,
+    59
+   ],
+   [
+    23,
+    59
+   ],
+   [
+    24,
+    59
+   ]
+  ],
+  [
+   [
+    23,
+    27
+   ],
+   [
+    24,
+    27
+   ],
+   [
+    25,
+    27
+   ],
+   [
+    26,
+    27
+   ],
+   [
+    26,
+    26
+   ],
+   [
+    26,
+    28
+   ],
+   [
+    26,
+    25
+   ],
+   [
+    27,
+    28
+   ],
+   [
+    26,
+    29
+   ],
+   [
+    26,
+    24
+   ],
+   [
+    28,
+    28
+   ],
+   [
+    26,
+    30
+   ],
+   [
+    26,
+    23
+   ],
+   [
+    29,
+    28
+   ],
+   [
+    25,
+    23
+   ],
+   [
+    24,
+    23
+   ]
+  ],
+  [
+   [
+    24,
+    8
+   ],
+   [
+    25,
+    8
+   ],
+   [
+    24,
+    9
+   ]
+  ],
+  [
+   [
+    24,
+    34
+   ],
+   [
+    25,
+    34
+   ],
+   [
+    26,
+    34
+   ]
+  ],
+  [
+   [
+    24,
+    41
+   ],
+   [
+    25,
+    41
+   ],
+   [
+    26,
+    41
+   ],
+   [
+    26,
+    40
+   ],
+   [
+    26,
+    39
+   ],
+   [
+    26,
+    38
+   ]
+  ],
+  [
+   [
+    25,
+    12
+   ],
+   [
+    25,
+    13
+   ],
+   [
+    25,
+    14
+   ]
+  ],
+  [
+   [
+    25,
+    45
+   ],
+   [
+    26,
+    45
+   ],
+   [
+    25,
+    46
+   ],
+   [
+    26,
+    46
+   ]
+  ],
+  [
+   [
+    26,
+    5
+   ]
+  ],
+  [
+   [
+    27,
+    35
+   ],
+   [
+    27,
+    36
+   ],
+   [
+    27,
+    37
+   ]
+  ],
+  [
+   [
+    27,
+    53
+   ],
+   [
+    27,
+    54
+   ],
+   [
+    27,
+    55
+   ],
+   [
+    27,
+    56
+   ],
+   [
+    27,
+    57
+   ],
+   [
+    27,
+    58
+   ]
+  ],
+  [
+   [
+    29,
+    6
+   ],
+   [
+    29,
+    7
+   ],
+   [
+    29,
+    8
+   ]
+  ],
+  [
+   [
+    29,
+    12
+   ],
+   [
+    30,
+    12
+   ],
+   [
+    29,
+    13
+   ],
+   [
+    31,
+    12
+   ],
+   [
+    30,
+    13
+   ],
+   [
+    29,
+    14
+   ],
+   [
+    31,
+    11
+   ],
+   [
+    31,
+    13
+   ],
+   [
+    30,
+    14
+   ],
+   [
+    31,
+    10
+   ],
+   [
+    31,
+    14
+   ],
+   [
+    32,
+    10
+   ],
+   [
+    31,
+    9
+   ],
+   [
+    31,
+    15
+   ],
+   [
+    32,
+    9
+   ],
+   [
+    31,
+    16
+   ],
+   [
+    31,
+    17
+   ],
+   [
+    31,
+    18
+   ],
+   [
+    31,
+    19
+   ],
+   [
+    30,
+    19
+   ],
+   [
+    30,
+    20
+   ],
+   [
+    30,
+    21
+   ]
+  ],
+  [
+   [
+    29,
+    50
+   ],
+   [
+    30,
+    50
+   ],
+   [
+    29,
+    51
+   ],
+   [
+    31,
+    50
+   ],
+   [
+    30,
+    51
+   ],
+   [
+    29,
+    52
+   ],
+   [
+    30,
+    52
+   ]
+  ],
+  [
+   [
+    29,
+    64
+   ],
+   [
+    30,
+    64
+   ],
+   [
+    31,
+    64
+   ],
+   [
+    32,
+    64
+   ],
+   [
+    33,
+    64
+   ],
+   [
+    34,
+    64
+   ],
+   [
+    35,
+    64
+   ],
+   [
+    34,
+    65
+   ],
+   [
+    35,
+    65
+   ]
+  ],
+  [
+   [
+    30,
+    31
+   ],
+   [
+    30,
+    32
+   ],
+   [
+    30,
+    33
+   ],
+   [
+    30,
+    34
+   ]
+  ],
+  [
+   [
+    30,
+    38
+   ],
+   [
+    30,
+    39
+   ],
+   [
+    30,
+    40
+   ]
+  ],
+  [
+   [
+    31,
+    26
+   ],
+   [
+    32,
+    26
+   ],
+   [
+    31,
+    27
+   ],
+   [
+    32,
+    27
+   ]
+  ],
+  [
+   [
+    31,
+    45
+   ],
+   [
+    31,
+    46
+   ]
+  ],
+  [
+   [
+    31,
+    54
+   ],
+   [
+    32,
+    54
+   ],
+   [
+    33,
+    54
+   ],
+   [
+    34,
+    54
+   ],
+   [
+    34,
+    53
+   ],
+   [
+    34,
+    55
+   ],
+   [
+    34,
+    52
+   ],
+   [
+    34,
+    56
+   ],
+   [
+    34,
+    51
+   ],
+   [
+    34,
+    57
+   ],
+   [
+    35,
+    51
+   ],
+   [
+    34,
+    58
+   ],
+   [
+    35,
+    50
+   ],
+   [
+    33,
+    58
+   ],
+   [
+    32,
+    58
+   ],
+   [
+    31,
+    58
+   ]
+  ],
+  [
+   [
+    32,
+    1
+   ],
+   [
+    33,
+    1
+   ],
+   [
+    34,
+    1
+   ]
+  ],
+  [
+   [
+    32,
+    5
+   ]
+  ],
+  [
+   [
+    33,
+    29
+   ],
+   [
+    33,
+    30
+   ]
+  ],
+  [
+   [
+    34,
+    32
+   ],
+   [
+    35,
+    32
+   ],
+   [
+    34,
+    33
+   ],
+   [
+    36,
+    32
+   ],
+   [
+    37,
+    32
+   ],
+   [
+    38,
+    32
+   ],
+   [
+    39,
+    32
+   ],
+   [
+    40,
+    32
+   ],
+   [
+    41,
+    32
+   ],
+   [
+    42,
+    32
+   ],
+   [
+    43,
+    32
+   ],
+   [
+    44,
+    32
+   ],
+   [
+    45,
+    32
+   ],
+   [
+    46,
+    32
+   ],
+   [
+    46,
+    33
+   ],
+   [
+    46,
+    34
+   ],
+   [
+    46,
+    35
+   ],
+   [
+    46,
+    36
+   ],
+   [
+    45,
+    36
+   ],
+   [
+    46,
+    37
+   ],
+   [
+    44,
+    36
+   ],
+   [
+    47,
+    37
+   ],
+   [
+    46,
+    38
+   ],
+   [
+    43,
+    36
+   ],
+   [
+    48,
+    37
+   ],
+   [
+    47,
+    38
+   ],
+   [
+    46,
+    39
+   ],
+   [
+    49,
+    37
+   ],
+   [
+    48,
+    38
+   ],
+   [
+    47,
+    39
+   ],
+   [
+    49,
+    38
+   ],
+   [
+    48,
+    39
+   ],
+   [
+    49,
+    39
+   ],
+   [
+    49,
+    40
+   ]
+  ],
+  [
+   [
+    35,
+    4
+   ]
+  ],
+  [
+   [
+    35,
+    17
+   ],
+   [
+    35,
+    18
+   ],
+   [
+    35,
+    19
+   ],
+   [
+    35,
+    20
+   ],
+   [
+    35,
+    21
+   ],
+   [
+    36,
+    21
+   ],
+   [
+    35,
+    22
+   ],
+   [
+    37,
+    21
+   ],
+   [
+    35,
+    23
+   ],
+   [
+    38,
+    21
+   ],
+   [
+    35,
+    24
+   ],
+   [
+    38,
+    22
+   ],
+   [
+    35,
+    25
+   ],
+   [
+    38,
+    23
+   ]
+  ],
+  [
+   [
+    35,
+    36
+   ],
+   [
+    35,
+    37
+   ],
+   [
+    35,
+    38
+   ],
+   [
+    35,
+    39
+   ]
+  ],
+  [
+   [
+    35,
+    45
+   ]
+  ],
+  [
+   [
+    36,
+    7
+   ],
+   [
+    37,
+    7
+   ]
+  ],
+  [
+   [
+    36,
+    10
+   ],
+   [
+    36,
+    11
+   ],
+   [
+    36,
+    12
+   ],
+   [
+    36,
+    13
+   ],
+   [
+    37,
+    13
+   ],
+   [
+    38,
+    13
+   ],
+   [
+    39,
+    13
+   ]
+  ],
+  [
+   [
+    36,
+    27
+   ],
+   [
+    36,
+    28
+   ]
+  ],
+  [
+   [
+    38,
+    1
+   ],
+   [
+    38,
+    2
+   ],
+   [
+    38,
+    3
+   ]
+  ],
+  [
+   [
+    38,
+    50
+   ],
+   [
+    39,
+    50
+   ],
+   [
+    38,
+    51
+   ],
+   [
+    40,
+    50
+   ],
+   [
+    39,
+    51
+   ],
+   [
+    41,
+    50
+   ],
+   [
+    39,
+    52
+   ],
+   [
+    42,
+    50
+   ],
+   [
+    39,
+    53
+   ],
+   [
+    43,
+    50
+   ],
+   [
+    39,
+    54
+   ],
+   [
+    44,
+    50
+   ],
+   [
+    39,
+    55
+   ],
+   [
+    45,
+    50
+   ],
+   [
+    39,
+    56
+   ],
+   [
+    46,
+    50
+   ],
+   [
+    39,
+    57
+   ],
+   [
+    47,
+    50
+   ],
+   [
+    39,
+    58
+   ],
+   [
+    48,
+    50
+   ],
+   [
+    39,
+    59
+   ],
+   [
+    49,
+    50
+   ],
+   [
+    39,
+    60
+   ],
+   [
+    49,
+    51
+   ],
+   [
+    39,
+    61
+   ],
+   [
+    49,
+    52
+   ],
+   [
+    39,
+    62
+   ],
+   [
+    50,
+    52
+   ],
+   [
+    49,
+    53
+   ],
+   [
+    39,
+    63
+   ],
+   [
+    51,
+    52
+   ],
+   [
+    49,
+    54
+   ],
+   [
+    40,
+    63
+   ],
+   [
+    39,
+    64
+   ],
+   [
+    52,
+    52
+   ],
+   [
+    49,
+    55
+   ],
+   [
+    41,
+    63
+   ],
+   [
+    38,
+    64
+   ],
+   [
+    39,
+    65
+   ],
+   [
+    49,
+    56
+   ],
+   [
+    42,
+    63
+   ],
+   [
+    38,
+    65
+   ],
+   [
+    49,
+    57
+   ],
+   [
+    43,
+    63
+   ],
+   [
+    49,
+    58
+   ],
+   [
+    44,
+    63
+   ],
+   [
+    43,
+    62
+   ],
+   [
+    49,
+    59
+   ],
+   [
+    43,
+    61
+   ],
+   [
+    43,
+    60
+   ]
+  ],
+  [
+   [
+    39,
+    18
+   ],
+   [
+    40,
+    18
+   ],
+   [
+    41,
+    18
+   ]
+  ],
+  [
+   [
+    39,
+    26
+   ],
+   [
+    40,
+    26
+   ],
+   [
+    41,
+    26
+   ],
+   [
+    42,
+    26
+   ],
+   [
+    43,
+    26
+   ],
+   [
+    42,
+    25
+   ],
+   [
+    44,
+    26
+   ],
+   [
+    43,
+    25
+   ],
+   [
+    42,
+    24
+   ],
+   [
+    45,
+    26
+   ],
+   [
+    43,
+    24
+   ],
+   [
+    42,
+    23
+   ],
+   [
+    46,
+    26
+   ],
+   [
+    43,
+    23
+   ],
+   [
+    47,
+    26
+   ],
+   [
+    47,
+    25
+   ],
+   [
+    47,
+    24
+   ],
+   [
+    47,
+    23
+   ],
+   [
+    48,
+    23
+   ],
+   [
+    49,
+    23
+   ]
+  ],
+  [
+   [
+    39,
+    38
+   ],
+   [
+    39,
+    39
+   ],
+   [
+    39,
+    40
+   ]
+  ],
+  [
+   [
+    40,
+    10
+   ]
+  ],
+  [
+   [
+    40,
+    69
+   ],
+   [
+    41,
+    69
+   ],
+   [
+    42,
+    69
+   ],
+   [
+    43,
+    69
+   ],
+   [
+    44,
+    69
+   ],
+   [
+    45,
+    69
+   ],
+   [
+    46,
+    69
+   ],
+   [
+    47,
+    69
+   ],
+   [
+    48,
+    69
+   ]
+  ],
+  [
+   [
+    41,
+    7
+   ],
+   [
+    42,
+    7
+   ],
+   [
+    43,
+    7
+   ],
+   [
+    43,
+    6
+   ],
+   [
+    43,
+    5
+   ]
+  ],
+  [
+   [
+    41,
+    44
+   ],
+   [
+    42,
+    44
+   ],
+   [
+    43,
+    44
+   ]
+  ],
+  [
+   [
+    42,
+    14
+   ],
+   [
+    42,
+    15
+   ]
+  ],
+  [
+   [
+    43,
+    1
+   ],
+   [
+    44,
+    1
+   ],
+   [
+    45,
+    1
+   ],
+   [
+    46,
+    1
+   ],
+   [
+    47,
+    1
+   ],
+   [
+    48,
+    1
+   ],
+   [
+    49,
+    1
+   ],
+   [
+    50,
+    1
+   ],
+   [
+    49,
+    2
+   ],
+   [
+    51,
+    1
+   ],
+   [
+    49,
+    3
+   ],
+   [
+    52,
+    1
+   ],
+   [
+    49,
+    4
+   ],
+   [
+    53,
+    1
+   ],
+   [
+    54,
+    1
+   ],
+   [
+    55,
+    1
+   ],
+   [
+    56,
+    1
+   ],
+   [
+    57,
+    1
+   ],
+   [
+    58,
+    1
+   ],
+   [
+    59,
+    1
+   ],
+   [
+    60,
+    1
+   ],
+   [
+    61,
+    1
+   ],
+   [
+    62,
+    1
+   ],
+   [
+    63,
+    1
+   ],
+   [
+    64,
+    1
+   ],
+   [
+    65,
+    1
+   ],
+   [
+    64,
+    2
+   ],
+   [
+    66,
+    1
+   ],
+   [
+    65,
+    2
+   ],
+   [
+    67,
+    1
+   ],
+   [
+    66,
+    2
+   ],
+   [
+    68,
+    1
+   ],
+   [
+    67,
+    2
+   ],
+   [
+    69,
+    1
+   ],
+   [
+    68,
+    2
+   ],
+   [
+    69,
+    2
+   ],
+   [
+    69,
+    3
+   ],
+   [
+    69,
+    4
+   ],
+   [
+    69,
+    5
+   ],
+   [
+    69,
+    6
+   ],
+   [
+    69,
+    7
+   ],
+   [
+    69,
+    8
+   ],
+   [
+    68,
+    8
+   ],
+   [
+    69,
+    9
+   ],
+   [
+    67,
+    8
+   ],
+   [
+    68,
+    9
+   ],
+   [
+    66,
+    8
+   ],
+   [
+    67,
+    9
+   ],
+   [
+    66,
+    9
+   ]
+  ],
+  [
+   [
+    43,
+    11
+   ],
+   [
+    43,
+    12
+   ]
+  ],
+  [
+   [
+    43,
+    40
+   ]
+  ],
+  [
+   [
+    45,
+    16
+   ],
+   [
+    45,
+    17
+   ],
+   [
+    46,
+    17
+   ],
+   [
+    47,
+    17
+   ],
+   [
+    48,
+    17
+   ]
+  ],
+  [
+   [
+    46,
+    13
+   ],
+   [
+    47,
+    13
+   ],
+   [
+    48,
+    13
+   ]
+  ],
+  [
+   [
+    47,
+    5
+   ],
+   [
+    48,
+    5
+   ],
+   [
+    47,
+    6
+   ],
+   [
+    48,
+    6
+   ],
+   [
+    47,
+    7
+   ],
+   [
+    48,
+    7
+   ]
+  ],
+  [
+   [
+    47,
+    30
+   ],
+   [
+    48,
+    30
+   ],
+   [
+    49,
+    30
+   ],
+   [
+    50,
+    30
+   ],
+   [
+    50,
+    29
+   ],
+   [
+    50,
+    31
+   ],
+   [
+    50,
+    28
+   ],
+   [
+    50,
+    32
+   ],
+   [
+    50,
+    27
+   ],
+   [
+    50,
+    33
+   ],
+   [
+    50,
+    34
+   ],
+   [
+    50,
+    35
+   ]
+  ],
+  [
+   [
+    47,
+    60
+   ],
+   [
+    47,
+    61
+   ],
+   [
+    47,
+    62
+   ]
+  ],
+  [
+   [
+    49,
+    8
+   ],
+   [
+    49,
+    9
+   ],
+   [
+    49,
+    10
+   ],
+   [
+    49,
+    11
+   ],
+   [
+    49,
+    12
+   ]
+  ],
+  [
+   [
+    49,
+    44
+   ],
+   [
+    50,
+    44
+   ],
+   [
+    51,
+    44
+   ]
+  ],
+  [
+   [
+    49,
+    63
+   ],
+   [
+    50,
+    63
+   ],
+   [
+    49,
+    64
+   ],
+   [
+    51,
+    63
+   ],
+   [
+    49,
+    65
+   ],
+   [
+    51,
+    62
+   ],
+   [
+    51,
+    61
+   ],
+   [
+    51,
+    60
+   ]
+  ],
+  [
+   [
+    50,
+    18
+   ],
+   [
+    50,
+    19
+   ],
+   [
+    50,
+    20
+   ],
+   [
+    50,
+    21
+   ],
+   [
+    51,
+    21
+   ],
+   [
+    52,
+    21
+   ],
+   [
+    52,
+    22
+   ],
+   [
+    52,
+    23
+   ]
+  ],
+  [
+   [
+    51,
+    49
+   ]
+  ],
+  [
+   [
+    52,
+    5
+   ],
+   [
+    52,
+    6
+   ],
+   [
+    52,
+    7
+   ],
+   [
+    53,
+    7
+   ],
+   [
+    52,
+    8
+   ],
+   [
+    54,
+    7
+   ],
+   [
+    52,
+    9
+   ],
+   [
+    55,
+    7
+   ],
+   [
+    56,
+    7
+   ],
+   [
+    57,
+    7
+   ],
+   [
+    58,
+    7
+   ],
+   [
+    58,
+    6
+   ],
+   [
+    58,
+    5
+   ],
+   [
+    59,
+    5
+   ],
+   [
+    60,
+    5
+   ],
+   [
+    61,
+    5
+   ],
+   [
+    62,
+    5
+   ],
+   [
+    63,
+    5
+   ]
+  ],
+  [
+   [
+    52,
+    36
+   ],
+   [
+    52,
+    37
+   ]
+  ],
+  [
+   [
+    52,
+    41
+   ]
+  ],
+  [
+   [
+    52,
+    65
+   ],
+   [
+    53,
+    65
+   ],
+   [
+    54,
+    65
+   ]
+  ],
+  [
+   [
+    53,
+    12
+   ]
+  ],
+  [
+   [
+    53,
+    55
+   ],
+   [
+    54,
+    55
+   ],
+   [
+    55,
+    55
+   ]
+  ],
+  [
+   [
+    54,
+    20
+   ],
+   [
+    55,
+    20
+   ]
+  ],
+  [
+   [
+    54,
+    29
+   ],
+   [
+    55,
+    29
+   ],
+   [
+    54,
+    30
+   ],
+   [
+    56,
+    29
+   ],
+   [
+    55,
+    30
+   ],
+   [
+    54,
+    31
+   ],
+   [
+    57,
+    29
+   ],
+   [
+    56,
+    28
+   ],
+   [
+    56,
+    30
+   ],
+   [
+    55,
+    31
+   ],
+   [
+    57,
+    30
+   ],
+   [
+    56,
+    27
+   ],
+   [
+    56,
+    31
+   ],
+   [
+    57,
+    31
+   ],
+   [
+    56,
+    26
+   ],
+   [
+    56,
+    25
+   ],
+   [
+    56,
+    24
+   ],
+   [
+    56,
+    23
+   ]
+  ],
+  [
+   [
+    55,
+    42
+   ],
+   [
+    56,
+    42
+   ],
+   [
+    55,
+    43
+   ],
+   [
+    56,
+    43
+   ],
+   [
+    55,
+    44
+   ],
+   [
+    56,
+    44
+   ]
+  ],
+  [
+   [
+    55,
+    49
+   ],
+   [
+    55,
+    50
+   ],
+   [
+    55,
+    51
+   ]
+  ],
+  [
+   [
+    56,
+    52
+   ],
+   [
+    57,
+    52
+   ],
+   [
+    58,
+    52
+   ],
+   [
+    59,
+    52
+   ],
+   [
+    60,
+    52
+   ],
+   [
+    59,
+    51
+   ],
+   [
+    59,
+    53
+   ],
+   [
+    60,
+    51
+   ],
+   [
+    60,
+    53
+   ],
+   [
+    59,
+    50
+   ],
+   [
+    59,
+    54
+   ],
+   [
+    60,
+    50
+   ],
+   [
+    59,
+    49
+   ],
+   [
+    59,
+    55
+   ],
+   [
+    61,
+    50
+   ],
+   [
+    60,
+    49
+   ],
+   [
+    59,
+    56
+   ],
+   [
+    62,
+    50
+   ],
+   [
+    58,
+    56
+   ],
+   [
+    63,
+    50
+   ],
+   [
+    57,
+    56
+   ],
+   [
+    56,
+    56
+   ]
+  ],
+  [
+   [
+    57,
+    35
+   ],
+   [
+    58,
+    35
+   ],
+   [
+    57,
+    36
+   ],
+   [
+    59,
+    35
+   ],
+   [
+    57,
+    37
+   ],
+   [
+    60,
+    35
+   ],
+   [
+    57,
+    38
+   ],
+   [
+    60,
+    34
+   ],
+   [
+    57,
+    39
+   ],
+   [
+    60,
+    33
+   ],
+   [
+    58,
+    39
+   ],
+   [
+    57,
+    40
+   ],
+   [
+    60,
+    32
+   ],
+   [
+    59,
+    39
+   ],
+   [
+    58,
+    40
+   ],
+   [
+    60,
+    39
+   ],
+   [
+    59,
+    40
+   ],
+   [
+    61,
+    39
+   ],
+   [
+    60,
+    40
+   ],
+   [
+    61,
+    38
+   ],
+   [
+    61,
+    40
+   ]
+  ],
+  [
+   [
+    57,
+    46
+   ],
+   [
+    57,
+    47
+   ],
+   [
+    57,
+    48
+   ]
+  ],
+  [
+   [
+    57,
+    60
+   ],
+   [
+    58,
+    60
+   ],
+   [
+    59,
+    60
+   ]
+  ],
+  [
+   [
+    57,
+    64
+   ],
+   [
+    58,
+    64
+   ],
+   [
+    59,
+    64
+   ]
+  ],
+  [
+   [
+    59,
+    11
+   ],
+   [
+    59,
+    12
+   ],
+   [
+    59,
+    13
+   ],
+   [
+    59,
+    14
+   ],
+   [
+    59,
+    15
+   ],
+   [
+    59,
+    16
+   ]
+  ],
+  [
+   [
+    59,
+    20
+   ],
+   [
+    59,
+    21
+   ],
+   [
+    59,
+    22
+   ],
+   [
+    60,
+    22
+   ],
+   [
+    60,
+    23
+   ],
+   [
+    60,
+    24
+   ],
+   [
+    60,
+    25
+   ],
+   [
+    60,
+    26
+   ],
+   [
+    60,
+    27
+   ],
+   [
+    60,
+    28
+   ]
+  ],
+  [
+   [
+    60,
+    68
+   ],
+   [
+    61,
+    68
+   ],
+   [
+    60,
+    69
+   ],
+   [
+    62,
+    68
+   ],
+   [
+    61,
+    69
+   ],
+   [
+    63,
+    68
+   ],
+   [
+    62,
+    69
+   ],
+   [
+    64,
+    68
+   ],
+   [
+    63,
+    69
+   ],
+   [
+    65,
+    68
+   ],
+   [
+    64,
+    67
+   ],
+   [
+    64,
+    69
+   ],
+   [
+    66,
+    68
+   ],
+   [
+    65,
+    67
+   ],
+   [
+    65,
+    69
+   ],
+   [
+    64,
+    66
+   ],
+   [
+    67,
+    68
+   ],
+   [
+    66,
+    67
+   ],
+   [
+    66,
+    69
+   ],
+   [
+    65,
+    66
+   ],
+   [
+    64,
+    65
+   ],
+   [
+    68,
+    68
+   ],
+   [
+    67,
+    67
+   ],
+   [
+    67,
+    69
+   ],
+   [
+    66,
+    66
+   ],
+   [
+    65,
+    65
+   ],
+   [
+    64,
+    64
+   ],
+   [
+    69,
+    68
+   ],
+   [
+    68,
+    67
+   ],
+   [
+    68,
+    69
+   ],
+   [
+    67,
+    66
+   ],
+   [
+    66,
+    65
+   ],
+   [
+    65,
+    64
+   ],
+   [
+    64,
+    63
+   ],
+   [
+    69,
+    67
+   ],
+   [
+    69,
+    69
+   ],
+   [
+    68,
+    66
+   ],
+   [
+    67,
+    65
+   ],
+   [
+    66,
+    64
+   ],
+   [
+    65,
+    63
+   ],
+   [
+    64,
+    62
+   ],
+   [
+    69,
+    66
+   ],
+   [
+    68,
+    65
+   ],
+   [
+    67,
+    64
+   ],
+   [
+    66,
+    63
+   ],
+   [
+    65,
+    62
+   ],
+   [
+    64,
+    61
+   ],
+   [
+    69,
+    65
+   ],
+   [
+    68,
+    64
+   ],
+   [
+    67,
+    63
+   ],
+   [
+    66,
+    62
+   ],
+   [
+    65,
+    61
+   ],
+   [
+    63,
+    61
+   ],
+   [
+    64,
+    60
+   ],
+   [
+    69,
+    64
+   ],
+   [
+    68,
+    63
+   ],
+   [
+    67,
+    62
+   ],
+   [
+    66,
+    61
+   ],
+   [
+    62,
+    61
+   ],
+   [
+    63,
+    60
+   ],
+   [
+    69,
+    63
+   ],
+   [
+    68,
+    62
+   ],
+   [
+    67,
+    61
+   ],
+   [
+    62,
+    60
+   ],
+   [
+    69,
+    62
+   ],
+   [
+    68,
+    61
+   ],
+   [
+    69,
+    61
+   ]
+  ],
+  [
+   [
+    61,
+    31
+   ],
+   [
+    62,
+    31
+   ],
+   [
+    63,
+    31
+   ],
+   [
+    64,
+    31
+   ],
+   [
+    64,
+    32
+   ],
+   [
+    64,
+    33
+   ],
+   [
+    64,
+    34
+   ],
+   [
+    65,
+    34
+   ],
+   [
+    64,
+    35
+   ],
+   [
+    65,
+    35
+   ]
+  ],
+  [
+   [
+    61,
+    46
+   ],
+   [
+    62,
+    46
+   ],
+   [
+    63,
+    46
+   ],
+   [
+    62,
+    45
+   ],
+   [
+    63,
+    45
+   ]
+  ],
+  [
+   [
+    62,
+    41
+   ],
+   [
+    63,
+    41
+   ],
+   [
+    64,
+    41
+   ]
+  ],
+  [
+   [
+    63,
+    54
+   ],
+   [
+    63,
+    55
+   ],
+   [
+    63,
+    56
+   ],
+   [
+    64,
+    56
+   ]
+  ],
+  [
+   [
+    64,
+    10
+   ]
+  ],
+  [
+   [
+    64,
+    20
+   ],
+   [
+    65,
+    20
+   ],
+   [
+    64,
+    21
+   ],
+   [
+    65,
+    21
+   ]
+  ],
+  [
+   [
+    64,
+    24
+   ],
+   [
+    65,
+    24
+   ],
+   [
+    65,
+    25
+   ],
+   [
+    65,
+    26
+   ],
+   [
+    65,
+    27
+   ],
+   [
+    65,
+    28
+   ]
+  ],
+  [
+   [
+    64,
+    52
+   ],
+   [
+    65,
+    52
+   ]
+  ],
+  [
+   [
+    65,
+    15
+   ],
+   [
+    66,
+    15
+   ],
+   [
+    67,
+    15
+   ],
+   [
+    68,
+    15
+   ],
+   [
+    69,
+    15
+   ]
+  ],
+  [
+   [
+    65,
+    38
+   ],
+   [
+    65,
+    39
+   ]
+  ],
+  [
+   [
+    67,
+    53
+   ],
+   [
+    68,
+    53
+   ],
+   [
+    67,
+    54
+   ],
+   [
+    69,
+    53
+   ],
+   [
+    68,
+    54
+   ],
+   [
+    67,
+    55
+   ],
+   [
+    69,
+    52
+   ],
+   [
+    69,
+    54
+   ],
+   [
+    68,
+    55
+   ],
+   [
+    69,
+    51
+   ],
+   [
+    69,
+    55
+   ],
+   [
+    69,
+    50
+   ],
+   [
+    69,
+    49
+   ],
+   [
+    69,
+    48
+   ],
+   [
+    69,
+    47
+   ],
+   [
+    69,
+    46
+   ],
+   [
+    69,
+    45
+   ]
+  ],
+  [
+   [
+    69,
+    20
+   ],
+   [
+    69,
+    21
+   ],
+   [
+    69,
+    22
+   ]
+  ]
+ ],
+ "not_general_infeasibility": true
+}

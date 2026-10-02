@@ -1,0 +1,113 @@
+{
+  "local_geometry": [
+    {
+      "example": "单桥交叉",
+      "statistics": {
+        "machines": 4,
+        "routes": 2,
+        "physical_channels": 16,
+        "transport_units": 13,
+        "transport_slots": 14,
+        "bridges": 1,
+        "adjacent_bridge_pairs": 0,
+        "reverse_bridge_channels": 0,
+        "occupied_cells": 49
+      },
+      "expected": {
+        "transport_units": 13,
+        "transport_slots": 14,
+        "bridges": 1,
+        "adjacent_bridge_pairs": 0,
+        "reverse_bridge_channels": 0
+      },
+      "mutations": [
+        {
+          "mutation": "delete_belt",
+          "rejected": true,
+          "failed_checks": [
+            "all_automatic_channels",
+            "directed_routes",
+            "s2_routes",
+            "no_extra_channels",
+            "logical_feed_claims",
+            "no_unused_transport",
+            "bridge_axis_coverage",
+            "bridge_direction"
+          ]
+        },
+        {
+          "mutation": "wrong_axis",
+          "rejected": true,
+          "failed_checks": [
+            "bridge_direction"
+          ]
+        },
+        {
+          "mutation": "unlisted_channel",
+          "rejected": true,
+          "failed_checks": [
+            "all_automatic_channels",
+            "logical_feed_claims",
+            "channel_item_labels"
+          ]
+        }
+      ]
+    },
+    {
+      "example": "三桥相邻",
+      "statistics": {
+        "machines": 4,
+        "routes": 4,
+        "physical_channels": 34,
+        "transport_units": 25,
+        "transport_slots": 28,
+        "bridges": 3,
+        "adjacent_bridge_pairs": 2,
+        "reverse_bridge_channels": 2,
+        "occupied_cells": 61
+      },
+      "expected": {
+        "transport_units": 25,
+        "transport_slots": 28,
+        "bridges": 3,
+        "adjacent_bridge_pairs": 2,
+        "reverse_bridge_channels": 2
+      },
+      "mutations": [
+        {
+          "mutation": "delete_belt",
+          "rejected": true,
+          "failed_checks": [
+            "all_automatic_channels",
+            "directed_routes",
+            "s2_routes",
+            "no_extra_channels",
+            "logical_feed_claims",
+            "no_unused_transport",
+            "bridge_axis_coverage",
+            "bridge_direction"
+          ]
+        },
+        {
+          "mutation": "wrong_axis",
+          "rejected": true,
+          "failed_checks": [
+            "bridge_direction"
+          ]
+        },
+        {
+          "mutation": "unlisted_channel",
+          "rejected": true,
+          "failed_checks": [
+            "all_automatic_channels",
+            "channel_item_labels",
+            "declared_bridge_reverse_channels"
+          ]
+        }
+      ]
+    }
+  ],
+  "rectangle_bruteforce_cases": 60,
+  "all_pass": true,
+  "not_a_full_factory": true
+}

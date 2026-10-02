@@ -1,0 +1,996 @@
+{
+  "report_sha256": "1e79db7cfb69eec7042b9bb6f4f53ba4bbfda4975d43b76885c2ce40c66bc158",
+  "candidate_sha256": "e1d955e9569c420d9566cc4ad128d7cca491e7eeeaf197307dd9abc73d1723d9",
+  "files": [
+    {
+      "path": "构造A.md",
+      "bytes": 11638,
+      "sha256": "1e79db7cfb69eec7042b9bb6f4f53ba4bbfda4975d43b76885c2ce40c66bc158"
+    },
+    {
+      "path": "构造A/代码/anneal",
+      "bytes": 50136,
+      "sha256": "7c9d8fde6706e39d8d50c37404e16235cd5fb66be05bee823517038f82859a01"
+    },
+    {
+      "path": "构造A/代码/anneal.cpp",
+      "bytes": 4393,
+      "sha256": "dbed50d261e631992f34b18bef0d9eb75b4947d7f32c612e704f5cb43ec1336d"
+    },
+    {
+      "path": "构造A/代码/anneal_connected",
+      "bytes": 54336,
+      "sha256": "833dc04b0ab133f370ea94d56d7f16e5a48b04f7134893186061dcb6de1e3619"
+    },
+    {
+      "path": "构造A/代码/anneal_connected.cpp",
+      "bytes": 5048,
+      "sha256": "1886a1fef453008d07c54dfb4e5ccb215b7237069498be262d7ba367dafa029b"
+    },
+    {
+      "path": "构造A/代码/anneal_driver.py",
+      "bytes": 4540,
+      "sha256": "d2800a712c2b0959d0460f6215cfe0afecc6d474d94f03edc22e7d169b1c371e"
+    },
+    {
+      "path": "构造A/代码/anneal_sources",
+      "bytes": 50144,
+      "sha256": "26087b86d09b0b7180f252d995d5d411240d0837682bc49bb496663a3ae0efdc"
+    },
+    {
+      "path": "构造A/代码/anneal_sources.cpp",
+      "bytes": 4407,
+      "sha256": "4057e8fe64542eaada0d2d0f635a4abb80fc0c06fc4d40dbf00a2d1d261e39f9"
+    },
+    {
+      "path": "构造A/代码/anneal_sources2",
+      "bytes": 50272,
+      "sha256": "51c278a802f455900cdaafdecd2202a46bf6c257be0b5b092986418a119a29e7"
+    },
+    {
+      "path": "构造A/代码/anneal_sources2.cpp",
+      "bytes": 4455,
+      "sha256": "48f74994856773448d5162ca2a3fb83612eb2f126c3c98558b9b8a477e57722b"
+    },
+    {
+      "path": "构造A/代码/arithmetic_check.py",
+      "bytes": 3680,
+      "sha256": "29cb1031f7edbd14399c45b851fd1b88e42a7b9b9b61bfc6e08183fe1a187495"
+    },
+    {
+      "path": "构造A/代码/assign_route.py",
+      "bytes": 10543,
+      "sha256": "550854e48b7bcf133332612687a075d29fc05249aa5bb1566b5c536071c1f328"
+    },
+    {
+      "path": "构造A/代码/check_components.py",
+      "bytes": 3669,
+      "sha256": "4bece9125cd38128365530fbcd5de2071da313ba230a489a8103beeb179bd1b2"
+    },
+    {
+      "path": "构造A/代码/connectivity_certificate.py",
+      "bytes": 4389,
+      "sha256": "167a450924999844d4dcfea7f74ff046c656f643eedc54ffb956d42136db867a"
+    },
+    {
+      "path": "构造A/代码/draw_layout.py",
+      "bytes": 4711,
+      "sha256": "8e81e11d99828c584a3dad08ecc055e254f13b8d56fdf84c6b54cc975b55c49a"
+    },
+    {
+      "path": "构造A/代码/export_candidate.py",
+      "bytes": 7287,
+      "sha256": "3f99bbb4bdc9abcc125618ecb98d3185658d1647c9c75380bb453ad65d3503d7"
+    },
+    {
+      "path": "构造A/代码/joint_cp.py",
+      "bytes": 17441,
+      "sha256": "5938666466a8cb5f608f4f9cc1108efb88ada434c134f1ca263b64556b358f12"
+    },
+    {
+      "path": "构造A/代码/legacy_components.py",
+      "bytes": 3002,
+      "sha256": "f966ca22f9b0065340544b926fd453d1028c1e4b41462191a4a533cb66b12820"
+    },
+    {
+      "path": "构造A/代码/package_candidate.py",
+      "bytes": 2518,
+      "sha256": "352896b41109e3edd228e0ff4e2dd115f572344eca0e03c56f4a0d6ff185437b"
+    },
+    {
+      "path": "构造A/代码/placement_cp.py",
+      "bytes": 6745,
+      "sha256": "fb4d724cd8b84572084ef947e207afdde004abeb8b058d873fe21fc30693e20b"
+    },
+    {
+      "path": "构造A/代码/polyline_cp.py",
+      "bytes": 14522,
+      "sha256": "af12da266a010cb9c64c504f01abf2bbe5c3bedad538e17bf74d121701bba928"
+    },
+    {
+      "path": "构造A/代码/prepare_route_seed.py",
+      "bytes": 1809,
+      "sha256": "503252696b45ac1ee9337d8bc528de3974231318360677162f2c0e16a8402dc5"
+    },
+    {
+      "path": "构造A/代码/replay.py",
+      "bytes": 2338,
+      "sha256": "a971091ffb75c7e3c45216d658fb446477c4621e598ead8109d1b8ba7fc3733e"
+    },
+    {
+      "path": "构造A/代码/skeleton_place.py",
+      "bytes": 5799,
+      "sha256": "a96457670d002886068f44ae968c40ac787a8505117742e04ffb6c71d5f45f24"
+    },
+    {
+      "path": "构造A/代码/static_check.py",
+      "bytes": 17750,
+      "sha256": "a28688b5dccf7cfe35958f6249f5ae80135f06e184183c4776a0bedd0df26bce"
+    },
+    {
+      "path": "构造A/代码/write_report.py",
+      "bytes": 12854,
+      "sha256": "37b209060fca23497332422c2d1c0aae7161be9231cbc128427862ec27615a91"
+    },
+    {
+      "path": "构造A/依据快照/《明日方舟：终末地》游戏规则.txt",
+      "bytes": 7538,
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93"
+    },
+    {
+      "path": "构造A/依据快照/三审报告.md",
+      "bytes": 3566,
+      "sha256": "dc79666bcd9238df14c7a5824fd1ca47e13dd748789d72a2a30a21bfb1651a46"
+    },
+    {
+      "path": "构造A/依据快照/不补的设定.txt",
+      "bytes": 4161,
+      "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba"
+    },
+    {
+      "path": "构造A/依据快照/临时规则.md",
+      "bytes": 2089,
+      "sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d"
+    },
+    {
+      "path": "构造A/依据快照/推导107S2B-读入时.md",
+      "bytes": 46234,
+      "sha256": "a0686ba02fd1f7faa523a780cd82db8950e8563becf194080c22a5ff94c3cc5f"
+    },
+    {
+      "path": "构造A/依据快照/推导98S2.md",
+      "bytes": 38983,
+      "sha256": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af"
+    },
+    {
+      "path": "构造A/依据快照/格式.md",
+      "bytes": 39677,
+      "sha256": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987"
+    },
+    {
+      "path": "构造A/依据快照/求解任务.txt",
+      "bytes": 1350,
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b"
+    },
+    {
+      "path": "构造A/依据快照/求解充分条件.txt",
+      "bytes": 17489,
+      "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435"
+    },
+    {
+      "path": "构造A/依据快照/求解约束.txt",
+      "bytes": 48292,
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+    },
+    {
+      "path": "构造A/依据快照/逻辑接法-原.json",
+      "bytes": 119696,
+      "sha256": "2d160ae218d3ced0a807b15a8bdebe688bbbea324e9543896a9bca326c53f4e3"
+    },
+    {
+      "path": "构造A/图/三桥相邻-局部诊断.png",
+      "bytes": 40568,
+      "sha256": "3169e7d6f93f5007ce5b29c623e1ad6a5b7666153832c8649fa7c148a765125d"
+    },
+    {
+      "path": "构造A/图/三桥相邻-局部诊断.svg",
+      "bytes": 8490,
+      "sha256": "b16f30501874e0681ff5a1d224c20a602f4bd4f530df75fcfbf4702d598d2e9c"
+    },
+    {
+      "path": "构造A/图/全厂部分布线-非解.png",
+      "bytes": 136231,
+      "sha256": "827c6bc8c7e13bba60ec6570da09cca49853fb1b6c4dbb074ef28f0595c2e2d7"
+    },
+    {
+      "path": "构造A/图/全厂部分布线-非解.svg",
+      "bytes": 135580,
+      "sha256": "08cf7171684f8fa9789b1a56254368452dd9650475714ae076ab637f202c448b"
+    },
+    {
+      "path": "构造A/图/失败候选布局.png",
+      "bytes": 141109,
+      "sha256": "ed5554517150ea63e6be68555009dc3213ff3c3a03bc2d9bfaa5eb4be6bc0e3d"
+    },
+    {
+      "path": "构造A/图/失败候选布局.svg",
+      "bytes": 133366,
+      "sha256": "2c7658697e2fcb4e865a1462a6237b20245be88df7a5d7a6be235d152a8ac81d"
+    },
+    {
+      "path": "构造A/实验/CP133路-非解.check.json",
+      "bytes": 37783,
+      "sha256": "9237431f72769e2dbcc82921b9cba7aa1828742140be7a7aaed6a66bf3c7744a"
+    },
+    {
+      "path": "构造A/实验/CP133路-非解.json",
+      "bytes": 231015,
+      "sha256": "6a93300f52e108085e09fecfd05f0702a8f086a6b83f58e5cc97ee29fb21d75c"
+    },
+    {
+      "path": "构造A/实验/anneal-1.coordinates.txt",
+      "bytes": 4294,
+      "sha256": "b8aecd89c65b8349fb6601fbbbd3af3b222025c6ad91ae01c8eb48c046760166"
+    },
+    {
+      "path": "构造A/实验/anneal-1.input.txt",
+      "bytes": 8462,
+      "sha256": "ea38aacf74ee800a6bc771f1cfcf389da0fa54f0232a8b177db8636ce9da5856"
+    },
+    {
+      "path": "构造A/实验/anneal-1.json",
+      "bytes": 56080,
+      "sha256": "f206cb422e66c6833001e75cace4c62fe75e86a2afb5bc8eea982a19a85277f9"
+    },
+    {
+      "path": "构造A/实验/anneal-1.log",
+      "bytes": 51,
+      "sha256": "9b85c4f5ea00273836ee47318cb0fd95bf948889dd45883921bee13eed2f6d7f"
+    },
+    {
+      "path": "构造A/实验/anneal-2.coordinates.txt",
+      "bytes": 4300,
+      "sha256": "b9fd20c68f474ce9ee3036612169413faabac93f537e40dcb469626c3fb84d39"
+    },
+    {
+      "path": "构造A/实验/anneal-2.input.txt",
+      "bytes": 8454,
+      "sha256": "538190a98527cac378550ce86a96a9c8169464a18962a3343669e3dd9b80f6bb"
+    },
+    {
+      "path": "构造A/实验/anneal-2.json",
+      "bytes": 56084,
+      "sha256": "52750f9b7702387dea350d40a9247050ff0eb5752b2bf61a01d0709b28960395"
+    },
+    {
+      "path": "构造A/实验/anneal-2.log",
+      "bytes": 52,
+      "sha256": "cb216965b0aa02b3c4c2f302856df2f582999c5051d6cf0192024ab62e5665f8"
+    },
+    {
+      "path": "构造A/实验/anneal-21.coordinates.txt",
+      "bytes": 4298,
+      "sha256": "d56170cbdfb41fe05b9cc3675f0fd08112a42b2c3c6fd6d1cc54117aefbd9e42"
+    },
+    {
+      "path": "构造A/实验/anneal-21.input.txt",
+      "bytes": 8454,
+      "sha256": "539b580d99aae4f6345e4e0b361f0562e7eca9587306394f190cb80668a8c7e0"
+    },
+    {
+      "path": "构造A/实验/anneal-21.json",
+      "bytes": 56079,
+      "sha256": "ae5d772fc36b7bec2888f2ddd0d082f831b9751b186f2927972c2be8327884bb"
+    },
+    {
+      "path": "构造A/实验/anneal-21.log",
+      "bytes": 48,
+      "sha256": "ddeb46f6ea941d1b9306961f56a03d7daa046da800f1d3a541e7fad54e421029"
+    },
+    {
+      "path": "构造A/实验/anneal-22.coordinates.txt",
+      "bytes": 4301,
+      "sha256": "d4cc89b4332c59788ffb0232cd568729db6d83e8ab2a116a7213f47627ba2f83"
+    },
+    {
+      "path": "构造A/实验/anneal-22.input.txt",
+      "bytes": 8454,
+      "sha256": "b863a6d1bb815b275a1fadb5a8af683ae005811d425107d0ce03a515aded2db7"
+    },
+    {
+      "path": "构造A/实验/anneal-22.json",
+      "bytes": 56089,
+      "sha256": "d45960ac122f05ed278ce5765503839ea5bda16182626242c662bd20ed4c738a"
+    },
+    {
+      "path": "构造A/实验/anneal-22.log",
+      "bytes": 48,
+      "sha256": "193c8cced2f9bee074b82e82a8f398589cfaadc56e161b337e167448bb9d5224"
+    },
+    {
+      "path": "构造A/实验/anneal-23.coordinates.txt",
+      "bytes": 4292,
+      "sha256": "dd82669332deb2e5351c291eb17552caa91c86a7df8cfcee86dd5fe51295ce49"
+    },
+    {
+      "path": "构造A/实验/anneal-23.input.txt",
+      "bytes": 8456,
+      "sha256": "6e21d3a76eb6d79b34b36b957b8a9a3b0fa7b204732623b428bd74541fa888d9"
+    },
+    {
+      "path": "构造A/实验/anneal-23.json",
+      "bytes": 56065,
+      "sha256": "5b28e02ffa5e7a373f71e6427a2070389415275f7d1ba4dceeb7ce83ad4f77e0"
+    },
+    {
+      "path": "构造A/实验/anneal-23.log",
+      "bytes": 48,
+      "sha256": "3d8b69ec75da97649e39e967268f39a24f3ff429ac894f910a85efa332a95dcd"
+    },
+    {
+      "path": "构造A/实验/anneal-24.coordinates.txt",
+      "bytes": 4290,
+      "sha256": "0861322e808b7a070ed2425fcd49be1fda5774fedea2c10ecf5f9496c0267a88"
+    },
+    {
+      "path": "构造A/实验/anneal-24.input.txt",
+      "bytes": 8459,
+      "sha256": "04152a402064e7464b817b5722e65e2003ae1a5151c5d0d21084d42b2885fb35"
+    },
+    {
+      "path": "构造A/实验/anneal-24.json",
+      "bytes": 56047,
+      "sha256": "9465b9e07083fd16913f9ce8220008ac7b5b28cca9ae6e54b97770a6bd1fc066"
+    },
+    {
+      "path": "构造A/实验/anneal-24.log",
+      "bytes": 48,
+      "sha256": "9bed168a9c52895af858df9a6d6852a396d873d09383e72c556831d91036c084"
+    },
+    {
+      "path": "构造A/实验/anneal-3.coordinates.txt",
+      "bytes": 4141,
+      "sha256": "d8e92126967ca17ea872e0cc60f5e968dfd3d03429d4e4630bd8bc75832c63da"
+    },
+    {
+      "path": "构造A/实验/anneal-3.input.txt",
+      "bytes": 8240,
+      "sha256": "7a5195840fe9f34155102e39d38c1e9b79795a75a84104ff3cc249f5d84ffb5c"
+    },
+    {
+      "path": "构造A/实验/anneal-3.json",
+      "bytes": 54974,
+      "sha256": "c49bdc3510eea4f6a530722612b5997b467f12b35d60ff398a4034c68751ac1b"
+    },
+    {
+      "path": "构造A/实验/anneal-3.log",
+      "bytes": 49,
+      "sha256": "e59a39af980cc33e5a2f5ad847c5908925d4f1c4617217408de8b481155aab80"
+    },
+    {
+      "path": "构造A/实验/anneal-4.coordinates.txt",
+      "bytes": 4295,
+      "sha256": "bdce62951baffbca47e82e63a6e26324cfa7551a7bb21a4709245a9ea4103640"
+    },
+    {
+      "path": "构造A/实验/anneal-4.input.txt",
+      "bytes": 8454,
+      "sha256": "538190a98527cac378550ce86a96a9c8169464a18962a3343669e3dd9b80f6bb"
+    },
+    {
+      "path": "构造A/实验/anneal-4.json",
+      "bytes": 56081,
+      "sha256": "c0c5eb3eb2962de5f5d9258815c0460c40c8275ad235b5d61dd4e172ce0b08a9"
+    },
+    {
+      "path": "构造A/实验/anneal-4.log",
+      "bytes": 64,
+      "sha256": "747d3eb6350eeee02cf9af71819400019673f447581e1f64b245daf8fe0dd7df"
+    },
+    {
+      "path": "构造A/实验/anneal-5.coordinates.txt",
+      "bytes": 4291,
+      "sha256": "d5ab2a442d91537a5f4ef7cbf9db9aa003b1feebea90c81876dcceeefd002956"
+    },
+    {
+      "path": "构造A/实验/anneal-5.input.txt",
+      "bytes": 8453,
+      "sha256": "1f39545100de045e9496192658aa1abe5dfa076a8e87a2442d515869db28506a"
+    },
+    {
+      "path": "构造A/实验/anneal-5.json",
+      "bytes": 56042,
+      "sha256": "e2535bc4d456b0a5c98125324d9d9caa2378d2d4d89e759f85b2f4329d1db8bd"
+    },
+    {
+      "path": "构造A/实验/anneal-5.log",
+      "bytes": 65,
+      "sha256": "76aacfbc67b28583a19316412f8462a45c82407735cf631b8b72ee9b58a4ab27"
+    },
+    {
+      "path": "构造A/实验/joint-crossing-control.json",
+      "bytes": 3082,
+      "sha256": "321bca3dca830aa45be1a0398623d1b68c220759e98438778906d5fe59bf4719"
+    },
+    {
+      "path": "构造A/实验/joint-crossing-control.log",
+      "bytes": 18638,
+      "sha256": "de1d0971668fa7901ab7a80ba1724d97c4013447af97acfdd3628083ca472891"
+    },
+    {
+      "path": "构造A/实验/joint-full-01.json",
+      "bytes": 493,
+      "sha256": "7411068fbb306faa97822142a41473b8d262923d6859ccad6654fd09e0fb48ff"
+    },
+    {
+      "path": "构造A/实验/joint-full-01.log",
+      "bytes": 3428,
+      "sha256": "36d47b4366ab8242438bbe7394dedd31cd34cd77f396d1714cfb1a79386d4c3c"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-04.json",
+      "bytes": 966,
+      "sha256": "b098fb6089154aadef52b8fe2626e8972de31cf2d3e2a8c2ae4bb2760fab05e5"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-04.log",
+      "bytes": 2324,
+      "sha256": "e7b1a105b8bd990c13233e3f753277f031623ed7d6da6914808af0e18ffbf057"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-05.json",
+      "bytes": 509,
+      "sha256": "ea838c1e10466d5ddf1c49a6652a40671335fc0a2fbe3f14e9af76918ef80cff"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-05.log",
+      "bytes": 18403,
+      "sha256": "062e1ec6da4d041486cadcfbc8aa686adb2f01e94c37004254aa43d855855c87"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-06-nolp.json",
+      "bytes": 790,
+      "sha256": "21c9ead612c927db47c92f327902206fdf51abf20dc362f4ea1de2bd8b0cdd4f"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-06-nolp.log",
+      "bytes": 20553,
+      "sha256": "93a2014c4c75495d94f405aab13fe6f95a0228c11da0ad17a0212a528200518e"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-06.json",
+      "bytes": 776,
+      "sha256": "86ccc084863b194a199e1a916326c41861a2c87363f823c888efeaef1572ace7"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-06.log",
+      "bytes": 27605,
+      "sha256": "f3128b7c9f1a62272e3948359595b81fa065a4e3f6839e2794cc6c094cbc8340"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-06wide.json",
+      "bytes": 495,
+      "sha256": "e979559646b7f76bfff78deeddb42b352232c929a718c05c28c595994d7ccbf6"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-06wide.log",
+      "bytes": 17972,
+      "sha256": "716b3c3db879cf91e6941c91d5b7d2f5c899ee93f2181ddf8f3409ac765895cd"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-sources-hint.json",
+      "bytes": 830,
+      "sha256": "2f6ed20646ffba91c86b2662a0f9ba4a1771196dffc8f3ab185fb8f0b2da18ad"
+    },
+    {
+      "path": "构造A/实验/joint-neighborhood-sources-hint.log",
+      "bytes": 21034,
+      "sha256": "856845c01d4dcd56e2f074b1d3fe87d332cdd2938787aaa4c15d4b3a801f1521"
+    },
+    {
+      "path": "构造A/实验/packing-no-rectangle.json",
+      "bytes": 666,
+      "sha256": "5a7babf848f81d8a1f2be155b3ff9afd1fe8db756fc5bf039a7e466d8f66ee7c"
+    },
+    {
+      "path": "构造A/实验/packing-no-rectangle.log",
+      "bytes": 19210,
+      "sha256": "71770bbdeeac0a71f8e51f2ffd8e98a42d2a2cbea6cfe5fcfe8bc8b04d24fcec"
+    },
+    {
+      "path": "构造A/实验/placement-01.json",
+      "bytes": 778,
+      "sha256": "9342799596a506ec3e6e20940806b4d352a8c76daa2a7256e0f4925fceb81a4b"
+    },
+    {
+      "path": "构造A/实验/placement-01.log",
+      "bytes": 23362,
+      "sha256": "266ec89b0ed1c8cf20a46c02263937f0e75f5054e7f80fe0651cdbb726b484c5"
+    },
+    {
+      "path": "构造A/实验/plant-fixed.json",
+      "bytes": 2625,
+      "sha256": "0b7bf2d05285c966849aea5b7619a35c749b41c89d8cf6bd7b49678e8dc4fca9"
+    },
+    {
+      "path": "构造A/实验/plant11x11.json",
+      "bytes": 730,
+      "sha256": "d740a9902495d37afeac22ec452f80afd1c49108a28a692426fd6bea1e9db47a"
+    },
+    {
+      "path": "构造A/实验/plant11x11.log",
+      "bytes": 29169,
+      "sha256": "dff350a6e65dc7202997fd8283376d6aeba1e4ee069fc0d4efb58e429c7b27fb"
+    },
+    {
+      "path": "构造A/实验/polyline-133-refit.json",
+      "bytes": 88569,
+      "sha256": "aabf5b4480d57cb614743854b2e3ed334375ed8e17eae0ba7e31e8d3f080a45c"
+    },
+    {
+      "path": "构造A/实验/polyline-133-refit.log",
+      "bytes": 14508,
+      "sha256": "127c348a2abe05d6ddf362688808cdff522c7e54777df656f1ef7483efc10533"
+    },
+    {
+      "path": "构造A/实验/polyline-all-off-control.json",
+      "bytes": 35244,
+      "sha256": "4cb2ed11ec8014929fd360fb10e7b5365e3db5eb376af8cd18e5e60ef1fc3757"
+    },
+    {
+      "path": "构造A/实验/polyline-all-off-control.log",
+      "bytes": 18530,
+      "sha256": "3fbedc20cf042992961384fac4ad938c8d8c53ab2a3fc5758163de6954d9e52d"
+    },
+    {
+      "path": "构造A/实验/polyline-complete-hint.json",
+      "bytes": 43296,
+      "sha256": "52ea5ffe3544e5a82fa49043fbb68fe516dfc33c6281e23894c7322d6a65ca17"
+    },
+    {
+      "path": "构造A/实验/polyline-complete-hint.log",
+      "bytes": 14722,
+      "sha256": "d8e9d42bec9288853484d0260d0d1758c1c95fc687a0fe460b993171684616d8"
+    },
+    {
+      "path": "构造A/实验/polyline-control-vector.json",
+      "bytes": 208741,
+      "sha256": "25680ce9257bfe5b2c9ab2f2d9d725c98d2ecaf288d92584a89acbedd49fef40"
+    },
+    {
+      "path": "构造A/实验/polyline-control-vector.log",
+      "bytes": 18590,
+      "sha256": "86811a26dd9e8736d9cedaf71160cde5c22ae5e874bb82f6699d5bc1b54b4634"
+    },
+    {
+      "path": "构造A/实验/polyline-fixed-partial-02.json",
+      "bytes": 894,
+      "sha256": "5cb2a1c5ccd2844f75afe7439cbf543eec429790fe0ce823c7129ae1db2bbc72"
+    },
+    {
+      "path": "构造A/实验/polyline-fixed-partial-02.log",
+      "bytes": 42495,
+      "sha256": "b5ff03f94744b052d4e17fac812ff9e3bcdd6316661af5f9dcbfa61d40250adf"
+    },
+    {
+      "path": "构造A/实验/polyline-fixed-partial.json",
+      "bytes": 1016,
+      "sha256": "256923ec96a2d6ddf677a28905003c8dadc1e988ef4bfd41ebf03d42d7136617"
+    },
+    {
+      "path": "构造A/实验/polyline-fixed-partial.log",
+      "bytes": 3655,
+      "sha256": "0c2cebedd154a1c4a8f9839a0c64761e6b0d59d3e30eff9ed1397edb3a35a315"
+    },
+    {
+      "path": "构造A/实验/polyline-fixed.json",
+      "bytes": 2924,
+      "sha256": "97bc7a588ef945063280d8541e83aefc2246f79fd69b7eaa75cb33482c1c7b1c"
+    },
+    {
+      "path": "构造A/实验/polyline-fixed.log",
+      "bytes": 17599,
+      "sha256": "35ca732565d643bafde7ae61dfb57457ea9ee0306077c74f075d2b58cc58140f"
+    },
+    {
+      "path": "构造A/实验/polyline-full-01.json",
+      "bytes": 892,
+      "sha256": "cd30976854fadf7b32de39d1b8d63905077cb198f37f3fba7bd603e5478dd83f"
+    },
+    {
+      "path": "构造A/实验/polyline-full-01.log",
+      "bytes": 25942,
+      "sha256": "68769ca220fc72701aa922e7417a9ae07b502847e595b1dd17610c169d002aaf"
+    },
+    {
+      "path": "构造A/实验/polyline-hint-corrected.json",
+      "bytes": 884,
+      "sha256": "7f942bb5a0d6e594c7b9b25a2822430ea047b7e1fa1e0e953fc286428b2a48db"
+    },
+    {
+      "path": "构造A/实验/polyline-hint-corrected.log",
+      "bytes": 24437,
+      "sha256": "c9650ebbff2d766f4e2b2a6ecf9742d4900f695ca42e5699c9bca192a2a504d9"
+    },
+    {
+      "path": "构造A/实验/polyline-partial-02.json",
+      "bytes": 923,
+      "sha256": "58190792fa27e13c956ef9607dea0501bf39a44c2b17c7930060ceaf2b243582"
+    },
+    {
+      "path": "构造A/实验/polyline-partial-02.log",
+      "bytes": 26072,
+      "sha256": "9488825c42ae052221231429c863145301627888e8751350574efc8c82faa2df"
+    },
+    {
+      "path": "构造A/实验/polyline-partial-hint.json",
+      "bytes": 896,
+      "sha256": "266443e055ff62c36dfcbda72de5b2f5e7a05a9572285b44b1ec30b93422ae86"
+    },
+    {
+      "path": "构造A/实验/polyline-partial-hint.log",
+      "bytes": 24584,
+      "sha256": "15fa15a658a2a3d57fa68cd6e1793b84d6dec32353a9d53d628ecc3f5595fae5"
+    },
+    {
+      "path": "构造A/实验/polyline-plant11x11.json",
+      "bytes": 831,
+      "sha256": "50202aa54babed103049c8a8810223d0c9bdcd9ee77e028dbe70af3007555444"
+    },
+    {
+      "path": "构造A/实验/polyline-plant11x11.log",
+      "bytes": 11917,
+      "sha256": "6f3ac3b34b51d162d9f3aa7ad16f1ec4b91b968a463c3de50a89d6cae691bc91"
+    },
+    {
+      "path": "构造A/实验/polyline-route-seed-control.json",
+      "bytes": 263039,
+      "sha256": "7ff740ad57687b71f493dbc38cc89c2cc1fa5777344de9347d8658e9516efe18"
+    },
+    {
+      "path": "构造A/实验/polyline-route-seed-control.log",
+      "bytes": 18689,
+      "sha256": "4ca82a31ea350a67db873df26aac10704aab796bf5feb13b84feefe0ea850a22"
+    },
+    {
+      "path": "构造A/实验/polyline-route-seed.json",
+      "bytes": 87664,
+      "sha256": "5e18f4a6b8e145d777e9c0eb79fde263135277fbf2eadaa9fe9725e9ce03cdff"
+    },
+    {
+      "path": "构造A/实验/routing-four-dir-11.json",
+      "bytes": 78788,
+      "sha256": "54c6b79cc7dd70eab7d0895feddc342eeeca65be72eca79ffb8a6e0496c64d5c"
+    },
+    {
+      "path": "构造A/实验/routing-four-dir-11.log",
+      "bytes": 7897,
+      "sha256": "3902447bf02706f25362f3c653c5d82496f5cf5557f29d885aa270b0ba64d635"
+    },
+    {
+      "path": "构造A/实验/routing-four-dir-12.json",
+      "bytes": 76673,
+      "sha256": "0b671d293c52dcd3057232c22a17fa9e534a004032276911ee7f25f77a759e47"
+    },
+    {
+      "path": "构造A/实验/routing-four-dir-12.log",
+      "bytes": 7912,
+      "sha256": "03ed2343a75f66dbd653eead9fb1718a0bf18dadabd0ff1c64313d8fd2a8686d"
+    },
+    {
+      "path": "构造A/实验/routing-four-dir-13.json",
+      "bytes": 76280,
+      "sha256": "1a722f3a84ac974352dc05e63e1c923830ddca8501e765a83cfb81824cc31bbf"
+    },
+    {
+      "path": "构造A/实验/routing-four-dir-13.log",
+      "bytes": 7917,
+      "sha256": "a189553129e352ef9fcea672066f762041fcf5f6d5d3a304da51e1787053bdfb"
+    },
+    {
+      "path": "构造A/实验/routing-sa1.json",
+      "bytes": 78538,
+      "sha256": "cf00467583bd94ae5c8ba5ce1411062286747e8d06c5dffcb15c134c1899a01e"
+    },
+    {
+      "path": "构造A/实验/routing-sa1.log",
+      "bytes": 3105,
+      "sha256": "73e7cd4ecf05127b7d6b5c6f6375300a76a0cafeb21cac2056c915449efc9136"
+    },
+    {
+      "path": "构造A/实验/routing-sources-21.json",
+      "bytes": 78951,
+      "sha256": "43790497aeedf538304bffb1e97788217581526ba2ec113ed8e7e27370f46d7b"
+    },
+    {
+      "path": "构造A/实验/routing-sources-21.log",
+      "bytes": 10469,
+      "sha256": "833dbc20fadcdc55eb3243dd26a8d8470ba7f59f9861f3bb178d155821b98565"
+    },
+    {
+      "path": "构造A/实验/routing-sources-22.json",
+      "bytes": 77831,
+      "sha256": "86edf6615d77b99f6596d4f916775e4a2532f85fa0cde4ed8d3e47ffca8205c7"
+    },
+    {
+      "path": "构造A/实验/routing-sources-22.log",
+      "bytes": 10470,
+      "sha256": "31684e281d30f7fcb88784a6327dd858cfec5eebbb80da8783a983a1b502823f"
+    },
+    {
+      "path": "构造A/实验/skeleton-01.json",
+      "bytes": 706,
+      "sha256": "c5140f5187d8cdb0770c01adfcbf9161f93545849c5de4d15bf95401ffbfcdf2"
+    },
+    {
+      "path": "构造A/实验/skeleton-01.log",
+      "bytes": 22292,
+      "sha256": "ae894fb9bf273e12354a533cd495489fb92b20acb83e217c5b3c636d8f43f348"
+    },
+    {
+      "path": "构造A/实验/skeleton-02.json",
+      "bytes": 714,
+      "sha256": "42e24a8b66f3744a8d86973072e093c49e67c354164d1b14008eaec8d87bcedd"
+    },
+    {
+      "path": "构造A/实验/skeleton-02.log",
+      "bytes": 20141,
+      "sha256": "317d46de8fe04b3769a6050633cc4d36a930c35fb439ea69f656044d6f319b8d"
+    },
+    {
+      "path": "构造A/实验/三桥相邻-非全厂.json",
+      "bytes": 13839,
+      "sha256": "693e8775195f8b0fca8bbc2b07ecd08983c93a8465b8751ed994da2b78e13208"
+    },
+    {
+      "path": "构造A/实验/全厂146路-v1.json",
+      "bytes": 263401,
+      "sha256": "e13ee80bb54090d88a6963f62360f36a99c6b71841e103dbd816f21d5ef5de70"
+    },
+    {
+      "path": "构造A/实验/全厂146路-非解.check.json",
+      "bytes": 41620,
+      "sha256": "635e2017916fe072e3ff01b2bd0a0743f4f1841bf6e4bddd379cc4bb116772e4"
+    },
+    {
+      "path": "构造A/实验/全厂146路-非解.json",
+      "bytes": 255187,
+      "sha256": "b9825d1fb12b25e96113fecc9f155dfba4de2582b16cabdaca71f35d528faca4"
+    },
+    {
+      "path": "构造A/实验/全厂150路-非解.check.json",
+      "bytes": 41978,
+      "sha256": "9fd58ad3933dc61d5cf74b3937637097b9499e225cfd8332608dbd7c25f225bc"
+    },
+    {
+      "path": "构造A/实验/全厂150路-非解.json",
+      "bytes": 251770,
+      "sha256": "c535a42aaaa2a7731c848c3345aa72b76bf8cf9b3c7e5ae8457ba8acdb1c0c47"
+    },
+    {
+      "path": "构造A/实验/全厂部分布线-旧格式复查.json",
+      "bytes": 262506,
+      "sha256": "cbe3ffb44b037b92d034ff0aeb30fa264e3961daec5abe4107c83c2dddbf3a66"
+    },
+    {
+      "path": "构造A/实验/全厂部分布线-非解.check.json",
+      "bytes": 42349,
+      "sha256": "6c696616729452e3aa30c6e8e65b5d2c769bae3ff48fa3257b898bbd784d8d93"
+    },
+    {
+      "path": "构造A/实验/全厂部分布线-非解.json",
+      "bytes": 255164,
+      "sha256": "d335523595b5ffd7de8adffc4dbc3d5c2ad083c5015ec0acb6f2436148f6bc89"
+    },
+    {
+      "path": "构造A/实验/单桥交叉-非全厂.json",
+      "bytes": 7721,
+      "sha256": "c3ba7c7e4ecefea1969798450947d7199a5c6dab862b60762529073f362f379d"
+    },
+    {
+      "path": "构造A/实验/局部采种单元-非全厂.check.json",
+      "bytes": 2453,
+      "sha256": "a6a1db15cf1ab379910f8b56aefc944fa281647bd6f8beecb3eafa862a94a86f"
+    },
+    {
+      "path": "构造A/实验/局部采种单元-非全厂.json",
+      "bytes": 6303,
+      "sha256": "d2bc3012dbe972a9360906d43ddfa6bbd78b41b91f6d3184f0ab8cdbdfeec487"
+    },
+    {
+      "path": "构造A/整数模型.md",
+      "bytes": 4655,
+      "sha256": "d3a54e029908c734eb20cd2ae0221e2245148348dffed6e9f89a1647bd0d7931"
+    },
+    {
+      "path": "构造A/未通过候选.json",
+      "bytes": 259984,
+      "sha256": "e1d955e9569c420d9566cc4ad128d7cca491e7eeeaf197307dd9abc73d1723d9"
+    },
+    {
+      "path": "构造A/格式扩展.md",
+      "bytes": 2024,
+      "sha256": "2c34abea368bfd277f001387d5fd6ca8141e438a2d9190d99b79f32e3d296230"
+    },
+    {
+      "path": "构造A/检查器A/146路组件复查结果.json",
+      "bytes": 46405,
+      "sha256": "4c67566ccc0653525511e469f83616a7258dfa59d3be97b052f1d27e4769155c"
+    },
+    {
+      "path": "构造A/检查器A/catalog.py",
+      "bytes": 3418,
+      "sha256": "a1fd6b583f8469b3b1ddcbcc524037e6dfd4e61f60b7ad600b2f96e867e88f9e"
+    },
+    {
+      "path": "构造A/检查器A/flow.py",
+      "bytes": 10112,
+      "sha256": "d2495b9dc7ac03dddea7f544142a128feeb50c671f529ab9352ec8bf83217bd9"
+    },
+    {
+      "path": "构造A/检查器A/geometry.py",
+      "bytes": 12564,
+      "sha256": "96bed1c6560cf02781353577b75d1cfb6cbf5ca5fd156bf09d375a84cac1462c"
+    },
+    {
+      "path": "构造A/检查器A/schema.py",
+      "bytes": 8008,
+      "sha256": "e19217f037a0c297856440ed1f5acc858470b776ee36a1fb65c9c4a7edad5925"
+    },
+    {
+      "path": "构造A/检查器A/组件复查.log",
+      "bytes": 18918,
+      "sha256": "87c393c75268dcc4056e31b5a3aebb5f5674d4da2ef23c73dfdadd530f0c7083"
+    },
+    {
+      "path": "构造A/检查器A/组件复查结果.json",
+      "bytes": 43745,
+      "sha256": "905db8585a53c5b63c519a71b012f555605c2bc379470e802fb76323eaede6eb"
+    },
+    {
+      "path": "构造A/检查器B/146路组件复查结果.json",
+      "bytes": 133453,
+      "sha256": "ed1a7fa2ee855528753243b9b6f5d098d70f2e468b2141e5ce8f339951f76090"
+    },
+    {
+      "path": "构造A/检查器B/catalog.py",
+      "bytes": 3697,
+      "sha256": "7d83cf061f40f5157b03384c5e4501cccd14c92ffc5d0e8f66469857bf622a27"
+    },
+    {
+      "path": "构造A/检查器B/flow.py",
+      "bytes": 10567,
+      "sha256": "64455bd7b92d4b73a3e88a7a22e63543ac8704abb66ef804858b7e8c098c72cd"
+    },
+    {
+      "path": "构造A/检查器B/geometry.py",
+      "bytes": 14407,
+      "sha256": "db7667d9229d0f49148a95b08130970fbc04698d31e83562834c71409573ca36"
+    },
+    {
+      "path": "构造A/检查器B/interfaces.py",
+      "bytes": 4989,
+      "sha256": "78b1ed7d9a66a1810767d4a0d37b9d0a6acebf92f5c8732e61eafee7bd603cdd"
+    },
+    {
+      "path": "构造A/检查器B/组件复查.log",
+      "bytes": 390,
+      "sha256": "5cbfc9b6128cb831f2f9729a4c9846d25db2d49376d237d5b0f0a0b108dd3a18"
+    },
+    {
+      "path": "构造A/检查器B/组件复查结果.json",
+      "bytes": 132817,
+      "sha256": "a645c520121b3a8bc2cb37f12ca2bac5e83992b2c6a157ff5904511ba9a7a31b"
+    },
+    {
+      "path": "构造A/结果.json",
+      "bytes": 509,
+      "sha256": "defc9c848c452ff41c64b227fbaf5a361750ccdd601ae6f5be46dce12b69e10c"
+    },
+    {
+      "path": "构造A/证据/144路摆放不可连通证书.json",
+      "bytes": 181167,
+      "sha256": "c6612ace414079e0a0cac1f0c1e9f211627f7c684a4499c7f832086f2373d750"
+    },
+    {
+      "path": "构造A/证据/146路摆放不可连通证书.json",
+      "bytes": 180558,
+      "sha256": "3f7fbf5371759fdfef0fbbcf5b57f4e674979e00ea08214805daf49373592872"
+    },
+    {
+      "path": "构造A/证据/146路静态检查结果.json",
+      "bytes": 42283,
+      "sha256": "72153f0b7bdee9180202cfaddeff8be0dfb3f41b7c0c37cf92eadd07420c4b7a"
+    },
+    {
+      "path": "构造A/证据/replay-arithmetic_check.py.log",
+      "bytes": 1126,
+      "sha256": "b827f4af0dfe0ebb55c323dc11e7ae9d351248cf916055b20dfe4d421e260878"
+    },
+    {
+      "path": "构造A/证据/replay-check_components.py.log",
+      "bytes": 25,
+      "sha256": "aee0444aa7d8c89d32879fa1bbcca3a4eb524eee4367532914b970022d5a9b8e"
+    },
+    {
+      "path": "构造A/证据/replay-connectivity_certificate.py.log",
+      "bytes": 110,
+      "sha256": "c04f10fb543ad2e425fbfdd97086eed5fa004ecbf55f32c073fc05b7418f6a1a"
+    },
+    {
+      "path": "构造A/证据/replay-legacy_components.py.log",
+      "bytes": 390,
+      "sha256": "8ffaa0ab7fb3e5a4b2465cd258cc525eb8b3a7dcd13cb7282c81cff9eac68a31"
+    },
+    {
+      "path": "构造A/证据/replay-static_check.py.log",
+      "bytes": 258,
+      "sha256": "cc2651e3d3b74f94b6c53f838d51b869f86eba724cc62c2472133c75f05b8787"
+    },
+    {
+      "path": "构造A/证据/三桥相邻-局部检查.json",
+      "bytes": 4709,
+      "sha256": "29e8412a9d8b18ef49ae83ff5b4be27fe12d0e30f82dd57b62a0e95e2d3cb8f3"
+    },
+    {
+      "path": "构造A/证据/单桥交叉-局部检查.json",
+      "bytes": 3683,
+      "sha256": "ff26df9fc1da287fce8c9eb539835d784834935cb905d8fd0f1c3776fb917931"
+    },
+    {
+      "path": "构造A/证据/双重算术核验.json",
+      "bytes": 1484,
+      "sha256": "d8f5a27462931d0acc2e7348b37287e982fa3d47e51ae650d49d9603b822e793"
+    },
+    {
+      "path": "构造A/证据/固定摆放不可连通证书.json",
+      "bytes": 180954,
+      "sha256": "76de996e130b8c8131d60daa0d5d6e1894c302e40bb19db108240f34618263d6"
+    },
+    {
+      "path": "构造A/证据/复跑结果.json",
+      "bytes": 1015,
+      "sha256": "045f9424f2cb82ee7d773723cf54a623d3dd53723ca88f3e60d1d146fddaa175"
+    },
+    {
+      "path": "构造A/证据/执行完成.json",
+      "bytes": 393,
+      "sha256": "1f90ae40d103411d9c4ea4c9685d4ffbd9af5be12e79a7a6610acbbbaa5ede73"
+    },
+    {
+      "path": "构造A/证据/旧检查器副本指纹.json",
+      "bytes": 1911,
+      "sha256": "24943147db541d17dad37467f4d6a75e12f9d588c76dddf6a37d3e33c86af154"
+    },
+    {
+      "path": "构造A/证据/读者自审.json",
+      "bytes": 6664,
+      "sha256": "290ffdf88606cef8ed9cf8014fe6baaedfa900e8bba20719ec162fdacfe5db41"
+    },
+    {
+      "path": "构造A/证据/输入指纹.json",
+      "bytes": 2908,
+      "sha256": "d3b2142e859adfb22a2f901b8761893bdbd2181ee394d70db551407a964c6242"
+    },
+    {
+      "path": "构造A/证据/逐格模型交叉正对照.json",
+      "bytes": 3683,
+      "sha256": "fdfab995edaf01b828332266f5f006f180a96c76c12f7e3bd6494c2d1b11c0c6"
+    },
+    {
+      "path": "构造A/证据/静态检查组件对照.json",
+      "bytes": 2812,
+      "sha256": "7e0dc85e21275154a4deeb799ae24c5769102ee542e68bea5f1d7bba827142bc"
+    },
+    {
+      "path": "构造A/证据/静态检查结果.json",
+      "bytes": 41948,
+      "sha256": "cc26985fe3f227af230841d7f8a32b648bb45b7ed4e250a13c17d90b2298a2b7"
+    },
+    {
+      "path": "构造A/逻辑接法.json",
+      "bytes": 119691,
+      "sha256": "9fddd762aef9ed5c88486577915dde570168c3d762d7b304245b9a916a6abdb6"
+    }
+  ]
+}

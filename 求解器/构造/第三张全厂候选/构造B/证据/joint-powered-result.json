@@ -1,0 +1,9 @@
+{
+  "status": "FEASIBLE",
+  "seconds": 240.00918896000002,
+  "objective": 25.0,
+  "bound": 22.0,
+  "machine_candidates": 4644,
+  "pole_candidates": 1703,
+  "workers": 4
+}

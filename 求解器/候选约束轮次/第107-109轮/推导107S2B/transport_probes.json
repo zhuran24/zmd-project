@@ -1,0 +1,20 @@
+{
+  "layers": {
+    "patterns": 2046,
+    "component_starts": 14337,
+    "maximum_components": 10,
+    "all_equal": true
+  },
+  "replenishment": {
+    "cases": 150,
+    "rounds": 10500,
+    "steps": 249925,
+    "recurrence_equal": true,
+    "deadline_violations": 0
+  },
+  "controls": {
+    "age_mutation_detected": true,
+    "wrong_origin_detected": true,
+    "axis_group_locality": true
+  }
+}

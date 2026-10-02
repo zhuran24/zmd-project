@@ -1,0 +1,1 @@
+{"static_pass": false, "status": null, "statistics": {"machines": 230, "routes": 150, "physical_channels": 470, "transport_units": 310, "transport_slots": 320, "bridges": 10, "adjacent_bridge_pairs": 0, "reverse_bridge_channels": 0, "occupied_cells": 4196}}

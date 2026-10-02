@@ -1,0 +1,124 @@
+{
+  "static_pass": false,
+  "local_checks_pass": true,
+  "full_mode": false,
+  "runtime_certified": false,
+  "checks": {
+    "schema": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "unique_ids": {
+      "status": "PASS",
+      "instances": 11,
+      "failures": []
+    },
+    "bounds": {
+      "status": "PASS",
+      "instances": 91,
+      "failures": []
+    },
+    "overlap": {
+      "status": "PASS",
+      "instances": 91,
+      "failures": []
+    },
+    "machine_dimensions": {
+      "status": "PASS",
+      "instances": 4,
+      "failures": []
+    },
+    "machine_contract": {
+      "status": "PASS",
+      "instances": 4,
+      "failures": []
+    },
+    "allowed_units": {
+      "status": "PASS",
+      "instances": 7,
+      "failures": []
+    },
+    "belt_ports": {
+      "status": "PASS",
+      "instances": 7,
+      "failures": []
+    },
+    "all_automatic_channels": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "directed_routes": {
+      "status": "PASS",
+      "instances": 4,
+      "failures": []
+    },
+    "slot_exclusivity": {
+      "status": "PASS",
+      "instances": 7,
+      "failures": []
+    },
+    "s2_routes": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "no_extra_channels": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "no_unused_transport": {
+      "status": "PASS",
+      "instances": 7,
+      "failures": []
+    },
+    "independent_rectangle": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    }
+  },
+  "statistics": {
+    "machines": 4,
+    "routes": 4,
+    "transport_units": 7,
+    "transport_slots": 7,
+    "bridges": 0,
+    "adjacent_bridge_pairs": 0,
+    "reverse_bridge_channels": 0,
+    "occupied_cells": 91
+  },
+  "maximum_empty_rectangle": null,
+  "independent_maximum": null,
+  "bridges": [],
+  "adjacent_bridges": [],
+  "route_lengths": [
+    {
+      "source": "SA1",
+      "target": "SC1",
+      "item": "砂叶",
+      "length": 2
+    },
+    {
+      "source": "SB1",
+      "target": "S1",
+      "item": "砂叶",
+      "length": 1
+    },
+    {
+      "source": "SC1",
+      "target": "SA1",
+      "item": "砂叶种子",
+      "length": 2
+    },
+    {
+      "source": "SC1",
+      "target": "SB1",
+      "item": "砂叶种子",
+      "length": 2
+    }
+  ],
+  "candidate_sha256": "d2bc3012dbe972a9360906d43ddfa6bbd78b41b91f6d3184f0ab8cdbdfeec487"
+}

@@ -1,0 +1,27 @@
+{
+ "schema": "s2-anonymous-packing-v1",
+ "is_layout": false,
+ "connected": false,
+ "fixed_spines": [
+  13,
+  27,
+  41,
+  55,
+  69
+ ],
+ "rect": [
+  64,
+  64,
+  6,
+  6
+ ],
+ "positions": 18694,
+ "variables": 23239,
+ "constraints": 42642,
+ "build_seconds": 1.442279030001373,
+ "workers": 4,
+ "seed": 1,
+ "status": "INFEASIBLE",
+ "wall_seconds": 74.85227870700001,
+ "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 21453\nbooleans: 21389\nconflicts: 511\nbranches: 197607\npropagations: 25075942\ninteger_propagations: 26432091\nrestarts: 1\nlp_iterations: 111484\nwalltime: 74.8523\nusertime: 74.8523\ndeterministic_time: 202.093\ngap_integral: 0\n"
+}

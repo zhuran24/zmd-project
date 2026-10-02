@@ -1,0 +1,113 @@
+{
+  "labels": [
+    "KQ1",
+    "Q1",
+    "QA1",
+    "QB1",
+    "QC1",
+    "S8"
+  ],
+  "roles": [
+    {
+      "name": "Q1",
+      "kind": "大",
+      "count": 1,
+      "in": [
+        "S8",
+        "KQ1"
+      ],
+      "out": [
+        "Q1"
+      ],
+      "in_count": {
+        "S8": 1,
+        "KQ1": 2
+      },
+      "n_out": 1
+    },
+    {
+      "name": "QA1",
+      "kind": "中",
+      "count": 1,
+      "in": [
+        "QC1"
+      ],
+      "out": [
+        "QA1"
+      ],
+      "in_count": {
+        "QC1": 1
+      },
+      "n_out": 1
+    },
+    {
+      "name": "QB1",
+      "kind": "中",
+      "count": 1,
+      "in": [
+        "QC1"
+      ],
+      "out": [
+        "QB1"
+      ],
+      "in_count": {
+        "QC1": 1
+      },
+      "n_out": 1
+    },
+    {
+      "name": "QC1",
+      "kind": "中",
+      "count": 1,
+      "in": [
+        "QA1"
+      ],
+      "out": [
+        "QC1"
+      ],
+      "in_count": {
+        "QA1": 1
+      },
+      "n_out": 2
+    },
+    {
+      "name": "KQ1",
+      "kind": "小",
+      "count": 1,
+      "in": [
+        "QB1"
+      ],
+      "out": [
+        "KQ1"
+      ],
+      "in_count": {
+        "QB1": 1
+      },
+      "n_out": 2
+    }
+  ],
+  "supply": [
+    [
+      "S8",
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      1
+    ]
+  ],
+  "demand": [
+    [
+      "Q1",
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      1
+    ]
+  ]
+}

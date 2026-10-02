@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="579" viewBox="0 0 660 579"><rect width="100%" height="100%" fill="#fafbfc"/><style>text{font-family:"Noto Sans CJK SC",sans-serif}.id{font-family:monospace;font-weight:bold}</style>
+<text x="38" y="30" font-size="21" font-weight="bold" fill="#a21a27">三桥相邻：局部检查样例，非全厂</text>
+<text x="38" y="56" font-size="13">13×13 格；制造单位 4 台；已列进路 4 条；紫色格为桥接器</text>
+<path d="M 38,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 68,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 98,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 128,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 158,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 188,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 218,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 248,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 278,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 308,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 338,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 368,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 398,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 428,84 V 474" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,84 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,114 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,144 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,174 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,204 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,234 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,264 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,294 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,324 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,354 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,384 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,414 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,444 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<path d="M 38,474 H 428" stroke="#dde2e7" stroke-width=".45"/>
+<rect x="38.5" y="264.5" width="89" height="89" fill="#e5b895" stroke="#425264" stroke-width=".8"/>
+<text class="id" x="83.0" y="313.3333333333333" text-anchor="middle" font-size="13" fill="#253443">RF1</text>
+<line x1="38" y1="264" x2="38" y2="354" stroke="#16723a" stroke-width="2"/>
+<rect x="338.5" y="264.5" width="89" height="89" fill="#a9d5ee" stroke="#425264" stroke-width=".8"/>
+<text class="id" x="383.0" y="313.3333333333333" text-anchor="middle" font-size="13" fill="#253443">KF1</text>
+<line x1="338" y1="264" x2="338" y2="354" stroke="#16723a" stroke-width="2"/>
+<rect x="158.5" y="384.5" width="89" height="89" fill="#e5b895" stroke="#425264" stroke-width=".8"/>
+<text class="id" x="203.0" y="433.3333333333333" text-anchor="middle" font-size="13" fill="#253443">RF2</text>
+<line x1="158" y1="474" x2="248" y2="474" stroke="#16723a" stroke-width="2"/>
+<rect x="158.5" y="84.5" width="89" height="89" fill="#a9d5ee" stroke="#425264" stroke-width=".8"/>
+<text class="id" x="203.0" y="133.33333333333334" text-anchor="middle" font-size="13" fill="#253443">KF2</text>
+<line x1="158" y1="174" x2="248" y2="174" stroke="#16723a" stroke-width="2"/>
+<path d="M129.5,339.0 L143.0,339.0 L156.5,339.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="152.0" cy="339.0" r="3.15" fill="#ed8b21"/>
+<path d="M129.5,309.0 L143.0,309.0 L156.5,309.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="152.0" cy="309.0" r="3.15" fill="#ed8b21"/>
+<path d="M129.5,279.0 L143.0,279.0 L156.5,279.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="152.0" cy="279.0" r="3.15" fill="#ed8b21"/>
+<path d="M159.5,339.0 L173.0,339.0 L186.5,339.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="182.0" cy="339.0" r="3.15" fill="#ed8b21"/>
+<path d="M159.5,309.0 L173.0,309.0 L186.5,309.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="182.0" cy="309.0" r="3.15" fill="#ed8b21"/>
+<path d="M159.5,279.0 L173.0,279.0 L186.5,279.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="182.0" cy="279.0" r="3.15" fill="#ed8b21"/>
+<path d="M203.0,382.5 L203.0,369.0 L203.0,355.5" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="203.0" cy="360.0" r="3.15" fill="#ed8b21"/>
+<rect x="189" y="325" width="28" height="28" rx="2" fill="#9659c8"/><path d="M190,339.0 H216 M203.0,326 V352" stroke="white" stroke-width="1.4"/>
+<rect x="189" y="295" width="28" height="28" rx="2" fill="#9659c8"/><path d="M190,309.0 H216 M203.0,296 V322" stroke="white" stroke-width="1.4"/>
+<rect x="189" y="265" width="28" height="28" rx="2" fill="#9659c8"/><path d="M190,279.0 H216 M203.0,266 V292" stroke="white" stroke-width="1.4"/>
+<path d="M203.0,262.5 L203.0,249.0 L203.0,235.5" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="203.0" cy="240.0" r="3.15" fill="#ed8b21"/>
+<path d="M203.0,232.5 L203.0,219.0 L203.0,205.5" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="203.0" cy="210.0" r="3.15" fill="#ed8b21"/>
+<path d="M203.0,202.5 L203.0,189.0 L203.0,175.5" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="203.0" cy="180.0" r="3.15" fill="#ed8b21"/>
+<path d="M219.5,339.0 L233.0,339.0 L246.5,339.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="242.0" cy="339.0" r="3.15" fill="#ed8b21"/>
+<path d="M219.5,309.0 L233.0,309.0 L246.5,309.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="242.0" cy="309.0" r="3.15" fill="#ed8b21"/>
+<path d="M219.5,279.0 L233.0,279.0 L246.5,279.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="242.0" cy="279.0" r="3.15" fill="#ed8b21"/>
+<path d="M249.5,339.0 L263.0,339.0 L276.5,339.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="272.0" cy="339.0" r="3.15" fill="#ed8b21"/>
+<path d="M249.5,309.0 L263.0,309.0 L276.5,309.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="272.0" cy="309.0" r="3.15" fill="#ed8b21"/>
+<path d="M249.5,279.0 L263.0,279.0 L276.5,279.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="272.0" cy="279.0" r="3.15" fill="#ed8b21"/>
+<path d="M279.5,339.0 L293.0,339.0 L306.5,339.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="302.0" cy="339.0" r="3.15" fill="#ed8b21"/>
+<path d="M279.5,309.0 L293.0,309.0 L306.5,309.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="302.0" cy="309.0" r="3.15" fill="#ed8b21"/>
+<path d="M279.5,279.0 L293.0,279.0 L306.5,279.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="302.0" cy="279.0" r="3.15" fill="#ed8b21"/>
+<path d="M309.5,339.0 L323.0,339.0 L336.5,339.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="332.0" cy="339.0" r="3.15" fill="#ed8b21"/>
+<path d="M309.5,309.0 L323.0,309.0 L336.5,309.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="332.0" cy="309.0" r="3.15" fill="#ed8b21"/>
+<path d="M309.5,279.0 L323.0,279.0 L336.5,279.0" fill="none" stroke="#354d61" stroke-width="3.5999999999999996"/>
+<circle cx="332.0" cy="279.0" r="3.15" fill="#ed8b21"/>
+<rect x="248" y="84" width="180" height="180" fill="#b3e7c0" fill-opacity=".4" stroke="#087b43" stroke-width="2" stroke-dasharray="5 3"/><text x="338.0" y="174.0" text-anchor="middle" font-size="10">6×6</text>
+<text x="53.0" y="490" font-size="9" text-anchor="middle">0</text>
+<text x="203.0" y="490" font-size="9" text-anchor="middle">5</text>
+<text x="353.0" y="490" font-size="9" text-anchor="middle">10</text>
+<text x="30" y="465.0" font-size="9" text-anchor="end">0</text>
+<text x="30" y="315.0" font-size="9" text-anchor="end">5</text>
+<text x="30" y="165.0" font-size="9" text-anchor="end">10</text>
+<text x="38" y="521" font-size="12">绿色边为机器存货边，棕色小点表示带的出货方向。坐标原点在左下角。</text><text x="38" y="544" font-size="12" fill="#a21a27">这是检查用坐标图；部分布线与局部构型均不构成达标全厂或已认证空矩形。</text></svg>

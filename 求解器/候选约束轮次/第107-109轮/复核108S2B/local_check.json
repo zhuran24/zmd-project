@@ -1,0 +1,39 @@
+{
+  "layers": {
+    "max_length": 12,
+    "words": 8190,
+    "component_roots": 69633,
+    "disagreements": 0
+  },
+  "states": {
+    "lengths": [
+      1,
+      5
+    ],
+    "age_classes": [
+      "empty",
+      0,
+      7,
+      8
+    ],
+    "transition_cases": 74896,
+    "source_variants": 149792,
+    "disagreements": 0
+  },
+  "crossing": {
+    "steps": 4096,
+    "same_physical_bridge": true,
+    "normal_disagreements": 0,
+    "negative_whole_unit_first_difference": 0,
+    "normal_delivery": [
+      512,
+      512
+    ],
+    "negative_whole_unit_delivery": [
+      512,
+      512
+    ],
+    "wrong_provenance_detected": true,
+    "negative_is_candidate_counterexample": false
+  }
+}

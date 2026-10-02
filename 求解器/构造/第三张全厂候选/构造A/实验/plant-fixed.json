@@ -1,0 +1,183 @@
+{
+ "schema": "joint-cp-run-v1",
+ "W": 15,
+ "H": 11,
+ "routes": [
+  {
+   "id": "LF138",
+   "source": "SC1",
+   "target": "SA1",
+   "item": "砂叶种子",
+   "rate": "1",
+   "start_index": 623,
+   "end_index": 619
+  },
+  {
+   "id": "LF139",
+   "source": "SC1",
+   "target": "SB1",
+   "item": "砂叶种子",
+   "rate": "1",
+   "start_index": 639,
+   "end_index": 643
+  },
+  {
+   "id": "LF140",
+   "source": "SA1",
+   "target": "SC1",
+   "item": "砂叶",
+   "rate": "1",
+   "start_index": 257,
+   "end_index": 261
+  },
+  {
+   "id": "LF141",
+   "source": "SB1",
+   "target": "S1",
+   "item": "砂叶",
+   "rate": "1",
+   "start_index": 293,
+   "end_index": 295
+  }
+ ],
+ "machines": 4,
+ "fixed_rectangle": null,
+ "bridge_restriction": "two used axes; no adjacent bridges",
+ "power_poles": 0,
+ "seed": 1,
+ "workers": 1,
+ "build_seconds": 0.055498465000709984,
+ "variables": 4869,
+ "constraints": 12607,
+ "validation": "",
+ "status": "OPTIMAL",
+ "wall_seconds": 5.487746381004399,
+ "response_stats": "CpSolverResponse summary:\nstatus: OPTIMAL\nobjective: 70003\nbest_bound: 70003\nintegers: 2206\nbooleans: 1565\nconflicts: 291\nbranches: 73630\npropagations: 344074\ninteger_propagations: 577227\nrestarts: 4\nlp_iterations: 28198\nwalltime: 5.48686\nusertime: 5.48686\ndeterministic_time: 2.69262\ngap_integral: 0\nsolution_fingerprint: 0xd6b768745501e97a\n",
+ "placements": {
+  "SC1": {
+   "x0": 5,
+   "y0": 5,
+   "x1": 9,
+   "y1": 9,
+   "Din": 3,
+   "kind": "machine"
+  },
+  "SA1": {
+   "x0": 0,
+   "y0": 5,
+   "x1": 4,
+   "y1": 9,
+   "Din": 1,
+   "kind": "machine"
+  },
+  "SB1": {
+   "x0": 10,
+   "y0": 5,
+   "x1": 14,
+   "y1": 9,
+   "Din": 1,
+   "kind": "machine"
+  },
+  "S1": {
+   "x0": 11,
+   "y0": 1,
+   "x1": 13,
+   "y1": 3,
+   "Din": 1,
+   "kind": "machine"
+  }
+ },
+ "transport": [
+  {
+   "x": 4,
+   "y": 4,
+   "type": "belt",
+   "in": [
+    1
+   ],
+   "out": [
+    0
+   ],
+   "H": 3,
+   "V": 3
+  },
+  {
+   "x": 5,
+   "y": 4,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    1
+   ],
+   "H": 3,
+   "V": 3
+  },
+  {
+   "x": 13,
+   "y": 4,
+   "type": "belt",
+   "in": [
+    1
+   ],
+   "out": [
+    3
+   ],
+   "H": 4,
+   "V": 4
+  },
+  {
+   "x": 4,
+   "y": 10,
+   "type": "belt",
+   "in": [
+    0
+   ],
+   "out": [
+    3
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 5,
+   "y": 10,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    2
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 9,
+   "y": 10,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    0
+   ],
+   "H": 2,
+   "V": 2
+  },
+  {
+   "x": 10,
+   "y": 10,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    3
+   ],
+   "H": 2,
+   "V": 2
+  }
+ ]
+}

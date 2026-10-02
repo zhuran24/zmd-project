@@ -1,0 +1,12 @@
+{
+  "status": "done",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/复核108S2B.md",
+  "verdicts": [
+    {
+      "name": "全厂满库存成品机隔离接法达标（桥接器交叉版）",
+      "verdict": "未否证",
+      "reason": "桥轴递推、调试和两种离线读法均通过复核。",
+      "revised_text": ""
+    }
+  ]
+}

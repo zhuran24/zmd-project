@@ -1,0 +1,169 @@
+{
+  "machines": {
+    "粉碎机": 71,
+    "精炼炉": 51,
+    "研磨机": 32,
+    "塑形机": 6,
+    "配件机": 6,
+    "种植机": 38,
+    "采种机": 19,
+    "封装机": 3,
+    "灌装机": 4
+  },
+  "machine_count": 230,
+  "classes": [
+    134,
+    57,
+    39
+  ],
+  "machine_area": 3567,
+  "route_count": 325,
+  "interfaces": 650,
+  "shared_routes": 46,
+  "power_weight": 556,
+  "best_pj": [
+    [
+      11,
+      1
+    ]
+  ],
+  "power_cost": 174,
+  "extra_area": 276,
+  "omega": "203/2",
+  "generic_A": "6743/8",
+  "specific_A": "6681/8",
+  "generic_integer_dimensions": [
+    841,
+    [
+      [
+        29,
+        29
+      ]
+    ]
+  ],
+  "specific_integer_dimensions": [
+    833,
+    [
+      [
+        17,
+        49
+      ]
+    ]
+  ],
+  "generic_T_min": 205,
+  "specific_T_min": 213,
+  "generic_T_plus_F_min": 228,
+  "T_plus_F_min": 235,
+  "transport_slots_upper": 2228,
+  "route_slots_lower": 333,
+  "no_double_bridge_A_plus_F": 737,
+  "machine_equivalent_capacity": [
+    "21862/3",
+    "2936",
+    "17022",
+    "3486"
+  ],
+  "transport_equivalent_max": [
+    "1",
+    "1",
+    "4",
+    "2"
+  ],
+  "equivalent_capacity": [
+    "36562/3",
+    "7836",
+    "36622",
+    "13286"
+  ],
+  "stock": {
+    "砂叶": 12187,
+    "砂叶种子": 12187,
+    "荞花": 7836,
+    "荞花种子": 7836,
+    "蓝铁矿": 36622,
+    "源矿": 13286,
+    "蓝铁块": 36622,
+    "蓝铁粉末": 36622,
+    "源石粉末": 13286,
+    "砂叶粉末": 36562,
+    "荞花粉末": 15672,
+    "致密蓝铁粉末": 18311,
+    "致密源石粉末": 6643,
+    "细磨荞花粉末": 7836,
+    "钢块": 18311,
+    "钢制零件": 18311,
+    "钢质瓶": 9155
+  },
+  "raw_stock": {
+    "砂叶": 53615,
+    "砂叶种子": 12187,
+    "荞花": 23508,
+    "荞花种子": 7836,
+    "蓝铁矿": 256352,
+    "源矿": 39858
+  },
+  "cleanup_bound": 15031,
+  "recipe_rates": {
+    "粉碎机": "68",
+    "精炼炉": "51",
+    "研磨机": "63/2",
+    "塑形机": "11/2",
+    "配件机": "6",
+    "种植机": "32",
+    "采种机": "16",
+    "封装机": "3/5",
+    "灌装机": "11/20"
+  },
+  "mine_rates": {
+    "蓝铁矿": "34",
+    "源矿": "18"
+  },
+  "all_mine_routes_one": true,
+  "all_routes_positive": true,
+  "plant_loop_constant": "177",
+  "cycle_480_deliveries": [
+    "36",
+    "33"
+  ],
+  "cycle_480_mine_per_route": "60",
+  "nonfinal_weight_increases": {
+    "ore_blue": 1,
+    "blue_powder": 1,
+    "origin_powder": 1,
+    "B": 1,
+    "O": 1,
+    "Q": 1,
+    "R": 1,
+    "P": 1,
+    "H": 1,
+    "SC": 1,
+    "SA": 1,
+    "SB": 1,
+    "SK": 9,
+    "JC": 1,
+    "JA": 1,
+    "JB": 1,
+    "JK": 5
+  },
+  "plant_K_rates": {
+    "SK1": "1",
+    "SK2": "2/3",
+    "SK3": "1",
+    "SK4": "2/3",
+    "SK5": "1",
+    "SK6": "2/3",
+    "SK7": "1",
+    "SK8": "1",
+    "SK9": "1",
+    "SK10": "1",
+    "SK11": "1",
+    "SK12": "1/3",
+    "SK13": "1/6",
+    "JK1": "1",
+    "JK2": "1",
+    "JK3": "1",
+    "JK4": "1",
+    "JK5": "1",
+    "JK6": "1/2"
+  }
+}

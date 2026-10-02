@@ -1,0 +1,956 @@
+{
+ "schema": "full-factory-static-s2-bridges-v2",
+ "candidate_id": "s2-third-A",
+ "source_fingerprints": {
+  "rules": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+  "task": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+  "constraints": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+ },
+ "targets": {
+  "高容谷地电池": "3/5",
+  "精选荞愈胶囊": "11/20"
+ },
+ "layout": {
+  "W": 13,
+  "H": 13,
+  "machines": [
+   {
+    "x0": 0,
+    "y0": 4,
+    "x1": 2,
+    "y1": 6,
+    "id": "RF1",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 10,
+    "y0": 4,
+    "x1": 12,
+    "y1": 6,
+    "id": "KF1",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 4,
+    "y0": 0,
+    "x1": 6,
+    "y1": 2,
+    "id": "RF2",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 4,
+    "y0": 10,
+    "x1": 6,
+    "y1": 12,
+    "id": "KF2",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   }
+  ],
+  "warehouse_outlets": [],
+  "core": null,
+  "power_poles": [],
+  "storage_boxes": [],
+  "transport": [
+   {
+    "id": "T3_4",
+    "x": 3,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T3_5",
+    "x": 3,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T3_6",
+    "x": 3,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T4_4",
+    "x": 4,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T4_5",
+    "x": 4,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T4_6",
+    "x": 4,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_3",
+    "x": 5,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T5_4",
+    "x": 5,
+    "y": 4,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "id": "T5_5",
+    "x": 5,
+    "y": 5,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "id": "T5_6",
+    "x": 5,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "id": "T5_7",
+    "x": 5,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T5_8",
+    "x": 5,
+    "y": 8,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T5_9",
+    "x": 5,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T6_4",
+    "x": 6,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_5",
+    "x": 6,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_6",
+    "x": 6,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T7_4",
+    "x": 7,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T7_5",
+    "x": 7,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T7_6",
+    "x": 7,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T8_4",
+    "x": 8,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T8_5",
+    "x": 8,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T8_6",
+    "x": 8,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_4",
+    "x": 9,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_5",
+    "x": 9,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_6",
+    "x": 9,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   }
+  ],
+  "vin": [],
+  "vout": []
+ },
+ "empty_rectangle": {
+  "x0": 7,
+  "y0": 7,
+  "x1": 12,
+  "y1": 12
+ },
+ "design": {
+  "class": "s2_isolated_paths",
+  "physical_channels": [
+   {
+    "id": "PC00000",
+    "from": {
+     "unit": "RF1",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T3_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00001",
+    "from": {
+     "unit": "T3_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T4_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00002",
+    "from": {
+     "unit": "T4_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00003",
+    "from": {
+     "unit": "T5_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00004",
+    "from": {
+     "unit": "T6_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T7_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00005",
+    "from": {
+     "unit": "T7_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00006",
+    "from": {
+     "unit": "T8_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00007",
+    "from": {
+     "unit": "T9_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF1",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00008",
+    "from": {
+     "unit": "RF1",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T3_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00009",
+    "from": {
+     "unit": "T3_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T4_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00010",
+    "from": {
+     "unit": "T4_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00011",
+    "from": {
+     "unit": "T5_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00012",
+    "from": {
+     "unit": "T6_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T7_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00013",
+    "from": {
+     "unit": "T7_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00014",
+    "from": {
+     "unit": "T8_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00015",
+    "from": {
+     "unit": "T9_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF1",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00016",
+    "from": {
+     "unit": "RF1",
+     "side": 0,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T3_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00017",
+    "from": {
+     "unit": "T3_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T4_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00018",
+    "from": {
+     "unit": "T4_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00019",
+    "from": {
+     "unit": "T5_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00020",
+    "from": {
+     "unit": "T6_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T7_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00021",
+    "from": {
+     "unit": "T7_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00022",
+    "from": {
+     "unit": "T8_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00023",
+    "from": {
+     "unit": "T9_6",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF1",
+     "side": 2,
+     "offset": 2
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00024",
+    "from": {
+     "unit": "RF2",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_3",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00025",
+    "from": {
+     "unit": "T5_3",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_4",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00026",
+    "from": {
+     "unit": "T5_4",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00027",
+    "from": {
+     "unit": "T5_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00028",
+    "from": {
+     "unit": "T5_6",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_7",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00029",
+    "from": {
+     "unit": "T5_7",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_8",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00030",
+    "from": {
+     "unit": "T5_8",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00031",
+    "from": {
+     "unit": "T5_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF2",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00032",
+    "from": {
+     "unit": "T5_5",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_4",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00033",
+    "from": {
+     "unit": "T5_6",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_5",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   }
+  ],
+  "logical_feeds": [
+   {
+    "id": "LF0",
+    "from": {
+     "unit": "RF1",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF1",
+     "side": 2,
+     "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00000",
+     "PC00001",
+     "PC00002",
+     "PC00003",
+     "PC00004",
+     "PC00005",
+     "PC00006",
+     "PC00007"
+    ]
+   },
+   {
+    "id": "LF1",
+    "from": {
+     "unit": "RF1",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF1",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00008",
+     "PC00009",
+     "PC00010",
+     "PC00011",
+     "PC00012",
+     "PC00013",
+     "PC00014",
+     "PC00015"
+    ]
+   },
+   {
+    "id": "LF2",
+    "from": {
+     "unit": "RF1",
+     "side": 0,
+     "offset": 2
+    },
+    "to": {
+     "unit": "KF1",
+     "side": 2,
+     "offset": 2
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00016",
+     "PC00017",
+     "PC00018",
+     "PC00019",
+     "PC00020",
+     "PC00021",
+     "PC00022",
+     "PC00023"
+    ]
+   },
+   {
+    "id": "LF3",
+    "from": {
+     "unit": "RF2",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF2",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00024",
+     "PC00025",
+     "PC00026",
+     "PC00027",
+     "PC00028",
+     "PC00029",
+     "PC00030",
+     "PC00031"
+    ]
+   }
+  ],
+  "restrictions": [],
+  "bridge_reverse_channels": [
+   "PC00032",
+   "PC00033"
+  ]
+ },
+ "flow_witness": null,
+ "temporary_rules_sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d",
+ "diagnostic_only": true
+}

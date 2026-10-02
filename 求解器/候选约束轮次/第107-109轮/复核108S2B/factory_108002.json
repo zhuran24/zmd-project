@@ -1,0 +1,22 @@
+{
+  "seed": 108002,
+  "maxlen": 8,
+  "mode": "bridge",
+  "history": "clear",
+  "offline_interval": 1,
+  "is_layout": false,
+  "steps_compared": 24560,
+  "offline_rebuilds": 22006,
+  "transport_slots": 1518,
+  "bridge_pairs": 759,
+  "period_steps": 480,
+  "period_deliveries": {
+    "高容谷地电池": 36,
+    "精选荞愈胶囊": 33
+  },
+  "mine_per_route": 60,
+  "shared_zero_reject_routes": 46,
+  "inverse_checks_blocked": 21194049,
+  "closed_state_replayed": true,
+  "violations": 0
+}

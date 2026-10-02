@@ -1,0 +1,196 @@
+{
+  "W": 12,
+  "H": 11,
+  "status": "OPTIMAL",
+  "wall": 4.5,
+  "build_s": 0.1,
+  "nvars": 2392,
+  "ncons": 12866,
+  "first_sol": 0.7,
+  "trace": [
+    [
+      0.7,
+      20.0
+    ],
+    [
+      0.7,
+      16.0
+    ],
+    [
+      1.6,
+      14.0
+    ],
+    [
+      1.6,
+      13.0
+    ],
+    [
+      1.6,
+      12.0
+    ],
+    [
+      1.6,
+      11.0
+    ],
+    [
+      1.6,
+      10.0
+    ]
+  ],
+  "T": 10,
+  "bound": 10.0,
+  "bridges": 2,
+  "grid": [
+    "....v#bbbbB.",
+    "AAAAA.bbbbB.",
+    "aaaaa.bbbbB.",
+    "aaaaa.bbbbB.",
+    "aaaaavbbbbB<",
+    "aaaaa>Aaaaa^",
+    "..v...Aaaaa.",
+    "CCC...Aaaaa.",
+    "ccc...Aaaaa.",
+    "ccc...Aaaaa.",
+    "#<v........."
+  ],
+  "roles": {
+    "A": "种植",
+    "B": "采种",
+    "C": "粉碎"
+  },
+  "layout": {
+    "W": 12,
+    "H": 11,
+    "machines": [
+      {
+        "role": "种植",
+        "kind": "中",
+        "Din": 1,
+        "x0": 0,
+        "y0": 5,
+        "x1": 4,
+        "y1": 9
+      },
+      {
+        "role": "种植",
+        "kind": "中",
+        "Din": 2,
+        "x0": 6,
+        "y0": 1,
+        "x1": 10,
+        "y1": 5
+      },
+      {
+        "role": "采种",
+        "kind": "中",
+        "Din": 0,
+        "x0": 6,
+        "y0": 6,
+        "x1": 10,
+        "y1": 10
+      },
+      {
+        "role": "粉碎",
+        "kind": "小",
+        "Din": 1,
+        "x0": 0,
+        "y0": 1,
+        "x1": 2,
+        "y1": 3
+      }
+    ],
+    "transport": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "bridge",
+        "H_in": 0,
+        "V_in": 1
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 2
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 3
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 3
+      },
+      {
+        "x": 4,
+        "y": 10,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "x": 5,
+        "y": 10,
+        "type": "bridge",
+        "H_in": 0,
+        "V_in": null
+      },
+      {
+        "x": 11,
+        "y": 5,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "x": 11,
+        "y": 6,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      }
+    ],
+    "vin": [],
+    "vout": [
+      {
+        "x": 0,
+        "y": 0,
+        "side": 2,
+        "label": "粉末"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "side": 3,
+        "label": "粉末"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "side": 3,
+        "label": "粉末"
+      }
+    ]
+  }
+}

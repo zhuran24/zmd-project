@@ -1,0 +1,3577 @@
+{
+  "static_pass": false,
+  "runtime_certified": false,
+  "stats": {
+    "machines": 230,
+    "machine_area": 3567,
+    "occupied_cells": 4203,
+    "power_poles": 25,
+    "transport": 317,
+    "bridges": 4,
+    "adjacent_bridge_pairs": 0,
+    "structural_channels": 504,
+    "reverse_bridge_channels": 0,
+    "completed_routes": 183,
+    "missing_routes": 142,
+    "empty_rectangle": {
+      "area": 36,
+      "short_side": 6,
+      "rectangle": {
+        "x0": 18,
+        "y0": 18,
+        "x1": 23,
+        "y1": 23
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "70x70",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "unique_unit_ids",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "no_overlap",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "inside_base",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "230_machines",
+      "pass_": true,
+      "detail": {
+        "精炼炉": 51,
+        "粉碎机": 71,
+        "种植机": 38,
+        "采种机": 19,
+        "研磨机": 32,
+        "配件机": 6,
+        "塑形机": 6,
+        "封装机": 3,
+        "灌装机": 4
+      }
+    },
+    {
+      "name": "machine_identity",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "machine_shapes_rotations",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "recipes_and_switches",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "forbidden_units_absent",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "46_boundary_outlets",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "23_outlets_each_side",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "one_9x9_core",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "core_6_ore_ports",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "ore_configurations",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "power_pole_shapes",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "all_machines_powered",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "belt_distinct_sides.X_1_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_17",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_20",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_23",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_29",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_35",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_38",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_44",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_50",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_56",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_59",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_65",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_1_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_7",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_17",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_20",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_23",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_29",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_35",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_38",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_44",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_50",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_56",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_59",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_65",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_5_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_22",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_33",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_38",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_59",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_61",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_9_65",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_10_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_10_38",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_10_60",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_10_61",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_10_65",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_11_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_12_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_13_19",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_13_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_14_15",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_14_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_14_30",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_14_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_15_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_18_27",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_18_39",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_18_51",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_18_55",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_18_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_19_28",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_19_45",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_19_51",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_19_55",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_20_51",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_20_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_21_45",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_21_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_21_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_21_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_22_13",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_22_33",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_22_34",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_23_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_23_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_23_28",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_24_51",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_25_40",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_25_51",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_25_55",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_26_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_26_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_26_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_26_40",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_26_51",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_27_28",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_27_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_27_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_28_12",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_28_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_28_46",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_29_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_29_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_29_46",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_29_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_30",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_30_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_31_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_32_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_32_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_32_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_32_10",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_32_11",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_32_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_33_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_34_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_34_52",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_34_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_34_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_31",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_48",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_52",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_35_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_36_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_37_16",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_37_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_37_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_37_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_37_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_38_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_38_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_38_16",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_38_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_39_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_39_16",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_39_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_39_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_40_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_40_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_10",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_31",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_48",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_41_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_15",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_65",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_66",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_67",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_42_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_43_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_44_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_44_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_45_11",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_47_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_47_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_47_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_47_52",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_47_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_31",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_48",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_52",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_48_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_49_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_50_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_50_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_50_13",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_50_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_50_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_50_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_52_17",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_53_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_53_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_54_31",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_54_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_54_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_54_48",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_54_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_54_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_65",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_66",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_67",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_55_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_62",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_56_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_57_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_58_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_59_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_59_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_59_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_59_10",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_59_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_59_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_60_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_60_52",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_60_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_60_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_10",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_31",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_36",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_48",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_52",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_68",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_61_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_25",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_26",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_62_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_63_21",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_63_37",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_63_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_63_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_64_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_65_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_65_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_65_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_65_10",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_65_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_66_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_9",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_10",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_31",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_32",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_47",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_48",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_63",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_64",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_67_69",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_1",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_5",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_38",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_39",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_40",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_41",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_42",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_53",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_54",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_55",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_56",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_57",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_58",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "belt_distinct_sides.X_68_59",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "exact_automatic_channels",
+      "pass_": true,
+      "detail": {
+        "undeclared": [],
+        "nonexistent": []
+      }
+    },
+    {
+      "name": "valid_nonrepeating_routes",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "exact_bridge_reverse_channels",
+      "pass_": true,
+      "detail": {
+        "declared": 0,
+        "expected": 0
+      }
+    },
+    {
+      "name": "all_channels_accounted_for",
+      "pass_": true,
+      "detail": {
+        "unaccounted": []
+      }
+    },
+    {
+      "name": "independent_S2_contract",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "325_S2_routes",
+      "pass_": false,
+      "detail": {
+        "missing": [
+          [
+            "KB1",
+            "B1",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB2",
+            "B1",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB5",
+            "B3",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB7",
+            "B4",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB9",
+            "B5",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB10",
+            "B5",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB11",
+            "B6",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB12",
+            "B6",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB13",
+            "B7",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB16",
+            "B8",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB18",
+            "B9",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB19",
+            "B10",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB20",
+            "B10",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB21",
+            "B11",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB23",
+            "B12",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB25",
+            "B13",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB26",
+            "B13",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB27",
+            "B14",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB28",
+            "B14",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB29",
+            "B15",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "KB30",
+            "B15",
+            "蓝铁粉末",
+            "1"
+          ],
+          [
+            "CORE",
+            "U1",
+            "源矿",
+            "1"
+          ],
+          [
+            "U2",
+            "O1",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "CORE",
+            "U3",
+            "源矿",
+            "1"
+          ],
+          [
+            "CORE",
+            "U4",
+            "源矿",
+            "1"
+          ],
+          [
+            "U4",
+            "O2",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "CORE",
+            "U5",
+            "源矿",
+            "1"
+          ],
+          [
+            "CORE",
+            "U6",
+            "源矿",
+            "1"
+          ],
+          [
+            "U6",
+            "O3",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO7",
+            "U7",
+            "源矿",
+            "1"
+          ],
+          [
+            "U7",
+            "O4",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO9",
+            "U9",
+            "源矿",
+            "1"
+          ],
+          [
+            "U9",
+            "O5",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO10",
+            "U10",
+            "源矿",
+            "1"
+          ],
+          [
+            "U10",
+            "O5",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO11",
+            "U11",
+            "源矿",
+            "1"
+          ],
+          [
+            "U11",
+            "O6",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO12",
+            "U12",
+            "源矿",
+            "1"
+          ],
+          [
+            "U12",
+            "O6",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO13",
+            "U13",
+            "源矿",
+            "1"
+          ],
+          [
+            "U13",
+            "O7",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO14",
+            "U14",
+            "源矿",
+            "1"
+          ],
+          [
+            "U14",
+            "O7",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "U15",
+            "O8",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO16",
+            "U16",
+            "源矿",
+            "1"
+          ],
+          [
+            "OO17",
+            "U17",
+            "源矿",
+            "1"
+          ],
+          [
+            "U17",
+            "O9",
+            "源石粉末",
+            "1"
+          ],
+          [
+            "OO18",
+            "U18",
+            "源矿",
+            "1"
+          ],
+          [
+            "B1",
+            "R1",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B4",
+            "R4",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B5",
+            "R5",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "R7",
+            "H1",
+            "钢块",
+            "1"
+          ],
+          [
+            "B8",
+            "R8",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B9",
+            "R9",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "R9",
+            "H2",
+            "钢块",
+            "1"
+          ],
+          [
+            "B10",
+            "R10",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "R10",
+            "H2",
+            "钢块",
+            "1"
+          ],
+          [
+            "R11",
+            "H3",
+            "钢块",
+            "1"
+          ],
+          [
+            "B12",
+            "R12",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B13",
+            "R13",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B14",
+            "R14",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B15",
+            "R15",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "B16",
+            "R16",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "R16",
+            "H5",
+            "钢块",
+            "1"
+          ],
+          [
+            "B17",
+            "R17",
+            "致密蓝铁粉末",
+            "1"
+          ],
+          [
+            "R17",
+            "H6",
+            "钢块",
+            "1"
+          ],
+          [
+            "O1",
+            "E1",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O2",
+            "E1",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O3",
+            "E1",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O4",
+            "E2",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O5",
+            "E2",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O6",
+            "E2",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O7",
+            "E3",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "O8",
+            "E3",
+            "致密源石粉末",
+            "1"
+          ],
+          [
+            "H1",
+            "F1",
+            "钢质瓶",
+            "1"
+          ],
+          [
+            "Q1",
+            "F1",
+            "细磨荞花粉末",
+            "1"
+          ],
+          [
+            "H2",
+            "F1",
+            "钢质瓶",
+            "1"
+          ],
+          [
+            "Q2",
+            "F1",
+            "细磨荞花粉末",
+            "1"
+          ],
+          [
+            "P3",
+            "E2",
+            "钢制零件",
+            "1"
+          ],
+          [
+            "H3",
+            "F2",
+            "钢质瓶",
+            "1"
+          ],
+          [
+            "Q3",
+            "F2",
+            "细磨荞花粉末",
+            "1"
+          ],
+          [
+            "P4",
+            "E2",
+            "钢制零件",
+            "1"
+          ],
+          [
+            "H4",
+            "F2",
+            "钢质瓶",
+            "1"
+          ],
+          [
+            "Q4",
+            "F2",
+            "细磨荞花粉末",
+            "1"
+          ],
+          [
+            "H5",
+            "F3",
+            "钢质瓶",
+            "1"
+          ],
+          [
+            "Q5",
+            "F3",
+            "细磨荞花粉末",
+            "1"
+          ],
+          [
+            "P6",
+            "E3",
+            "钢制零件",
+            "1"
+          ],
+          [
+            "H6",
+            "F4",
+            "钢质瓶",
+            "1/2"
+          ],
+          [
+            "Q6",
+            "F4",
+            "细磨荞花粉末",
+            "1/2"
+          ],
+          [
+            "E1",
+            "CORE",
+            "高容谷地电池",
+            "1/5"
+          ],
+          [
+            "E2",
+            "CORE",
+            "高容谷地电池",
+            "1/5"
+          ],
+          [
+            "E3",
+            "CORE",
+            "高容谷地电池",
+            "1/5"
+          ],
+          [
+            "F1",
+            "CORE",
+            "精选荞愈胶囊",
+            "1/5"
+          ],
+          [
+            "F2",
+            "CORE",
+            "精选荞愈胶囊",
+            "1/5"
+          ],
+          [
+            "F3",
+            "CORE",
+            "精选荞愈胶囊",
+            "1/10"
+          ],
+          [
+            "F4",
+            "CORE",
+            "精选荞愈胶囊",
+            "1/20"
+          ],
+          [
+            "SB1",
+            "S1",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S1",
+            "B1",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S1",
+            "B2",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S1",
+            "O1",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB2",
+            "S2",
+            "砂叶",
+            "2/3"
+          ],
+          [
+            "S2",
+            "O2",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S2",
+            "O3",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB3",
+            "S3",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S3",
+            "B4",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S3",
+            "O4",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB4",
+            "S4",
+            "砂叶",
+            "2/3"
+          ],
+          [
+            "S4",
+            "O6",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB5",
+            "S5",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S5",
+            "B5",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S5",
+            "O7",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S6",
+            "O8",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S6",
+            "O9",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB7",
+            "S7",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S7",
+            "B7",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S7",
+            "B8",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S7",
+            "B9",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB8",
+            "S8",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S8",
+            "B10",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S8",
+            "Q1",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S8",
+            "Q2",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB9",
+            "S9",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S9",
+            "B11",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S9",
+            "B12",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S9",
+            "B13",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB10",
+            "S10",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S10",
+            "Q3",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S10",
+            "Q4",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "SB11",
+            "S11",
+            "砂叶",
+            "1"
+          ],
+          [
+            "S11",
+            "B15",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S11",
+            "B16",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S12",
+            "B17",
+            "砂叶粉末",
+            "1"
+          ],
+          [
+            "S13",
+            "Q6",
+            "砂叶粉末",
+            "1/2"
+          ],
+          [
+            "QB1",
+            "KQ1",
+            "荞花",
+            "1"
+          ],
+          [
+            "KQ1",
+            "Q1",
+            "荞花粉末",
+            "1"
+          ],
+          [
+            "QB2",
+            "KQ2",
+            "荞花",
+            "1"
+          ],
+          [
+            "KQ2",
+            "Q2",
+            "荞花粉末",
+            "1"
+          ],
+          [
+            "QB3",
+            "KQ3",
+            "荞花",
+            "1"
+          ],
+          [
+            "QB4",
+            "KQ4",
+            "荞花",
+            "1"
+          ],
+          [
+            "QB5",
+            "KQ5",
+            "荞花",
+            "1"
+          ],
+          [
+            "KQ5",
+            "Q5",
+            "荞花粉末",
+            "1"
+          ],
+          [
+            "KQ6",
+            "Q6",
+            "荞花粉末",
+            "1"
+          ]
+        ],
+        "extra": [],
+        "completed": 183
+      }
+    },
+    {
+      "name": "H6_Q6_equal_lengths",
+      "pass_": false,
+      "detail": {}
+    },
+    {
+      "name": "exact_average_machine_balance",
+      "pass_": false,
+      "detail": [
+        "KB1",
+        "KB2",
+        "KB5",
+        "KB7",
+        "KB9",
+        "KB10",
+        "KB11",
+        "KB12",
+        "KB13",
+        "KB16",
+        "KB18",
+        "KB19",
+        "KB20",
+        "KB21",
+        "KB23",
+        "KB25",
+        "KB26",
+        "KB27",
+        "KB28",
+        "KB29",
+        "KB30",
+        "U1",
+        "U2",
+        "U3",
+        "U4",
+        "U5",
+        "U6",
+        "U7",
+        "U9",
+        "U10",
+        "U11",
+        "U12",
+        "U13",
+        "U14",
+        "U15",
+        "U16",
+        "U17",
+        "U18",
+        "B1",
+        "R1",
+        "B2",
+        "B3",
+        "B4",
+        "R4",
+        "B5",
+        "R5",
+        "B6",
+        "B7",
+        "R7",
+        "B8",
+        "R8",
+        "B9",
+        "R9",
+        "B10",
+        "R10",
+        "B11",
+        "R11",
+        "B12",
+        "R12",
+        "B13",
+        "R13",
+        "B14",
+        "R14",
+        "B15",
+        "R15",
+        "B16",
+        "R16",
+        "B17",
+        "R17",
+        "O1",
+        "O2",
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7",
+        "O8",
+        "O9",
+        "H1",
+        "Q1",
+        "H2",
+        "Q2",
+        "P3",
+        "H3",
+        "Q3",
+        "P4",
+        "H4",
+        "Q4",
+        "H5",
+        "Q5",
+        "P6",
+        "H6",
+        "Q6",
+        "E1",
+        "E2",
+        "E3",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "SB1",
+        "S1",
+        "SB2",
+        "S2",
+        "SB3",
+        "S3",
+        "SB4",
+        "S4",
+        "SB5",
+        "S5",
+        "S6",
+        "SB7",
+        "S7",
+        "SB8",
+        "S8",
+        "SB9",
+        "S9",
+        "SB10",
+        "S10",
+        "SB11",
+        "S11",
+        "S12",
+        "S13",
+        "QB1",
+        "KQ1",
+        "QB2",
+        "KQ2",
+        "QB3",
+        "KQ3",
+        "QB4",
+        "KQ4",
+        "QB5",
+        "KQ5",
+        "KQ6"
+      ]
+    },
+    {
+      "name": "exact_average_targets",
+      "pass_": false,
+      "detail": {}
+    },
+    {
+      "name": "bridge_axes_separate_routes",
+      "pass_": true,
+      "detail": [
+        {
+          "id": "X_9_32",
+          "x": 9,
+          "y": 32,
+          "H": [
+            "L018"
+          ],
+          "V": [
+            "L224"
+          ]
+        },
+        {
+          "id": "X_9_60",
+          "x": 9,
+          "y": 60,
+          "H": [
+            "L045"
+          ],
+          "V": [
+            "L042"
+          ]
+        },
+        {
+          "id": "X_18_28",
+          "x": 18,
+          "y": 28,
+          "H": [
+            "L185"
+          ],
+          "V": [
+            "L138"
+          ]
+        },
+        {
+          "id": "X_24_55",
+          "x": 24,
+          "y": 55,
+          "H": [
+            "L164"
+          ],
+          "V": [
+            "L166"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "v1_no_adjacent_bridges",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "bridge_axis_direction_declarations",
+      "pass_": true,
+      "detail": []
+    },
+    {
+      "name": "maximum_empty_rectangle",
+      "pass_": true,
+      "detail": {
+        "area": 36,
+        "short_side": 6,
+        "rectangle": {
+          "x0": 18,
+          "y0": 18,
+          "x1": 23,
+          "y1": 23
+        }
+      }
+    }
+  ],
+  "bridge_structures": [
+    {
+      "id": "X_9_32",
+      "x": 9,
+      "y": 32,
+      "H": [
+        "L018"
+      ],
+      "V": [
+        "L224"
+      ]
+    },
+    {
+      "id": "X_9_60",
+      "x": 9,
+      "y": 60,
+      "H": [
+        "L045"
+      ],
+      "V": [
+        "L042"
+      ]
+    },
+    {
+      "id": "X_18_28",
+      "x": 18,
+      "y": 28,
+      "H": [
+        "L185"
+      ],
+      "V": [
+        "L138"
+      ]
+    },
+    {
+      "id": "X_24_55",
+      "x": 24,
+      "y": 55,
+      "H": [
+        "L164"
+      ],
+      "V": [
+        "L166"
+      ]
+    }
+  ],
+  "power_coverage": {
+    "T1": [
+      "POWER86"
+    ],
+    "KB1": [
+      "POWER86"
+    ],
+    "T2": [
+      "POWER86"
+    ],
+    "KB2": [
+      "POWER86"
+    ],
+    "T3": [
+      "POWER90"
+    ],
+    "KB3": [
+      "POWER90"
+    ],
+    "T4": [
+      "POWER90"
+    ],
+    "KB4": [
+      "POWER90"
+    ],
+    "T5": [
+      "POWER90"
+    ],
+    "KB5": [
+      "POWER90"
+    ],
+    "T6": [
+      "POWER90"
+    ],
+    "KB6": [
+      "POWER90"
+    ],
+    "T7": [
+      "POWER94"
+    ],
+    "KB7": [
+      "POWER94"
+    ],
+    "T8": [
+      "POWER94"
+    ],
+    "KB8": [
+      "POWER94"
+    ],
+    "T9": [
+      "POWER94"
+    ],
+    "KB9": [
+      "POWER94"
+    ],
+    "T10": [
+      "POWER94"
+    ],
+    "KB10": [
+      "POWER94"
+    ],
+    "T11": [
+      "POWER98"
+    ],
+    "KB11": [
+      "POWER98"
+    ],
+    "T12": [
+      "POWER98"
+    ],
+    "KB12": [
+      "POWER98"
+    ],
+    "T13": [
+      "POWER98"
+    ],
+    "KB13": [
+      "POWER98"
+    ],
+    "T14": [
+      "POWER98"
+    ],
+    "KB14": [
+      "POWER98"
+    ],
+    "T15": [
+      "POWER102"
+    ],
+    "KB15": [
+      "POWER102"
+    ],
+    "T16": [
+      "POWER102"
+    ],
+    "KB16": [
+      "POWER102"
+    ],
+    "T17": [
+      "POWER102"
+    ],
+    "KB17": [
+      "POWER102"
+    ],
+    "T18": [
+      "POWER102"
+    ],
+    "KB18": [
+      "POWER102"
+    ],
+    "T19": [
+      "POWER624"
+    ],
+    "KB19": [
+      "POWER624"
+    ],
+    "T20": [
+      "POWER624"
+    ],
+    "KB20": [
+      "POWER624"
+    ],
+    "T21": [
+      "POWER1172"
+    ],
+    "KB21": [
+      "POWER1172"
+    ],
+    "T22": [
+      "POWER1172"
+    ],
+    "KB22": [
+      "POWER1172"
+    ],
+    "T23": [
+      "POWER1172"
+    ],
+    "KB23": [
+      "POWER1172"
+    ],
+    "T24": [
+      "POWER1172"
+    ],
+    "KB24": [
+      "POWER1172"
+    ],
+    "T25": [
+      "POWER1339"
+    ],
+    "KB25": [
+      "POWER1339"
+    ],
+    "T26": [
+      "POWER1339"
+    ],
+    "KB26": [
+      "POWER1339"
+    ],
+    "T27": [
+      "POWER1339"
+    ],
+    "KB27": [
+      "POWER1339"
+    ],
+    "T28": [
+      "POWER1339"
+    ],
+    "KB28": [
+      "POWER1339"
+    ],
+    "T29": [
+      "POWER1506"
+    ],
+    "KB29": [
+      "POWER1506"
+    ],
+    "T30": [
+      "POWER1506"
+    ],
+    "KB30": [
+      "POWER1506"
+    ],
+    "T31": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "KB31": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "T32": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "KB32": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "T33": [
+      "POWER1570"
+    ],
+    "KB33": [
+      "POWER1570"
+    ],
+    "T34": [
+      "POWER1570"
+    ],
+    "KB34": [
+      "POWER1570"
+    ],
+    "SB1": [
+      "POWER1492"
+    ],
+    "SA1": [
+      "POWER1314"
+    ],
+    "SC1": [
+      "POWER1314"
+    ],
+    "SB2": [
+      "POWER1302"
+    ],
+    "SA2": [
+      "POWER1065"
+    ],
+    "SC2": [
+      "POWER1065"
+    ],
+    "SB3": [
+      "POWER928"
+    ],
+    "SA3": [
+      "POWER1308"
+    ],
+    "SC3": [
+      "POWER1308"
+    ],
+    "SB4": [
+      "POWER1308"
+    ],
+    "SA4": [
+      "POWER928"
+    ],
+    "SC4": [
+      "POWER928"
+    ],
+    "SB5": [
+      "POWER944",
+      "POWER1103"
+    ],
+    "SA5": [
+      "POWER1314"
+    ],
+    "SC5": [
+      "POWER1314"
+    ],
+    "SB6": [
+      "POWER1314"
+    ],
+    "SA6": [
+      "POWER1492"
+    ],
+    "SC6": [
+      "POWER1492"
+    ],
+    "SB7": [
+      "POWER1314"
+    ],
+    "SA7": [
+      "POWER944",
+      "POWER1103"
+    ],
+    "SC7": [
+      "POWER944"
+    ],
+    "SB8": [
+      "POWER1302"
+    ],
+    "SA8": [
+      "POWER1480"
+    ],
+    "SC8": [
+      "POWER1480"
+    ],
+    "SB9": [
+      "POWER1367",
+      "POWER1480"
+    ],
+    "SA9": [
+      "POWER1302"
+    ],
+    "SC9": [
+      "POWER1302",
+      "POWER1367"
+    ],
+    "SB10": [
+      "POWER1308"
+    ],
+    "SA10": [
+      "POWER1486"
+    ],
+    "SC10": [
+      "POWER1486"
+    ],
+    "SB11": [
+      "POWER1486"
+    ],
+    "SA11": [
+      "POWER1308"
+    ],
+    "SC11": [
+      "POWER1308"
+    ],
+    "SB12": [
+      "POWER1492"
+    ],
+    "SA12": [
+      "POWER1697"
+    ],
+    "SC12": [
+      "POWER1697"
+    ],
+    "SB13": [
+      "POWER1065"
+    ],
+    "SA13": [
+      "POWER1302"
+    ],
+    "SC13": [
+      "POWER1302"
+    ],
+    "QB1": [
+      "POWER1480"
+    ],
+    "QA1": [
+      "POWER1665"
+    ],
+    "QC1": [
+      "POWER1665"
+    ],
+    "QB2": [
+      "POWER1665"
+    ],
+    "QA2": [
+      "POWER1480"
+    ],
+    "QC2": [
+      "POWER1480"
+    ],
+    "QB3": [
+      "POWER1486"
+    ],
+    "QA3": [
+      "POWER1681"
+    ],
+    "QC3": [
+      "POWER1681"
+    ],
+    "QB4": [
+      "POWER1681"
+    ],
+    "QA4": [
+      "POWER1486"
+    ],
+    "QC4": [
+      "POWER1486"
+    ],
+    "QB5": [
+      "POWER1697"
+    ],
+    "QA5": [
+      "POWER1492"
+    ],
+    "QC5": [
+      "POWER1492"
+    ],
+    "QB6": [
+      "POWER944"
+    ],
+    "QA6": [
+      "POWER944",
+      "POWER1103"
+    ],
+    "QC6": [
+      "POWER1103"
+    ],
+    "U1": [
+      "POWER1172"
+    ],
+    "U2": [
+      "POWER86"
+    ],
+    "U3": [
+      "POWER624"
+    ],
+    "U4": [
+      "POWER624"
+    ],
+    "U5": [
+      "POWER86"
+    ],
+    "U6": [
+      "POWER86"
+    ],
+    "U7": [
+      "POWER1065"
+    ],
+    "U8": [
+      "POWER77"
+    ],
+    "U9": [
+      "POWER1367"
+    ],
+    "U10": [
+      "POWER1339",
+      "POWER1367"
+    ],
+    "U11": [
+      "POWER624"
+    ],
+    "U12": [
+      "POWER1065"
+    ],
+    "U13": [
+      "POWER928"
+    ],
+    "U14": [
+      "POWER94",
+      "POWER98"
+    ],
+    "U15": [
+      "POWER77"
+    ],
+    "U16": [
+      "POWER1367"
+    ],
+    "U17": [
+      "POWER928"
+    ],
+    "U18": [
+      "POWER90"
+    ],
+    "B1": [
+      "POWER86"
+    ],
+    "R1": [
+      "POWER1065"
+    ],
+    "B2": [
+      "POWER86",
+      "POWER90"
+    ],
+    "R2": [
+      "POWER90"
+    ],
+    "B3": [
+      "POWER90",
+      "POWER94"
+    ],
+    "R3": [
+      "POWER94"
+    ],
+    "B4": [
+      "POWER94"
+    ],
+    "R4": [
+      "POWER928"
+    ],
+    "B5": [
+      "POWER94"
+    ],
+    "R5": [
+      "POWER928"
+    ],
+    "B6": [
+      "POWER98"
+    ],
+    "R6": [
+      "POWER944"
+    ],
+    "B7": [
+      "POWER102"
+    ],
+    "R7": [
+      "POWER102"
+    ],
+    "B8": [
+      "POWER98",
+      "POWER102"
+    ],
+    "R8": [
+      "POWER1665"
+    ],
+    "B9": [
+      "POWER102"
+    ],
+    "R9": [
+      "POWER944",
+      "POWER1103"
+    ],
+    "B10": [
+      "POWER77"
+    ],
+    "R10": [
+      "POWER944",
+      "POWER1103"
+    ],
+    "B11": [
+      "POWER1172"
+    ],
+    "R11": [
+      "POWER1367"
+    ],
+    "B12": [
+      "POWER1172",
+      "POWER1339"
+    ],
+    "R12": [
+      "POWER1339",
+      "POWER1367"
+    ],
+    "B13": [
+      "POWER77",
+      "POWER624"
+    ],
+    "R13": [
+      "POWER944"
+    ],
+    "B14": [
+      "POWER1339",
+      "POWER1367",
+      "POWER1506"
+    ],
+    "R14": [
+      "POWER944",
+      "POWER1103"
+    ],
+    "B15": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "R15": [
+      "POWER1697"
+    ],
+    "B16": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "R16": [
+      "POWER1665"
+    ],
+    "B17": [
+      "POWER1570"
+    ],
+    "R17": [
+      "POWER1065"
+    ],
+    "O1": [
+      "POWER1172"
+    ],
+    "O2": [
+      "POWER624"
+    ],
+    "O3": [
+      "POWER86",
+      "POWER90"
+    ],
+    "O4": [
+      "POWER77",
+      "POWER86"
+    ],
+    "O5": [
+      "POWER1367"
+    ],
+    "O6": [
+      "POWER624"
+    ],
+    "O7": [
+      "POWER98"
+    ],
+    "O8": [
+      "POWER1065"
+    ],
+    "O9": [
+      "POWER1065"
+    ],
+    "P1": [
+      "POWER1065"
+    ],
+    "H1": [
+      "POWER1681"
+    ],
+    "Q1": [
+      "POWER1065"
+    ],
+    "P2": [
+      "POWER90"
+    ],
+    "H2": [
+      "POWER944"
+    ],
+    "Q2": [
+      "POWER1339",
+      "POWER1367"
+    ],
+    "P3": [
+      "POWER928"
+    ],
+    "H3": [
+      "POWER1339",
+      "POWER1367"
+    ],
+    "Q3": [
+      "POWER928"
+    ],
+    "P4": [
+      "POWER928"
+    ],
+    "H4": [
+      "POWER944"
+    ],
+    "Q4": [
+      "POWER944"
+    ],
+    "P5": [
+      "POWER928"
+    ],
+    "H5": [
+      "POWER1681"
+    ],
+    "Q5": [
+      "POWER928"
+    ],
+    "P6": [
+      "POWER944"
+    ],
+    "H6": [
+      "POWER928"
+    ],
+    "Q6": [
+      "POWER1570"
+    ],
+    "E1": [
+      "POWER1065"
+    ],
+    "E2": [
+      "POWER1506",
+      "POWER1570"
+    ],
+    "E3": [
+      "POWER928"
+    ],
+    "F1": [
+      "POWER1367",
+      "POWER1506"
+    ],
+    "F2": [
+      "POWER624"
+    ],
+    "F3": [
+      "POWER90",
+      "POWER94"
+    ],
+    "F4": [
+      "POWER624"
+    ],
+    "S1": [
+      "POWER1172"
+    ],
+    "S2": [
+      "POWER1065"
+    ],
+    "S3": [
+      "POWER90"
+    ],
+    "S4": [
+      "POWER1367"
+    ],
+    "S5": [
+      "POWER98"
+    ],
+    "S6": [
+      "POWER1103"
+    ],
+    "S7": [
+      "POWER98"
+    ],
+    "S8": [
+      "POWER1065"
+    ],
+    "S9": [
+      "POWER928"
+    ],
+    "S10": [
+      "POWER1339",
+      "POWER1367",
+      "POWER1506"
+    ],
+    "S11": [
+      "POWER928"
+    ],
+    "S12": [
+      "POWER1697"
+    ],
+    "S13": [
+      "POWER1065"
+    ],
+    "KQ1": [
+      "POWER1065"
+    ],
+    "KQ2": [
+      "POWER1339",
+      "POWER1367"
+    ],
+    "KQ3": [
+      "POWER928"
+    ],
+    "KQ4": [
+      "POWER944"
+    ],
+    "KQ5": [
+      "POWER928"
+    ],
+    "KQ6": [
+      "POWER944"
+    ]
+  },
+  "candidate_sha256": "b600feaf3ef9ab38afbec8a29528f26ae55e84b461551b47377bf2d21c7ba6ec",
+  "checker_sha256": "cf8e8a1b303faf9b17029082fe3052d3c78c5ae283fb140b2423d23045c39201"
+}

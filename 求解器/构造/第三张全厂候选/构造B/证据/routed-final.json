@@ -1,0 +1,10790 @@
+{
+  "layout": {
+    "W": 70,
+    "H": 70,
+    "machines": [
+      {
+        "id": "T1",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 16,
+        "x1": 4,
+        "y1": 18,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB1",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 16,
+        "x1": 8,
+        "y1": 18,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T2",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 19,
+        "x1": 4,
+        "y1": 21,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB2",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 19,
+        "x1": 8,
+        "y1": 21,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T3",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 22,
+        "x1": 4,
+        "y1": 24,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB3",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 22,
+        "x1": 8,
+        "y1": 24,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T4",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 25,
+        "x1": 4,
+        "y1": 27,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB4",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 25,
+        "x1": 8,
+        "y1": 27,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T5",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 28,
+        "x1": 4,
+        "y1": 30,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB5",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 28,
+        "x1": 8,
+        "y1": 30,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T6",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 31,
+        "x1": 4,
+        "y1": 33,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB6",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 31,
+        "x1": 8,
+        "y1": 33,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T7",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 34,
+        "x1": 4,
+        "y1": 36,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB7",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 34,
+        "x1": 8,
+        "y1": 36,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T8",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 37,
+        "x1": 4,
+        "y1": 39,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB8",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 37,
+        "x1": 8,
+        "y1": 39,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T9",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 40,
+        "x1": 4,
+        "y1": 42,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB9",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 40,
+        "x1": 8,
+        "y1": 42,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T10",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 43,
+        "x1": 4,
+        "y1": 45,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB10",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 43,
+        "x1": 8,
+        "y1": 45,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T11",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 46,
+        "x1": 4,
+        "y1": 48,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB11",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 46,
+        "x1": 8,
+        "y1": 48,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T12",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 49,
+        "x1": 4,
+        "y1": 51,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB12",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 49,
+        "x1": 8,
+        "y1": 51,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T13",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 52,
+        "x1": 4,
+        "y1": 54,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB13",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 52,
+        "x1": 8,
+        "y1": 54,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T14",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 55,
+        "x1": 4,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB14",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 55,
+        "x1": 8,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T15",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 58,
+        "x1": 4,
+        "y1": 60,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB15",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 58,
+        "x1": 8,
+        "y1": 60,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T16",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 61,
+        "x1": 4,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB16",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 61,
+        "x1": 8,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T17",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 64,
+        "x1": 4,
+        "y1": 66,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB17",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 64,
+        "x1": 8,
+        "y1": 66,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T18",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 67,
+        "x1": 4,
+        "y1": 69,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB18",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 67,
+        "x1": 8,
+        "y1": 69,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T19",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 22,
+        "y0": 2,
+        "x1": 24,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB19",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 6,
+        "x1": 24,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T20",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 25,
+        "y0": 2,
+        "x1": 27,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB20",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 25,
+        "y0": 6,
+        "x1": 27,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T21",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 28,
+        "y0": 2,
+        "x1": 30,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB21",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 6,
+        "x1": 30,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T22",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 31,
+        "y0": 2,
+        "x1": 33,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB22",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 31,
+        "y0": 6,
+        "x1": 33,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T23",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 34,
+        "y0": 2,
+        "x1": 36,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB23",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 34,
+        "y0": 6,
+        "x1": 36,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T24",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 37,
+        "y0": 2,
+        "x1": 39,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB24",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 37,
+        "y0": 6,
+        "x1": 39,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T25",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 40,
+        "y0": 2,
+        "x1": 42,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB25",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 40,
+        "y0": 6,
+        "x1": 42,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T26",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 43,
+        "y0": 2,
+        "x1": 45,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB26",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 43,
+        "y0": 6,
+        "x1": 45,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T27",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 46,
+        "y0": 2,
+        "x1": 48,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB27",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 46,
+        "y0": 6,
+        "x1": 48,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T28",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 49,
+        "y0": 2,
+        "x1": 51,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB28",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 49,
+        "y0": 6,
+        "x1": 51,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T29",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 52,
+        "y0": 2,
+        "x1": 54,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB29",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 52,
+        "y0": 6,
+        "x1": 54,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T30",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 55,
+        "y0": 2,
+        "x1": 57,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB30",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 55,
+        "y0": 6,
+        "x1": 57,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T31",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 2,
+        "x1": 60,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB31",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 58,
+        "y0": 6,
+        "x1": 60,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T32",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 61,
+        "y0": 2,
+        "x1": 63,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB32",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 61,
+        "y0": 6,
+        "x1": 63,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T33",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 64,
+        "y0": 2,
+        "x1": 66,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB33",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 64,
+        "y0": 6,
+        "x1": 66,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T34",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 2,
+        "x1": 69,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB34",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 67,
+        "y0": 6,
+        "x1": 69,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 50,
+        "y0": 54,
+        "x1": 54,
+        "y1": 58,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 58,
+        "x1": 48,
+        "y1": 62,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC1",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 53,
+        "x1": 48,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 22,
+        "x1": 41,
+        "y1": 26,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 26,
+        "x1": 35,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC2",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 21,
+        "x1": 35,
+        "y1": 25,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 30,
+        "y0": 47,
+        "x1": 34,
+        "y1": 51,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 36,
+        "y0": 43,
+        "x1": 40,
+        "y1": 47,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC3",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 36,
+        "y0": 48,
+        "x1": 40,
+        "y1": 52,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 38,
+        "x1": 41,
+        "y1": 42,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 42,
+        "x1": 35,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC4",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 37,
+        "x1": 35,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 30,
+        "y0": 63,
+        "x1": 34,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 36,
+        "y0": 59,
+        "x1": 40,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC5",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 36,
+        "y0": 64,
+        "x1": 40,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 43,
+        "y0": 63,
+        "x1": 47,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 59,
+        "x1": 53,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC6",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 64,
+        "x1": 53,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB7",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 54,
+        "x1": 41,
+        "y1": 58,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA7",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 58,
+        "x1": 35,
+        "y1": 62,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC7",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 53,
+        "x1": 35,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB8",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 43,
+        "y0": 31,
+        "x1": 47,
+        "y1": 35,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA8",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 27,
+        "x1": 53,
+        "y1": 31,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC8",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 32,
+        "x1": 53,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB9",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 50,
+        "y0": 22,
+        "x1": 54,
+        "y1": 26,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA9",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 26,
+        "x1": 48,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC9",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 21,
+        "x1": 48,
+        "y1": 25,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB10",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 43,
+        "y0": 47,
+        "x1": 47,
+        "y1": 51,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA10",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 43,
+        "x1": 53,
+        "y1": 47,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC10",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 48,
+        "x1": 53,
+        "y1": 52,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB11",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 50,
+        "y0": 38,
+        "x1": 54,
+        "y1": 42,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA11",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 42,
+        "x1": 48,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC11",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 37,
+        "x1": 48,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB12",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 56,
+        "y0": 63,
+        "x1": 60,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA12",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 59,
+        "x1": 66,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC12",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 64,
+        "x1": 66,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB13",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 30,
+        "y0": 31,
+        "x1": 34,
+        "y1": 35,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA13",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 36,
+        "y0": 27,
+        "x1": 40,
+        "y1": 31,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC13",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 36,
+        "y0": 32,
+        "x1": 40,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 56,
+        "y0": 31,
+        "x1": 60,
+        "y1": 35,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 27,
+        "x1": 66,
+        "y1": 31,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC1",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 32,
+        "x1": 66,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 63,
+        "y0": 22,
+        "x1": 67,
+        "y1": 26,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 57,
+        "y0": 26,
+        "x1": 61,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC2",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 57,
+        "y0": 21,
+        "x1": 61,
+        "y1": 25,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 56,
+        "y0": 47,
+        "x1": 60,
+        "y1": 51,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 43,
+        "x1": 66,
+        "y1": 47,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC3",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 48,
+        "x1": 66,
+        "y1": 52,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 63,
+        "y0": 38,
+        "x1": 67,
+        "y1": 42,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 57,
+        "y0": 42,
+        "x1": 61,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC4",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 57,
+        "y0": 37,
+        "x1": 61,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 63,
+        "y0": 54,
+        "x1": 67,
+        "y1": 58,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 57,
+        "y0": 58,
+        "x1": 61,
+        "y1": 62,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC5",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 57,
+        "y0": 53,
+        "x1": 61,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 16,
+        "y0": 63,
+        "x1": 20,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 22,
+        "y0": 59,
+        "x1": 26,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC6",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 22,
+        "y0": 64,
+        "x1": 26,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U1",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 26,
+        "y0": 13,
+        "x1": 28,
+        "y1": 15,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U2",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 14,
+        "y0": 16,
+        "x1": 16,
+        "y1": 18,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U3",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 19,
+        "y0": 11,
+        "x1": 21,
+        "y1": 13,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U4",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 16,
+        "y0": 10,
+        "x1": 18,
+        "y1": 12,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U5",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 10,
+        "y0": 18,
+        "x1": 12,
+        "y1": 20,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U6",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 11,
+        "y0": 15,
+        "x1": 13,
+        "y1": 17,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U7",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 25,
+        "y0": 22,
+        "x1": 27,
+        "y1": 24,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U8",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 2,
+        "y0": 5,
+        "x1": 4,
+        "y1": 7,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U9",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 47,
+        "y0": 18,
+        "x1": 49,
+        "y1": 20,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U10",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 47,
+        "y0": 13,
+        "x1": 49,
+        "y1": 15,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U11",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 23,
+        "y0": 13,
+        "x1": 25,
+        "y1": 15,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U12",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 31,
+        "y0": 18,
+        "x1": 33,
+        "y1": 20,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U13",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 25,
+        "y0": 44,
+        "x1": 27,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U14",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 10,
+        "y0": 44,
+        "x1": 12,
+        "y1": 46,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U15",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 7,
+        "y0": 1,
+        "x1": 9,
+        "y1": 3,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U16",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 40,
+        "y0": 19,
+        "x1": 42,
+        "y1": 21,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U17",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 37,
+        "x1": 30,
+        "y1": 39,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "U18",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 15,
+        "y0": 25,
+        "x1": 17,
+        "y1": 27,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B1",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 1,
+        "y0": 12,
+        "x1": 6,
+        "y1": 15,
+        "Din": 1,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R1",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 25,
+        "y0": 25,
+        "x1": 27,
+        "y1": 27,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B2",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 10,
+        "y0": 21,
+        "x1": 13,
+        "y1": 26,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R2",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 12,
+        "y0": 27,
+        "x1": 14,
+        "y1": 29,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B3",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 10,
+        "y0": 32,
+        "x1": 13,
+        "y1": 37,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R3",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 15,
+        "y0": 37,
+        "x1": 17,
+        "y1": 39,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B4",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 11,
+        "y0": 38,
+        "x1": 14,
+        "y1": 43,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R4",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 22,
+        "y0": 40,
+        "x1": 24,
+        "y1": 42,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B5",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 15,
+        "y0": 40,
+        "x1": 18,
+        "y1": 45,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R5",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 25,
+        "y0": 37,
+        "x1": 27,
+        "y1": 39,
+        "Din": 1,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B6",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 14,
+        "y0": 46,
+        "x1": 17,
+        "y1": 51,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R6",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 21,
+        "y0": 50,
+        "x1": 23,
+        "y1": 52,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B7",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 11,
+        "y0": 60,
+        "x1": 14,
+        "y1": 65,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R7",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 15,
+        "y0": 60,
+        "x1": 17,
+        "y1": 62,
+        "Din": 1,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B8",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 10,
+        "y0": 56,
+        "x1": 15,
+        "y1": 59,
+        "Din": 1,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R8",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 35,
+        "x1": 69,
+        "y1": 37,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B9",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 10,
+        "y0": 66,
+        "x1": 15,
+        "y1": 69,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R9",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 27,
+        "y0": 57,
+        "x1": 29,
+        "y1": 59,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B10",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 1,
+        "y0": 1,
+        "x1": 6,
+        "y1": 4,
+        "Din": 1,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R10",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 27,
+        "y0": 60,
+        "x1": 29,
+        "y1": 62,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B11",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 33,
+        "y0": 11,
+        "x1": 36,
+        "y1": 16,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R11",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 40,
+        "y0": 16,
+        "x1": 42,
+        "y1": 18,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B12",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 37,
+        "y0": 10,
+        "x1": 40,
+        "y1": 15,
+        "Din": 0,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R12",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 42,
+        "y0": 9,
+        "x1": 44,
+        "y1": 11,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B13",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 10,
+        "y0": 2,
+        "x1": 15,
+        "y1": 5,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R13",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 21,
+        "y0": 53,
+        "x1": 23,
+        "y1": 55,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B14",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 47,
+        "y0": 9,
+        "x1": 52,
+        "y1": 12,
+        "Din": 1,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R14",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 22,
+        "y0": 56,
+        "x1": 24,
+        "y1": 58,
+        "Din": 1,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B15",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 62,
+        "y0": 15,
+        "x1": 65,
+        "y1": 20,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R15",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 60,
+        "x1": 69,
+        "y1": 62,
+        "Din": 1,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B16",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 58,
+        "y0": 11,
+        "x1": 63,
+        "y1": 14,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R16",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 27,
+        "x1": 69,
+        "y1": 29,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "B17",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 64,
+        "y0": 11,
+        "x1": 69,
+        "y1": 14,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "R17",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 24,
+        "y0": 31,
+        "x1": 26,
+        "y1": 33,
+        "Din": 0,
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O1",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 29,
+        "y0": 12,
+        "x1": 32,
+        "y1": 17,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O2",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 17,
+        "y0": 14,
+        "x1": 22,
+        "y1": 17,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O3",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 14,
+        "y0": 19,
+        "x1": 17,
+        "y1": 24,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O4",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 1,
+        "y0": 8,
+        "x1": 6,
+        "y1": 11,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O5",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 53,
+        "y0": 16,
+        "x1": 56,
+        "y1": 21,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O6",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 22,
+        "y0": 9,
+        "x1": 27,
+        "y1": 12,
+        "Din": 1,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O7",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 12,
+        "y0": 52,
+        "x1": 17,
+        "y1": 55,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O8",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 34,
+        "y0": 17,
+        "x1": 39,
+        "y1": 20,
+        "Din": 1,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "O9",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 18,
+        "y0": 29,
+        "x1": 23,
+        "y1": 32,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "P1",
+        "model": "配件机",
+        "kind": "小",
+        "x0": 24,
+        "y0": 28,
+        "x1": 26,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "H1",
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 67,
+        "y0": 43,
+        "x1": 69,
+        "y1": 45,
+        "Din": 3,
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "Q1",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 24,
+        "y0": 16,
+        "x1": 27,
+        "y1": 21,
+        "Din": 0,
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "P2",
+        "model": "配件机",
+        "kind": "小",
+        "x0": 15,
+        "y0": 28,
+        "x1": 17,
+        "y1": 30,
+        "Din": 2,
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "H2",
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 54,
+        "x1": 29,
+        "y1": 56,
+        "Din": 0,
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "Q2",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 43,
+        "y0": 15,
+        "x1": 46,
+        "y1": 20,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "P3",
+        "model": "配件机",
+        "kind": "小",
+        "x0": 19,
+        "y0": 39,
+        "x1": 21,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "H3",
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 44,
+        "y0": 12,
+        "x1": 46,
+        "y1": 14,
+        "Din": 3,
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "Q3",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 24,
+        "y0": 47,
+        "x1": 29,
+        "y1": 50,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "P4",
+        "model": "配件机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 40,
+        "x1": 29,
+        "y1": 42,
+        "Din": 2,
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "H4",
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 24,
+        "y0": 52,
+        "x1": 26,
+        "y1": 54,
+        "Din": 1,
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "Q4",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 16,
+        "y0": 56,
+        "x1": 21,
+        "y1": 59,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "P5",
+        "model": "配件机",
+        "kind": "小",
+        "x0": 23,
+        "y0": 34,
+        "x1": 25,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "H5",
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 67,
+        "y0": 50,
+        "x1": 69,
+        "y1": 52,
+        "Din": 1,
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "Q5",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 18,
+        "y0": 46,
+        "x1": 23,
+        "y1": 49,
+        "Din": 3,
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "P6",
+        "model": "配件机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 51,
+        "x1": 29,
+        "y1": 53,
+        "Din": 2,
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "H6",
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 37,
+        "x1": 24,
+        "y1": 39,
+        "Din": 3,
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "Q6",
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 66,
+        "y0": 15,
+        "x1": 69,
+        "y1": 20,
+        "Din": 2,
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "E1",
+        "model": "封装机",
+        "kind": "大",
+        "x0": 19,
+        "y0": 24,
+        "x1": 24,
+        "y1": 27,
+        "Din": 1,
+        "recipe_ids": [
+          "封装-电池"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "E2",
+        "model": "封装机",
+        "kind": "大",
+        "x0": 57,
+        "y0": 15,
+        "x1": 60,
+        "y1": 20,
+        "Din": 0,
+        "recipe_ids": [
+          "封装-电池"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "E3",
+        "model": "封装机",
+        "kind": "大",
+        "x0": 18,
+        "y0": 33,
+        "x1": 21,
+        "y1": 38,
+        "Din": 0,
+        "recipe_ids": [
+          "封装-电池"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "F1",
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 53,
+        "y0": 10,
+        "x1": 56,
+        "y1": 15,
+        "Din": 0,
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "F2",
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 16,
+        "y0": 5,
+        "x1": 21,
+        "y1": 8,
+        "Din": 1,
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "F3",
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 14,
+        "y0": 31,
+        "x1": 17,
+        "y1": 36,
+        "Din": 2,
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "F4",
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 16,
+        "y0": 1,
+        "x1": 21,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S1",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 29,
+        "y0": 9,
+        "x1": 31,
+        "y1": 11,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S2",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 30,
+        "x1": 29,
+        "y1": 32,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S3",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 9,
+        "y0": 29,
+        "x1": 11,
+        "y1": 31,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S4",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 50,
+        "y0": 18,
+        "x1": 52,
+        "y1": 20,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S5",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 10,
+        "y0": 48,
+        "x1": 12,
+        "y1": 50,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S6",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 66,
+        "x1": 29,
+        "y1": 68,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S7",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 9,
+        "y0": 53,
+        "x1": 11,
+        "y1": 55,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S8",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 18,
+        "x1": 30,
+        "y1": 20,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S9",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 34,
+        "x1": 29,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S10",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 50,
+        "y0": 14,
+        "x1": 52,
+        "y1": 16,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S11",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 19,
+        "y0": 42,
+        "x1": 21,
+        "y1": 44,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S12",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 67,
+        "y0": 66,
+        "x1": 69,
+        "y1": 68,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "S13",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 27,
+        "x1": 30,
+        "y1": 29,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KQ1",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 22,
+        "x1": 30,
+        "y1": 24,
+        "Din": 1,
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KQ2",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 41,
+        "y0": 12,
+        "x1": 43,
+        "y1": 14,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KQ3",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 43,
+        "x1": 30,
+        "y1": 45,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KQ4",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 18,
+        "y0": 52,
+        "x1": 20,
+        "y1": 54,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KQ5",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 43,
+        "x1": 24,
+        "y1": 45,
+        "Din": 0,
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KQ6",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 19,
+        "y0": 60,
+        "x1": 21,
+        "y1": 62,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    ],
+    "warehouse_outlets": [
+      {
+        "id": "OB1",
+        "x0": 0,
+        "y0": 16,
+        "x1": 0,
+        "y1": 18,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB2",
+        "x0": 0,
+        "y0": 19,
+        "x1": 0,
+        "y1": 21,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB3",
+        "x0": 0,
+        "y0": 22,
+        "x1": 0,
+        "y1": 24,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB4",
+        "x0": 0,
+        "y0": 25,
+        "x1": 0,
+        "y1": 27,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB5",
+        "x0": 0,
+        "y0": 28,
+        "x1": 0,
+        "y1": 30,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB6",
+        "x0": 0,
+        "y0": 31,
+        "x1": 0,
+        "y1": 33,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB7",
+        "x0": 0,
+        "y0": 34,
+        "x1": 0,
+        "y1": 36,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB8",
+        "x0": 0,
+        "y0": 37,
+        "x1": 0,
+        "y1": 39,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB9",
+        "x0": 0,
+        "y0": 40,
+        "x1": 0,
+        "y1": 42,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB10",
+        "x0": 0,
+        "y0": 43,
+        "x1": 0,
+        "y1": 45,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB11",
+        "x0": 0,
+        "y0": 46,
+        "x1": 0,
+        "y1": 48,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB12",
+        "x0": 0,
+        "y0": 49,
+        "x1": 0,
+        "y1": 51,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB13",
+        "x0": 0,
+        "y0": 52,
+        "x1": 0,
+        "y1": 54,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB14",
+        "x0": 0,
+        "y0": 55,
+        "x1": 0,
+        "y1": 57,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB15",
+        "x0": 0,
+        "y0": 58,
+        "x1": 0,
+        "y1": 60,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB16",
+        "x0": 0,
+        "y0": 61,
+        "x1": 0,
+        "y1": 63,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB17",
+        "x0": 0,
+        "y0": 64,
+        "x1": 0,
+        "y1": 66,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB18",
+        "x0": 0,
+        "y0": 67,
+        "x1": 0,
+        "y1": 69,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB19",
+        "x0": 22,
+        "y0": 0,
+        "x1": 24,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB20",
+        "x0": 25,
+        "y0": 0,
+        "x1": 27,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB21",
+        "x0": 28,
+        "y0": 0,
+        "x1": 30,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB22",
+        "x0": 31,
+        "y0": 0,
+        "x1": 33,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB23",
+        "x0": 34,
+        "y0": 0,
+        "x1": 36,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB24",
+        "x0": 37,
+        "y0": 0,
+        "x1": 39,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB25",
+        "x0": 40,
+        "y0": 0,
+        "x1": 42,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB26",
+        "x0": 43,
+        "y0": 0,
+        "x1": 45,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB27",
+        "x0": 46,
+        "y0": 0,
+        "x1": 48,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB28",
+        "x0": 49,
+        "y0": 0,
+        "x1": 51,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB29",
+        "x0": 52,
+        "y0": 0,
+        "x1": 54,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB30",
+        "x0": 55,
+        "y0": 0,
+        "x1": 57,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB31",
+        "x0": 58,
+        "y0": 0,
+        "x1": 60,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB32",
+        "x0": 61,
+        "y0": 0,
+        "x1": 63,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB33",
+        "x0": 64,
+        "y0": 0,
+        "x1": 66,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB34",
+        "x0": 67,
+        "y0": 0,
+        "x1": 69,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OO7",
+        "x0": 0,
+        "y0": 1,
+        "x1": 0,
+        "y1": 3,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO8",
+        "x0": 0,
+        "y0": 4,
+        "x1": 0,
+        "y1": 6,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO9",
+        "x0": 0,
+        "y0": 7,
+        "x1": 0,
+        "y1": 9,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO10",
+        "x0": 0,
+        "y0": 10,
+        "x1": 0,
+        "y1": 12,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO11",
+        "x0": 0,
+        "y0": 13,
+        "x1": 0,
+        "y1": 15,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO12",
+        "x0": 1,
+        "y0": 0,
+        "x1": 3,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO13",
+        "x0": 4,
+        "y0": 0,
+        "x1": 6,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO14",
+        "x0": 7,
+        "y0": 0,
+        "x1": 9,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO15",
+        "x0": 10,
+        "y0": 0,
+        "x1": 12,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO16",
+        "x0": 13,
+        "y0": 0,
+        "x1": 15,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO17",
+        "x0": 16,
+        "y0": 0,
+        "x1": 18,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO18",
+        "x0": 19,
+        "y0": 0,
+        "x1": 21,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      }
+    ],
+    "core": {
+      "id": "CORE",
+      "x0": 7,
+      "y0": 6,
+      "x1": 15,
+      "y1": 14,
+      "Din": 0,
+      "output_items": [
+        {
+          "side": 1,
+          "offset": 1,
+          "item": "源矿"
+        },
+        {
+          "side": 1,
+          "offset": 4,
+          "item": "源矿"
+        },
+        {
+          "side": 1,
+          "offset": 7,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 1,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 4,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 7,
+          "item": "源矿"
+        }
+      ]
+    },
+    "power_poles": [
+      {
+        "id": "POWER77",
+        "x0": 7,
+        "y0": 4,
+        "x1": 8,
+        "y1": 5,
+        "orientation": 0
+      },
+      {
+        "id": "POWER86",
+        "x0": 9,
+        "y0": 15,
+        "x1": 10,
+        "y1": 16,
+        "orientation": 0
+      },
+      {
+        "id": "POWER90",
+        "x0": 9,
+        "y0": 27,
+        "x1": 10,
+        "y1": 28,
+        "orientation": 0
+      },
+      {
+        "id": "POWER94",
+        "x0": 9,
+        "y0": 39,
+        "x1": 10,
+        "y1": 40,
+        "orientation": 0
+      },
+      {
+        "id": "POWER98",
+        "x0": 9,
+        "y0": 51,
+        "x1": 10,
+        "y1": 52,
+        "orientation": 0
+      },
+      {
+        "id": "POWER102",
+        "x0": 9,
+        "y0": 63,
+        "x1": 10,
+        "y1": 64,
+        "orientation": 0
+      },
+      {
+        "id": "POWER624",
+        "x0": 19,
+        "y0": 9,
+        "x1": 20,
+        "y1": 10,
+        "orientation": 0
+      },
+      {
+        "id": "POWER928",
+        "x0": 25,
+        "y0": 41,
+        "x1": 26,
+        "y1": 42,
+        "orientation": 0
+      },
+      {
+        "id": "POWER944",
+        "x0": 25,
+        "y0": 57,
+        "x1": 26,
+        "y1": 58,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1065",
+        "x0": 28,
+        "y0": 25,
+        "x1": 29,
+        "y1": 26,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1103",
+        "x0": 28,
+        "y0": 63,
+        "x1": 29,
+        "y1": 64,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1172",
+        "x0": 33,
+        "y0": 9,
+        "x1": 34,
+        "y1": 10,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1302",
+        "x0": 42,
+        "y0": 27,
+        "x1": 43,
+        "y1": 28,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1308",
+        "x0": 42,
+        "y0": 43,
+        "x1": 43,
+        "y1": 44,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1314",
+        "x0": 42,
+        "y0": 59,
+        "x1": 43,
+        "y1": 60,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1339",
+        "x0": 45,
+        "y0": 9,
+        "x1": 46,
+        "y1": 10,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1367",
+        "x0": 47,
+        "y0": 16,
+        "x1": 48,
+        "y1": 17,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1480",
+        "x0": 55,
+        "y0": 27,
+        "x1": 56,
+        "y1": 28,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1486",
+        "x0": 55,
+        "y0": 43,
+        "x1": 56,
+        "y1": 44,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1492",
+        "x0": 55,
+        "y0": 59,
+        "x1": 56,
+        "y1": 60,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1506",
+        "x0": 57,
+        "y0": 9,
+        "x1": 58,
+        "y1": 10,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1570",
+        "x0": 63,
+        "y0": 9,
+        "x1": 64,
+        "y1": 10,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1665",
+        "x0": 68,
+        "y0": 31,
+        "x1": 69,
+        "y1": 32,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1681",
+        "x0": 68,
+        "y0": 47,
+        "x1": 69,
+        "y1": 48,
+        "orientation": 0
+      },
+      {
+        "id": "POWER1697",
+        "x0": 68,
+        "y0": 63,
+        "x1": 69,
+        "y1": 64,
+        "orientation": 0
+      }
+    ],
+    "storage_boxes": [],
+    "transport": [
+      {
+        "id": "TR_1_17",
+        "x": 1,
+        "y": 17,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_17",
+        "x": 5,
+        "y": 17,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_20",
+        "x": 1,
+        "y": 20,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_20",
+        "x": 5,
+        "y": 20,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_23",
+        "x": 1,
+        "y": 23,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_23",
+        "x": 5,
+        "y": 23,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_26",
+        "x": 1,
+        "y": 26,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_26",
+        "x": 5,
+        "y": 26,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_29",
+        "x": 1,
+        "y": 29,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_29",
+        "x": 5,
+        "y": 29,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_32",
+        "x": 1,
+        "y": 32,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_32",
+        "x": 5,
+        "y": 32,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_35",
+        "x": 1,
+        "y": 35,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_35",
+        "x": 5,
+        "y": 35,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_38",
+        "x": 1,
+        "y": 38,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_38",
+        "x": 5,
+        "y": 38,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_41",
+        "x": 1,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_41",
+        "x": 5,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_44",
+        "x": 1,
+        "y": 44,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_44",
+        "x": 5,
+        "y": 44,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_47",
+        "x": 1,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_47",
+        "x": 5,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_50",
+        "x": 1,
+        "y": 50,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_50",
+        "x": 5,
+        "y": 50,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_53",
+        "x": 1,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_53",
+        "x": 5,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_56",
+        "x": 1,
+        "y": 56,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_56",
+        "x": 5,
+        "y": 56,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_59",
+        "x": 1,
+        "y": 59,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_59",
+        "x": 5,
+        "y": 59,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_62",
+        "x": 1,
+        "y": 62,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_62",
+        "x": 5,
+        "y": 62,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_65",
+        "x": 1,
+        "y": 65,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_65",
+        "x": 5,
+        "y": 65,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_68",
+        "x": 1,
+        "y": 68,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_68",
+        "x": 5,
+        "y": 68,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_23_1",
+        "x": 23,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_23_5",
+        "x": 23,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_26_1",
+        "x": 26,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_26_5",
+        "x": 26,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_29_1",
+        "x": 29,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_29_5",
+        "x": 29,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_32_1",
+        "x": 32,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_32_5",
+        "x": 32,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_35_1",
+        "x": 35,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_35_5",
+        "x": 35,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_1",
+        "x": 38,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_5",
+        "x": 38,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_1",
+        "x": 41,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_5",
+        "x": 41,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_44_1",
+        "x": 44,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_44_5",
+        "x": 44,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_47_1",
+        "x": 47,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_47_5",
+        "x": 47,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_50_1",
+        "x": 50,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_50_5",
+        "x": 50,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_53_1",
+        "x": 53,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_53_5",
+        "x": 53,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_1",
+        "x": 56,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_5",
+        "x": 56,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_59_1",
+        "x": 59,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_59_5",
+        "x": 59,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_1",
+        "x": 62,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_5",
+        "x": 62,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_65_1",
+        "x": 65,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_65_5",
+        "x": 65,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_68_1",
+        "x": 68,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_68_5",
+        "x": 68,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_35_36",
+        "x": 35,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_34_36",
+        "x": 34,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_35_32",
+        "x": 35,
+        "y": 32,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_35_31",
+        "x": 35,
+        "y": 31,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_41_31",
+        "x": 41,
+        "y": 31,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_32",
+        "x": 41,
+        "y": 32,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_36_21",
+        "x": 36,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_37_21",
+        "x": 37,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_36_25",
+        "x": 36,
+        "y": 25,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_36_26",
+        "x": 36,
+        "y": 26,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_30_26",
+        "x": 30,
+        "y": 26,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_30_25",
+        "x": 30,
+        "y": 25,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_35_52",
+        "x": 35,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_34_52",
+        "x": 34,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_35_48",
+        "x": 35,
+        "y": 48,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_35_47",
+        "x": 35,
+        "y": 47,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_41_47",
+        "x": 41,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_48",
+        "x": 41,
+        "y": 48,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_36_37",
+        "x": 36,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_37_37",
+        "x": 37,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_36_41",
+        "x": 36,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_36_42",
+        "x": 36,
+        "y": 42,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_30_42",
+        "x": 30,
+        "y": 42,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_30_41",
+        "x": 30,
+        "y": 41,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_35_68",
+        "x": 35,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_34_68",
+        "x": 34,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_35_64",
+        "x": 35,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_35_63",
+        "x": 35,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_41_63",
+        "x": 41,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_64",
+        "x": 41,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_36_53",
+        "x": 36,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_37_53",
+        "x": 37,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_36_57",
+        "x": 36,
+        "y": 57,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_36_58",
+        "x": 36,
+        "y": 58,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_30_58",
+        "x": 30,
+        "y": 58,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_30_57",
+        "x": 30,
+        "y": 57,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_48_36",
+        "x": 48,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_47_36",
+        "x": 47,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_48_32",
+        "x": 48,
+        "y": 32,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_48_31",
+        "x": 48,
+        "y": 31,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_54_31",
+        "x": 54,
+        "y": 31,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_54_32",
+        "x": 54,
+        "y": 32,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_49_21",
+        "x": 49,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_50_21",
+        "x": 50,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_49_25",
+        "x": 49,
+        "y": 25,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_49_26",
+        "x": 49,
+        "y": 26,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_43_26",
+        "x": 43,
+        "y": 26,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_43_25",
+        "x": 43,
+        "y": 25,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_48_52",
+        "x": 48,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_47_52",
+        "x": 47,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_48_48",
+        "x": 48,
+        "y": 48,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_48_47",
+        "x": 48,
+        "y": 47,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_54_47",
+        "x": 54,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_54_48",
+        "x": 54,
+        "y": 48,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_49_37",
+        "x": 49,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_50_37",
+        "x": 50,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_49_41",
+        "x": 49,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_49_42",
+        "x": 49,
+        "y": 42,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_43_42",
+        "x": 43,
+        "y": 42,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_43_41",
+        "x": 43,
+        "y": 41,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_48_68",
+        "x": 48,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_47_68",
+        "x": 47,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_48_64",
+        "x": 48,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_48_63",
+        "x": 48,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_54_63",
+        "x": 54,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_54_64",
+        "x": 54,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_49_53",
+        "x": 49,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_50_53",
+        "x": 50,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_49_57",
+        "x": 49,
+        "y": 57,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_49_58",
+        "x": 49,
+        "y": 58,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_43_58",
+        "x": 43,
+        "y": 58,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_43_57",
+        "x": 43,
+        "y": 57,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_61_36",
+        "x": 61,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_60_36",
+        "x": 60,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_61_32",
+        "x": 61,
+        "y": 32,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_61_31",
+        "x": 61,
+        "y": 31,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_67_31",
+        "x": 67,
+        "y": 31,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_67_32",
+        "x": 67,
+        "y": 32,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_62_21",
+        "x": 62,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_63_21",
+        "x": 63,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_25",
+        "x": 62,
+        "y": 25,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_26",
+        "x": 62,
+        "y": 26,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_56_26",
+        "x": 56,
+        "y": 26,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_56_25",
+        "x": 56,
+        "y": 25,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_61_52",
+        "x": 61,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_60_52",
+        "x": 60,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_61_48",
+        "x": 61,
+        "y": 48,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_61_47",
+        "x": 61,
+        "y": 47,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_67_47",
+        "x": 67,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_67_48",
+        "x": 67,
+        "y": 48,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_62_37",
+        "x": 62,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_63_37",
+        "x": 63,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_41",
+        "x": 62,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_42",
+        "x": 62,
+        "y": 42,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_56_42",
+        "x": 56,
+        "y": 42,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_56_41",
+        "x": 56,
+        "y": 41,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_61_68",
+        "x": 61,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_60_68",
+        "x": 60,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_61_64",
+        "x": 61,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_61_63",
+        "x": 61,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_67_63",
+        "x": 67,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_67_64",
+        "x": 67,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_62_53",
+        "x": 62,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_63_53",
+        "x": 63,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_57",
+        "x": 62,
+        "y": 57,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_58",
+        "x": 62,
+        "y": 58,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_56_58",
+        "x": 56,
+        "y": 58,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_56_57",
+        "x": 56,
+        "y": 57,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_21_68",
+        "x": 21,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_20_68",
+        "x": 20,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_21_64",
+        "x": 21,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_21_63",
+        "x": 21,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_27_63",
+        "x": 27,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_27_64",
+        "x": 27,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      }
+    ],
+    "vin": [],
+    "vout": []
+  },
+  "reserved_rectangle": {
+    "x0": 18,
+    "y0": 18,
+    "x1": 23,
+    "y1": 23
+  },
+  "paths": {
+    "L002": {
+      "source": {
+        "unit": "T1",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB1",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          17,
+          2,
+          0
+        ]
+      ]
+    },
+    "L005": {
+      "source": {
+        "unit": "T2",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB2",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          20,
+          2,
+          0
+        ]
+      ]
+    },
+    "L008": {
+      "source": {
+        "unit": "T3",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB3",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          23,
+          2,
+          0
+        ]
+      ]
+    },
+    "L011": {
+      "source": {
+        "unit": "T4",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB4",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          26,
+          2,
+          0
+        ]
+      ]
+    },
+    "L014": {
+      "source": {
+        "unit": "T5",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB5",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          29,
+          2,
+          0
+        ]
+      ]
+    },
+    "L017": {
+      "source": {
+        "unit": "T6",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB6",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          32,
+          2,
+          0
+        ]
+      ]
+    },
+    "L020": {
+      "source": {
+        "unit": "T7",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB7",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          35,
+          2,
+          0
+        ]
+      ]
+    },
+    "L023": {
+      "source": {
+        "unit": "T8",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB8",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          38,
+          2,
+          0
+        ]
+      ]
+    },
+    "L026": {
+      "source": {
+        "unit": "T9",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB9",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          41,
+          2,
+          0
+        ]
+      ]
+    },
+    "L029": {
+      "source": {
+        "unit": "T10",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB10",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          44,
+          2,
+          0
+        ]
+      ]
+    },
+    "L032": {
+      "source": {
+        "unit": "T11",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB11",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          47,
+          2,
+          0
+        ]
+      ]
+    },
+    "L035": {
+      "source": {
+        "unit": "T12",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB12",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          50,
+          2,
+          0
+        ]
+      ]
+    },
+    "L038": {
+      "source": {
+        "unit": "T13",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB13",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          53,
+          2,
+          0
+        ]
+      ]
+    },
+    "L041": {
+      "source": {
+        "unit": "T14",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB14",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          56,
+          2,
+          0
+        ]
+      ]
+    },
+    "L044": {
+      "source": {
+        "unit": "T15",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB15",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          59,
+          2,
+          0
+        ]
+      ]
+    },
+    "L047": {
+      "source": {
+        "unit": "T16",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB16",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          62,
+          2,
+          0
+        ]
+      ]
+    },
+    "L050": {
+      "source": {
+        "unit": "T17",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB17",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          65,
+          2,
+          0
+        ]
+      ]
+    },
+    "L053": {
+      "source": {
+        "unit": "T18",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB18",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          5,
+          68,
+          2,
+          0
+        ]
+      ]
+    },
+    "L056": {
+      "source": {
+        "unit": "T19",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB19",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          23,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L059": {
+      "source": {
+        "unit": "T20",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB20",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          26,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L062": {
+      "source": {
+        "unit": "T21",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB21",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          29,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L065": {
+      "source": {
+        "unit": "T22",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB22",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          32,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L068": {
+      "source": {
+        "unit": "T23",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB23",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          35,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L071": {
+      "source": {
+        "unit": "T24",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB24",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          38,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L074": {
+      "source": {
+        "unit": "T25",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB25",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          41,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L077": {
+      "source": {
+        "unit": "T26",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB26",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          44,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L080": {
+      "source": {
+        "unit": "T27",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB27",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          47,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L083": {
+      "source": {
+        "unit": "T28",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB28",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          50,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L086": {
+      "source": {
+        "unit": "T29",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB29",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          53,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L089": {
+      "source": {
+        "unit": "T30",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB30",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          56,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L092": {
+      "source": {
+        "unit": "T31",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB31",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          59,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L095": {
+      "source": {
+        "unit": "T32",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB32",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          62,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L098": {
+      "source": {
+        "unit": "T33",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB33",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          65,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L101": {
+      "source": {
+        "unit": "T34",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "KB34",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          68,
+          5,
+          3,
+          1
+        ]
+      ]
+    },
+    "L209": {
+      "source": {
+        "unit": "SA1",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SC1",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          43,
+          58,
+          0,
+          3
+        ],
+        [
+          43,
+          57,
+          1,
+          0
+        ]
+      ]
+    },
+    "L208": {
+      "source": {
+        "unit": "SC1",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SB1",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          49,
+          53,
+          2,
+          0
+        ],
+        [
+          50,
+          53,
+          2,
+          1
+        ]
+      ]
+    },
+    "L207": {
+      "source": {
+        "unit": "SC1",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SA1",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          49,
+          57,
+          2,
+          1
+        ],
+        [
+          49,
+          58,
+          3,
+          2
+        ]
+      ]
+    },
+    "L216": {
+      "source": {
+        "unit": "SA2",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SC2",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          30,
+          26,
+          0,
+          3
+        ],
+        [
+          30,
+          25,
+          1,
+          0
+        ]
+      ]
+    },
+    "L215": {
+      "source": {
+        "unit": "SC2",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SB2",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          36,
+          21,
+          2,
+          0
+        ],
+        [
+          37,
+          21,
+          2,
+          1
+        ]
+      ]
+    },
+    "L214": {
+      "source": {
+        "unit": "SC2",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SA2",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          36,
+          25,
+          2,
+          1
+        ],
+        [
+          36,
+          26,
+          3,
+          2
+        ]
+      ]
+    },
+    "L222": {
+      "source": {
+        "unit": "SA3",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC3",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          41,
+          47,
+          2,
+          1
+        ],
+        [
+          41,
+          48,
+          3,
+          2
+        ]
+      ]
+    },
+    "L220": {
+      "source": {
+        "unit": "SC3",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA3",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          35,
+          48,
+          0,
+          3
+        ],
+        [
+          35,
+          47,
+          1,
+          0
+        ]
+      ]
+    },
+    "L221": {
+      "source": {
+        "unit": "SC3",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB3",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          35,
+          52,
+          0,
+          2
+        ],
+        [
+          34,
+          52,
+          0,
+          3
+        ]
+      ]
+    },
+    "L229": {
+      "source": {
+        "unit": "SA4",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SC4",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          30,
+          42,
+          0,
+          3
+        ],
+        [
+          30,
+          41,
+          1,
+          0
+        ]
+      ]
+    },
+    "L228": {
+      "source": {
+        "unit": "SC4",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SB4",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          36,
+          37,
+          2,
+          0
+        ],
+        [
+          37,
+          37,
+          2,
+          1
+        ]
+      ]
+    },
+    "L227": {
+      "source": {
+        "unit": "SC4",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SA4",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          36,
+          41,
+          2,
+          1
+        ],
+        [
+          36,
+          42,
+          3,
+          2
+        ]
+      ]
+    },
+    "L235": {
+      "source": {
+        "unit": "SA5",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC5",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          41,
+          63,
+          2,
+          1
+        ],
+        [
+          41,
+          64,
+          3,
+          2
+        ]
+      ]
+    },
+    "L233": {
+      "source": {
+        "unit": "SC5",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA5",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          35,
+          64,
+          0,
+          3
+        ],
+        [
+          35,
+          63,
+          1,
+          0
+        ]
+      ]
+    },
+    "L234": {
+      "source": {
+        "unit": "SC5",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB5",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          35,
+          68,
+          0,
+          2
+        ],
+        [
+          34,
+          68,
+          0,
+          3
+        ]
+      ]
+    },
+    "L242": {
+      "source": {
+        "unit": "SA6",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC6",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          54,
+          63,
+          2,
+          1
+        ],
+        [
+          54,
+          64,
+          3,
+          2
+        ]
+      ]
+    },
+    "L240": {
+      "source": {
+        "unit": "SC6",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA6",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          48,
+          64,
+          0,
+          3
+        ],
+        [
+          48,
+          63,
+          1,
+          0
+        ]
+      ]
+    },
+    "L241": {
+      "source": {
+        "unit": "SC6",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB6",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          48,
+          68,
+          0,
+          2
+        ],
+        [
+          47,
+          68,
+          0,
+          3
+        ]
+      ]
+    },
+    "L248": {
+      "source": {
+        "unit": "SA7",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SC7",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          30,
+          58,
+          0,
+          3
+        ],
+        [
+          30,
+          57,
+          1,
+          0
+        ]
+      ]
+    },
+    "L247": {
+      "source": {
+        "unit": "SC7",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SB7",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          36,
+          53,
+          2,
+          0
+        ],
+        [
+          37,
+          53,
+          2,
+          1
+        ]
+      ]
+    },
+    "L246": {
+      "source": {
+        "unit": "SC7",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SA7",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          36,
+          57,
+          2,
+          1
+        ],
+        [
+          36,
+          58,
+          3,
+          2
+        ]
+      ]
+    },
+    "L255": {
+      "source": {
+        "unit": "SA8",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC8",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          54,
+          31,
+          2,
+          1
+        ],
+        [
+          54,
+          32,
+          3,
+          2
+        ]
+      ]
+    },
+    "L253": {
+      "source": {
+        "unit": "SC8",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA8",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          48,
+          32,
+          0,
+          3
+        ],
+        [
+          48,
+          31,
+          1,
+          0
+        ]
+      ]
+    },
+    "L254": {
+      "source": {
+        "unit": "SC8",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB8",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          48,
+          36,
+          0,
+          2
+        ],
+        [
+          47,
+          36,
+          0,
+          3
+        ]
+      ]
+    },
+    "L262": {
+      "source": {
+        "unit": "SA9",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SC9",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          43,
+          26,
+          0,
+          3
+        ],
+        [
+          43,
+          25,
+          1,
+          0
+        ]
+      ]
+    },
+    "L261": {
+      "source": {
+        "unit": "SC9",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SB9",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          49,
+          21,
+          2,
+          0
+        ],
+        [
+          50,
+          21,
+          2,
+          1
+        ]
+      ]
+    },
+    "L260": {
+      "source": {
+        "unit": "SC9",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SA9",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          49,
+          25,
+          2,
+          1
+        ],
+        [
+          49,
+          26,
+          3,
+          2
+        ]
+      ]
+    },
+    "L269": {
+      "source": {
+        "unit": "SA10",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC10",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          54,
+          47,
+          2,
+          1
+        ],
+        [
+          54,
+          48,
+          3,
+          2
+        ]
+      ]
+    },
+    "L267": {
+      "source": {
+        "unit": "SC10",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA10",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          48,
+          48,
+          0,
+          3
+        ],
+        [
+          48,
+          47,
+          1,
+          0
+        ]
+      ]
+    },
+    "L268": {
+      "source": {
+        "unit": "SC10",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB10",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          48,
+          52,
+          0,
+          2
+        ],
+        [
+          47,
+          52,
+          0,
+          3
+        ]
+      ]
+    },
+    "L276": {
+      "source": {
+        "unit": "SA11",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SC11",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          43,
+          42,
+          0,
+          3
+        ],
+        [
+          43,
+          41,
+          1,
+          0
+        ]
+      ]
+    },
+    "L275": {
+      "source": {
+        "unit": "SC11",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SB11",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          49,
+          37,
+          2,
+          0
+        ],
+        [
+          50,
+          37,
+          2,
+          1
+        ]
+      ]
+    },
+    "L274": {
+      "source": {
+        "unit": "SC11",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SA11",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          49,
+          41,
+          2,
+          1
+        ],
+        [
+          49,
+          42,
+          3,
+          2
+        ]
+      ]
+    },
+    "L283": {
+      "source": {
+        "unit": "SA12",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC12",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          67,
+          63,
+          2,
+          1
+        ],
+        [
+          67,
+          64,
+          3,
+          2
+        ]
+      ]
+    },
+    "L281": {
+      "source": {
+        "unit": "SC12",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA12",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          61,
+          64,
+          0,
+          3
+        ],
+        [
+          61,
+          63,
+          1,
+          0
+        ]
+      ]
+    },
+    "L282": {
+      "source": {
+        "unit": "SC12",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB12",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          61,
+          68,
+          0,
+          2
+        ],
+        [
+          60,
+          68,
+          0,
+          3
+        ]
+      ]
+    },
+    "L288": {
+      "source": {
+        "unit": "SA13",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SC13",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          41,
+          31,
+          2,
+          1
+        ],
+        [
+          41,
+          32,
+          3,
+          2
+        ]
+      ]
+    },
+    "L286": {
+      "source": {
+        "unit": "SC13",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "SA13",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          35,
+          32,
+          0,
+          3
+        ],
+        [
+          35,
+          31,
+          1,
+          0
+        ]
+      ]
+    },
+    "L287": {
+      "source": {
+        "unit": "SC13",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "SB13",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          35,
+          36,
+          0,
+          2
+        ],
+        [
+          34,
+          36,
+          0,
+          3
+        ]
+      ]
+    },
+    "L293": {
+      "source": {
+        "unit": "QA1",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QC1",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          67,
+          31,
+          2,
+          1
+        ],
+        [
+          67,
+          32,
+          3,
+          2
+        ]
+      ]
+    },
+    "L291": {
+      "source": {
+        "unit": "QC1",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QA1",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          61,
+          32,
+          0,
+          3
+        ],
+        [
+          61,
+          31,
+          1,
+          0
+        ]
+      ]
+    },
+    "L292": {
+      "source": {
+        "unit": "QC1",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QB1",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          61,
+          36,
+          0,
+          2
+        ],
+        [
+          60,
+          36,
+          0,
+          3
+        ]
+      ]
+    },
+    "L299": {
+      "source": {
+        "unit": "QA2",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QC2",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          56,
+          26,
+          0,
+          3
+        ],
+        [
+          56,
+          25,
+          1,
+          0
+        ]
+      ]
+    },
+    "L298": {
+      "source": {
+        "unit": "QC2",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QB2",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          62,
+          21,
+          2,
+          0
+        ],
+        [
+          63,
+          21,
+          2,
+          1
+        ]
+      ]
+    },
+    "L297": {
+      "source": {
+        "unit": "QC2",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QA2",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          62,
+          25,
+          2,
+          1
+        ],
+        [
+          62,
+          26,
+          3,
+          2
+        ]
+      ]
+    },
+    "L305": {
+      "source": {
+        "unit": "QA3",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QC3",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          67,
+          47,
+          2,
+          1
+        ],
+        [
+          67,
+          48,
+          3,
+          2
+        ]
+      ]
+    },
+    "L303": {
+      "source": {
+        "unit": "QC3",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QA3",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          61,
+          48,
+          0,
+          3
+        ],
+        [
+          61,
+          47,
+          1,
+          0
+        ]
+      ]
+    },
+    "L304": {
+      "source": {
+        "unit": "QC3",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QB3",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          61,
+          52,
+          0,
+          2
+        ],
+        [
+          60,
+          52,
+          0,
+          3
+        ]
+      ]
+    },
+    "L311": {
+      "source": {
+        "unit": "QA4",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QC4",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          56,
+          42,
+          0,
+          3
+        ],
+        [
+          56,
+          41,
+          1,
+          0
+        ]
+      ]
+    },
+    "L310": {
+      "source": {
+        "unit": "QC4",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QB4",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          62,
+          37,
+          2,
+          0
+        ],
+        [
+          63,
+          37,
+          2,
+          1
+        ]
+      ]
+    },
+    "L309": {
+      "source": {
+        "unit": "QC4",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QA4",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          62,
+          41,
+          2,
+          1
+        ],
+        [
+          62,
+          42,
+          3,
+          2
+        ]
+      ]
+    },
+    "L317": {
+      "source": {
+        "unit": "QA5",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QC5",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          56,
+          58,
+          0,
+          3
+        ],
+        [
+          56,
+          57,
+          1,
+          0
+        ]
+      ]
+    },
+    "L316": {
+      "source": {
+        "unit": "QC5",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QB5",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          62,
+          53,
+          2,
+          0
+        ],
+        [
+          63,
+          53,
+          2,
+          1
+        ]
+      ]
+    },
+    "L315": {
+      "source": {
+        "unit": "QC5",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QA5",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          62,
+          57,
+          2,
+          1
+        ],
+        [
+          62,
+          58,
+          3,
+          2
+        ]
+      ]
+    },
+    "L323": {
+      "source": {
+        "unit": "QA6",
+        "side": 0,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QC6",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          27,
+          63,
+          2,
+          1
+        ],
+        [
+          27,
+          64,
+          3,
+          2
+        ]
+      ]
+    },
+    "L321": {
+      "source": {
+        "unit": "QC6",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "QA6",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          21,
+          64,
+          0,
+          3
+        ],
+        [
+          21,
+          63,
+          1,
+          0
+        ]
+      ]
+    },
+    "L322": {
+      "source": {
+        "unit": "QC6",
+        "side": 2,
+        "offset": 4
+      },
+      "target": {
+        "unit": "QB6",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          21,
+          68,
+          0,
+          2
+        ],
+        [
+          20,
+          68,
+          0,
+          3
+        ]
+      ]
+    },
+    "L001": {
+      "source": {
+        "unit": "OB1",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T1",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          17,
+          2,
+          0
+        ]
+      ]
+    },
+    "L004": {
+      "source": {
+        "unit": "OB2",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T2",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          20,
+          2,
+          0
+        ]
+      ]
+    },
+    "L007": {
+      "source": {
+        "unit": "OB3",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T3",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          23,
+          2,
+          0
+        ]
+      ]
+    },
+    "L010": {
+      "source": {
+        "unit": "OB4",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T4",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          26,
+          2,
+          0
+        ]
+      ]
+    },
+    "L013": {
+      "source": {
+        "unit": "OB5",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T5",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          29,
+          2,
+          0
+        ]
+      ]
+    },
+    "L016": {
+      "source": {
+        "unit": "OB6",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T6",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          32,
+          2,
+          0
+        ]
+      ]
+    },
+    "L019": {
+      "source": {
+        "unit": "OB7",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T7",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          35,
+          2,
+          0
+        ]
+      ]
+    },
+    "L022": {
+      "source": {
+        "unit": "OB8",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T8",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          38,
+          2,
+          0
+        ]
+      ]
+    },
+    "L025": {
+      "source": {
+        "unit": "OB9",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T9",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          41,
+          2,
+          0
+        ]
+      ]
+    },
+    "L028": {
+      "source": {
+        "unit": "OB10",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T10",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          44,
+          2,
+          0
+        ]
+      ]
+    },
+    "L031": {
+      "source": {
+        "unit": "OB11",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T11",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          47,
+          2,
+          0
+        ]
+      ]
+    },
+    "L034": {
+      "source": {
+        "unit": "OB12",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T12",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          50,
+          2,
+          0
+        ]
+      ]
+    },
+    "L037": {
+      "source": {
+        "unit": "OB13",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T13",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          53,
+          2,
+          0
+        ]
+      ]
+    },
+    "L040": {
+      "source": {
+        "unit": "OB14",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T14",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          56,
+          2,
+          0
+        ]
+      ]
+    },
+    "L043": {
+      "source": {
+        "unit": "OB15",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T15",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          59,
+          2,
+          0
+        ]
+      ]
+    },
+    "L046": {
+      "source": {
+        "unit": "OB16",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T16",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          62,
+          2,
+          0
+        ]
+      ]
+    },
+    "L049": {
+      "source": {
+        "unit": "OB17",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T17",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          65,
+          2,
+          0
+        ]
+      ]
+    },
+    "L052": {
+      "source": {
+        "unit": "OB18",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T18",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          1,
+          68,
+          2,
+          0
+        ]
+      ]
+    },
+    "L055": {
+      "source": {
+        "unit": "OB19",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T19",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          23,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L058": {
+      "source": {
+        "unit": "OB20",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T20",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          26,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L061": {
+      "source": {
+        "unit": "OB21",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T21",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          29,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L064": {
+      "source": {
+        "unit": "OB22",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T22",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          32,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L067": {
+      "source": {
+        "unit": "OB23",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T23",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          35,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L070": {
+      "source": {
+        "unit": "OB24",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T24",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          38,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L073": {
+      "source": {
+        "unit": "OB25",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T25",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          41,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L076": {
+      "source": {
+        "unit": "OB26",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T26",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          44,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L079": {
+      "source": {
+        "unit": "OB27",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T27",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          47,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L082": {
+      "source": {
+        "unit": "OB28",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T28",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          50,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L085": {
+      "source": {
+        "unit": "OB29",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T29",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          53,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L088": {
+      "source": {
+        "unit": "OB30",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T30",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          56,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L091": {
+      "source": {
+        "unit": "OB31",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T31",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          59,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L094": {
+      "source": {
+        "unit": "OB32",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T32",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          62,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L097": {
+      "source": {
+        "unit": "OB33",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T33",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          65,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L100": {
+      "source": {
+        "unit": "OB34",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "T34",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          68,
+          1,
+          3,
+          1
+        ]
+      ]
+    },
+    "L105": {
+      "source": {
+        "unit": "CORE",
+        "side": 1,
+        "offset": 7
+      },
+      "target": {
+        "unit": "U2",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          14,
+          15,
+          3,
+          1
+        ]
+      ]
+    },
+    "L131": {
+      "source": {
+        "unit": "OO15",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "U15",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          11,
+          1,
+          3,
+          2
+        ],
+        [
+          10,
+          1,
+          0,
+          2
+        ]
+      ]
+    },
+    "L295": {
+      "source": {
+        "unit": "KQ1",
+        "side": 3,
+        "offset": 0
+      },
+      "target": {
+        "unit": "Q1",
+        "side": 0,
+        "offset": 5
+      },
+      "cells": [
+        [
+          28,
+          21,
+          1,
+          2
+        ]
+      ]
+    },
+    "L151": {
+      "source": {
+        "unit": "B7",
+        "side": 0,
+        "offset": 3
+      },
+      "target": {
+        "unit": "R7",
+        "side": 1,
+        "offset": 0
+      },
+      "cells": [
+        [
+          15,
+          63,
+          2,
+          3
+        ]
+      ]
+    },
+    "L319": {
+      "source": {
+        "unit": "KQ5",
+        "side": 2,
+        "offset": 2
+      },
+      "target": {
+        "unit": "Q5",
+        "side": 3,
+        "offset": 3
+      },
+      "cells": [
+        [
+          21,
+          45,
+          0,
+          1
+        ]
+      ]
+    },
+    "L314": {
+      "source": {
+        "unit": "KQ4",
+        "side": 1,
+        "offset": 0
+      },
+      "target": {
+        "unit": "Q4",
+        "side": 3,
+        "offset": 2
+      },
+      "cells": [
+        [
+          18,
+          55,
+          3,
+          1
+        ]
+      ]
+    },
+    "L112": {
+      "source": {
+        "unit": "U5",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "O3",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          13,
+          19,
+          2,
+          0
+        ]
+      ]
+    },
+    "L289": {
+      "source": {
+        "unit": "SB13",
+        "side": 3,
+        "offset": 0
+      },
+      "target": {
+        "unit": "S13",
+        "side": 1,
+        "offset": 2
+      },
+      "cells": [
+        [
+          30,
+          30,
+          1,
+          3
+        ]
+      ]
+    },
+    "L018": {
+      "source": {
+        "unit": "KB6",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "B3",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          9,
+          32,
+          2,
+          0
+        ]
+      ]
+    },
+    "L142": {
+      "source": {
+        "unit": "R2",
+        "side": 1,
+        "offset": 2
+      },
+      "target": {
+        "unit": "P2",
+        "side": 2,
+        "offset": 2
+      },
+      "cells": [
+        [
+          14,
+          30,
+          3,
+          0
+        ]
+      ]
+    },
+    "L108": {
+      "source": {
+        "unit": "U3",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "O2",
+        "side": 3,
+        "offset": 5
+      },
+      "cells": [
+        [
+          22,
+          13,
+          2,
+          1
+        ]
+      ]
+    },
+    "L194": {
+      "source": {
+        "unit": "P5",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "E3",
+        "side": 0,
+        "offset": 1
+      },
+      "cells": [
+        [
+          22,
+          34,
+          0,
+          2
+        ]
+      ]
+    },
+    "L144": {
+      "source": {
+        "unit": "R3",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "P3",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          18,
+          39,
+          2,
+          0
+        ]
+      ]
+    },
+    "L280": {
+      "source": {
+        "unit": "S11",
+        "side": 1,
+        "offset": 0
+      },
+      "target": {
+        "unit": "Q5",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          19,
+          45,
+          3,
+          1
+        ]
+      ]
+    },
+    "L307": {
+      "source": {
+        "unit": "KQ3",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "Q3",
+        "side": 3,
+        "offset": 5
+      },
+      "cells": [
+        [
+          29,
+          46,
+          3,
+          1
+        ]
+      ]
+    },
+    "L141": {
+      "source": {
+        "unit": "B2",
+        "side": 0,
+        "offset": 5
+      },
+      "target": {
+        "unit": "R2",
+        "side": 3,
+        "offset": 2
+      },
+      "cells": [
+        [
+          14,
+          26,
+          2,
+          1
+        ]
+      ]
+    },
+    "L162": {
+      "source": {
+        "unit": "R12",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "H3",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          45,
+          11,
+          2,
+          1
+        ]
+      ]
+    },
+    "L181": {
+      "source": {
+        "unit": "O9",
+        "side": 1,
+        "offset": 4
+      },
+      "target": {
+        "unit": "E3",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          22,
+          33,
+          3,
+          2
+        ]
+      ]
+    },
+    "L009": {
+      "source": {
+        "unit": "KB3",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "B2",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          9,
+          22,
+          2,
+          0
+        ]
+      ]
+    },
+    "L271": {
+      "source": {
+        "unit": "S10",
+        "side": 3,
+        "offset": 0
+      },
+      "target": {
+        "unit": "B14",
+        "side": 1,
+        "offset": 3
+      },
+      "cells": [
+        [
+          50,
+          13,
+          1,
+          3
+        ]
+      ]
+    },
+    "L134": {
+      "source": {
+        "unit": "U16",
+        "side": 2,
+        "offset": 2
+      },
+      "target": {
+        "unit": "O8",
+        "side": 1,
+        "offset": 5
+      },
+      "cells": [
+        [
+          39,
+          21,
+          0,
+          3
+        ]
+      ]
+    },
+    "L313": {
+      "source": {
+        "unit": "KQ4",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "Q4",
+        "side": 3,
+        "offset": 3
+      },
+      "cells": [
+        [
+          19,
+          55,
+          3,
+          1
+        ]
+      ]
+    },
+    "L238": {
+      "source": {
+        "unit": "S5",
+        "side": 3,
+        "offset": 2
+      },
+      "target": {
+        "unit": "B6",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          12,
+          47,
+          1,
+          0
+        ],
+        [
+          13,
+          47,
+          2,
+          0
+        ]
+      ]
+    },
+    "L051": {
+      "source": {
+        "unit": "KB17",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "B9",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          9,
+          65,
+          2,
+          0
+        ],
+        [
+          10,
+          65,
+          2,
+          1
+        ]
+      ]
+    },
+    "L185": {
+      "source": {
+        "unit": "P2",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "E1",
+        "side": 1,
+        "offset": 0
+      },
+      "cells": [
+        [
+          18,
+          28,
+          2,
+          0
+        ],
+        [
+          19,
+          28,
+          2,
+          3
+        ]
+      ]
+    },
+    "L102": {
+      "source": {
+        "unit": "KB34",
+        "side": 1,
+        "offset": 0
+      },
+      "target": {
+        "unit": "B17",
+        "side": 3,
+        "offset": 3
+      },
+      "cells": [
+        [
+          67,
+          9,
+          3,
+          1
+        ],
+        [
+          67,
+          10,
+          3,
+          1
+        ]
+      ]
+    },
+    "L099": {
+      "source": {
+        "unit": "KB33",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "B17",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          65,
+          9,
+          3,
+          1
+        ],
+        [
+          65,
+          10,
+          3,
+          1
+        ]
+      ]
+    },
+    "L045": {
+      "source": {
+        "unit": "KB15",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "B8",
+        "side": 1,
+        "offset": 0
+      },
+      "cells": [
+        [
+          9,
+          60,
+          2,
+          0
+        ],
+        [
+          10,
+          60,
+          2,
+          3
+        ]
+      ]
+    },
+    "L024": {
+      "source": {
+        "unit": "KB8",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "B4",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          9,
+          38,
+          2,
+          0
+        ],
+        [
+          10,
+          38,
+          2,
+          0
+        ]
+      ]
+    },
+    "L093": {
+      "source": {
+        "unit": "KB31",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "B16",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          59,
+          9,
+          3,
+          1
+        ],
+        [
+          59,
+          10,
+          3,
+          1
+        ]
+      ]
+    },
+    "L138": {
+      "source": {
+        "unit": "U18",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "O9",
+        "side": 3,
+        "offset": 0
+      },
+      "cells": [
+        [
+          18,
+          27,
+          2,
+          1
+        ],
+        [
+          18,
+          28,
+          3,
+          1
+        ]
+      ]
+    },
+    "L150": {
+      "source": {
+        "unit": "R6",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "P6",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          24,
+          51,
+          2,
+          0
+        ],
+        [
+          25,
+          51,
+          2,
+          0
+        ],
+        [
+          26,
+          51,
+          2,
+          0
+        ]
+      ]
+    },
+    "L159": {
+      "source": {
+        "unit": "B11",
+        "side": 0,
+        "offset": 5
+      },
+      "target": {
+        "unit": "R11",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          37,
+          16,
+          2,
+          0
+        ],
+        [
+          38,
+          16,
+          2,
+          0
+        ],
+        [
+          39,
+          16,
+          2,
+          0
+        ]
+      ]
+    },
+    "L072": {
+      "source": {
+        "unit": "KB24",
+        "side": 1,
+        "offset": 2
+      },
+      "target": {
+        "unit": "B12",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          39,
+          9,
+          3,
+          0
+        ],
+        [
+          40,
+          9,
+          2,
+          0
+        ],
+        [
+          41,
+          9,
+          2,
+          1
+        ],
+        [
+          41,
+          10,
+          3,
+          2
+        ]
+      ]
+    },
+    "L154": {
+      "source": {
+        "unit": "R8",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "H1",
+        "side": 3,
+        "offset": 1
+      },
+      "cells": [
+        [
+          68,
+          38,
+          3,
+          1
+        ],
+        [
+          68,
+          39,
+          3,
+          1
+        ],
+        [
+          68,
+          40,
+          3,
+          1
+        ],
+        [
+          68,
+          41,
+          3,
+          1
+        ],
+        [
+          68,
+          42,
+          3,
+          1
+        ]
+      ]
+    },
+    "L168": {
+      "source": {
+        "unit": "R15",
+        "side": 3,
+        "offset": 1
+      },
+      "target": {
+        "unit": "H5",
+        "side": 1,
+        "offset": 1
+      },
+      "cells": [
+        [
+          68,
+          59,
+          1,
+          3
+        ],
+        [
+          68,
+          58,
+          1,
+          3
+        ],
+        [
+          68,
+          57,
+          1,
+          3
+        ],
+        [
+          68,
+          56,
+          1,
+          3
+        ],
+        [
+          68,
+          55,
+          1,
+          3
+        ],
+        [
+          68,
+          54,
+          1,
+          3
+        ],
+        [
+          68,
+          53,
+          1,
+          3
+        ]
+      ]
+    },
+    "L284": {
+      "source": {
+        "unit": "SB12",
+        "side": 3,
+        "offset": 0
+      },
+      "target": {
+        "unit": "S12",
+        "side": 1,
+        "offset": 0
+      },
+      "cells": [
+        [
+          56,
+          62,
+          1,
+          2
+        ],
+        [
+          55,
+          62,
+          0,
+          1
+        ],
+        [
+          55,
+          63,
+          3,
+          1
+        ],
+        [
+          55,
+          64,
+          3,
+          1
+        ],
+        [
+          55,
+          65,
+          3,
+          1
+        ],
+        [
+          55,
+          66,
+          3,
+          1
+        ],
+        [
+          55,
+          67,
+          3,
+          1
+        ],
+        [
+          55,
+          68,
+          3,
+          0
+        ],
+        [
+          56,
+          68,
+          2,
+          0
+        ],
+        [
+          57,
+          68,
+          2,
+          0
+        ],
+        [
+          58,
+          68,
+          2,
+          0
+        ],
+        [
+          59,
+          68,
+          2,
+          1
+        ],
+        [
+          59,
+          69,
+          3,
+          0
+        ],
+        [
+          60,
+          69,
+          2,
+          0
+        ],
+        [
+          61,
+          69,
+          2,
+          0
+        ],
+        [
+          62,
+          69,
+          2,
+          0
+        ],
+        [
+          63,
+          69,
+          2,
+          0
+        ],
+        [
+          64,
+          69,
+          2,
+          0
+        ],
+        [
+          65,
+          69,
+          2,
+          0
+        ],
+        [
+          66,
+          69,
+          2,
+          0
+        ],
+        [
+          67,
+          69,
+          2,
+          3
+        ]
+      ]
+    },
+    "L243": {
+      "source": {
+        "unit": "SB6",
+        "side": 3,
+        "offset": 0
+      },
+      "target": {
+        "unit": "S6",
+        "side": 1,
+        "offset": 2
+      },
+      "cells": [
+        [
+          43,
+          62,
+          1,
+          2
+        ],
+        [
+          42,
+          62,
+          0,
+          1
+        ],
+        [
+          42,
+          63,
+          3,
+          1
+        ],
+        [
+          42,
+          64,
+          3,
+          1
+        ],
+        [
+          42,
+          65,
+          3,
+          1
+        ],
+        [
+          42,
+          66,
+          3,
+          1
+        ],
+        [
+          42,
+          67,
+          3,
+          1
+        ],
+        [
+          42,
+          68,
+          3,
+          1
+        ],
+        [
+          42,
+          69,
+          3,
+          2
+        ],
+        [
+          41,
+          69,
+          0,
+          2
+        ],
+        [
+          40,
+          69,
+          0,
+          2
+        ],
+        [
+          39,
+          69,
+          0,
+          2
+        ],
+        [
+          38,
+          69,
+          0,
+          2
+        ],
+        [
+          37,
+          69,
+          0,
+          2
+        ],
+        [
+          36,
+          69,
+          0,
+          2
+        ],
+        [
+          35,
+          69,
+          0,
+          2
+        ],
+        [
+          34,
+          69,
+          0,
+          2
+        ],
+        [
+          33,
+          69,
+          0,
+          2
+        ],
+        [
+          32,
+          69,
+          0,
+          2
+        ],
+        [
+          31,
+          69,
+          0,
+          2
+        ],
+        [
+          30,
+          69,
+          0,
+          2
+        ],
+        [
+          29,
+          69,
+          0,
+          3
+        ]
+      ]
+    },
+    "L012": {
+      "source": {
+        "unit": "KB4",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "B2",
+        "side": 2,
+        "offset": 4
+      },
+      "cells": [
+        [
+          9,
+          25,
+          2,
+          0
+        ]
+      ]
+    },
+    "L104": {
+      "source": {
+        "unit": "U1",
+        "side": 3,
+        "offset": 2
+      },
+      "target": {
+        "unit": "O1",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          28,
+          12,
+          1,
+          0
+        ]
+      ]
+    },
+    "L143": {
+      "source": {
+        "unit": "B3",
+        "side": 0,
+        "offset": 5
+      },
+      "target": {
+        "unit": "R3",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          14,
+          37,
+          2,
+          0
+        ]
+      ]
+    },
+    "L140": {
+      "source": {
+        "unit": "R1",
+        "side": 1,
+        "offset": 2
+      },
+      "target": {
+        "unit": "P1",
+        "side": 0,
+        "offset": 0
+      },
+      "cells": [
+        [
+          27,
+          28,
+          3,
+          2
+        ]
+      ]
+    },
+    "L224": {
+      "source": {
+        "unit": "S3",
+        "side": 1,
+        "offset": 0
+      },
+      "target": {
+        "unit": "B3",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          9,
+          32,
+          3,
+          1
+        ],
+        [
+          9,
+          33,
+          3,
+          0
+        ]
+      ]
+    },
+    "L308": {
+      "source": {
+        "unit": "KQ3",
+        "side": 1,
+        "offset": 0
+      },
+      "target": {
+        "unit": "Q3",
+        "side": 3,
+        "offset": 4
+      },
+      "cells": [
+        [
+          28,
+          46,
+          3,
+          1
+        ]
+      ]
+    },
+    "L148": {
+      "source": {
+        "unit": "R5",
+        "side": 3,
+        "offset": 1
+      },
+      "target": {
+        "unit": "P5",
+        "side": 0,
+        "offset": 2
+      },
+      "cells": [
+        [
+          26,
+          36,
+          1,
+          2
+        ]
+      ]
+    },
+    "L118": {
+      "source": {
+        "unit": "U8",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "O4",
+        "side": 3,
+        "offset": 4
+      },
+      "cells": [
+        [
+          5,
+          7,
+          2,
+          1
+        ]
+      ]
+    },
+    "L302": {
+      "source": {
+        "unit": "KQ2",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "Q2",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          42,
+          15,
+          3,
+          0
+        ]
+      ]
+    },
+    "L166": {
+      "source": {
+        "unit": "R14",
+        "side": 3,
+        "offset": 2
+      },
+      "target": {
+        "unit": "H4",
+        "side": 1,
+        "offset": 0
+      },
+      "cells": [
+        [
+          24,
+          55,
+          1,
+          3
+        ]
+      ]
+    },
+    "L231": {
+      "source": {
+        "unit": "S4",
+        "side": 3,
+        "offset": 2
+      },
+      "target": {
+        "unit": "O5",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          52,
+          17,
+          1,
+          0
+        ]
+      ]
+    },
+    "L117": {
+      "source": {
+        "unit": "OO8",
+        "side": 0,
+        "offset": 1
+      },
+      "target": {
+        "unit": "U8",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          1,
+          5,
+          2,
+          0
+        ]
+      ]
+    },
+    "L324": {
+      "source": {
+        "unit": "QB6",
+        "side": 3,
+        "offset": 2
+      },
+      "target": {
+        "unit": "KQ6",
+        "side": 2,
+        "offset": 2
+      },
+      "cells": [
+        [
+          18,
+          62,
+          1,
+          0
+        ]
+      ]
+    },
+    "L182": {
+      "source": {
+        "unit": "P1",
+        "side": 2,
+        "offset": 0
+      },
+      "target": {
+        "unit": "E1",
+        "side": 1,
+        "offset": 4
+      },
+      "cells": [
+        [
+          23,
+          28,
+          0,
+          3
+        ]
+      ]
+    },
+    "L164": {
+      "source": {
+        "unit": "R13",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "H4",
+        "side": 1,
+        "offset": 1
+      },
+      "cells": [
+        [
+          24,
+          55,
+          2,
+          0
+        ],
+        [
+          25,
+          55,
+          2,
+          3
+        ]
+      ]
+    },
+    "L146": {
+      "source": {
+        "unit": "R4",
+        "side": 0,
+        "offset": 0
+      },
+      "target": {
+        "unit": "P4",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          25,
+          40,
+          2,
+          0
+        ],
+        [
+          26,
+          40,
+          2,
+          0
+        ]
+      ]
+    },
+    "L096": {
+      "source": {
+        "unit": "KB32",
+        "side": 1,
+        "offset": 0
+      },
+      "target": {
+        "unit": "B16",
+        "side": 3,
+        "offset": 3
+      },
+      "cells": [
+        [
+          61,
+          9,
+          3,
+          1
+        ],
+        [
+          61,
+          10,
+          3,
+          1
+        ]
+      ]
+    },
+    "L149": {
+      "source": {
+        "unit": "B6",
+        "side": 0,
+        "offset": 5
+      },
+      "target": {
+        "unit": "R6",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          18,
+          51,
+          2,
+          0
+        ],
+        [
+          19,
+          51,
+          2,
+          0
+        ],
+        [
+          20,
+          51,
+          2,
+          0
+        ]
+      ]
+    },
+    "L066": {
+      "source": {
+        "unit": "KB22",
+        "side": 1,
+        "offset": 1
+      },
+      "target": {
+        "unit": "B11",
+        "side": 2,
+        "offset": 0
+      },
+      "cells": [
+        [
+          32,
+          9,
+          3,
+          1
+        ],
+        [
+          32,
+          10,
+          3,
+          1
+        ],
+        [
+          32,
+          11,
+          3,
+          0
+        ]
+      ]
+    },
+    "L042": {
+      "source": {
+        "unit": "KB14",
+        "side": 0,
+        "offset": 2
+      },
+      "target": {
+        "unit": "B7",
+        "side": 2,
+        "offset": 1
+      },
+      "cells": [
+        [
+          9,
+          57,
+          2,
+          1
+        ],
+        [
+          9,
+          58,
+          3,
+          1
+        ],
+        [
+          9,
+          59,
+          3,
+          1
+        ],
+        [
+          9,
+          60,
+          3,
+          1
+        ],
+        [
+          9,
+          61,
+          3,
+          0
+        ],
+        [
+          10,
+          61,
+          2,
+          0
+        ]
+      ]
+    }
+  },
+  "score": [
+    183,
+    37,
+    -317
+  ],
+  "log": [
+    {
+      "iteration": 0,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 1,
+      "score": [
+        183,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 2,
+      "score": [
+        183,
+        37,
+        -318
+      ]
+    },
+    {
+      "iteration": 3,
+      "score": [
+        183,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 4,
+      "score": [
+        183,
+        37,
+        -318
+      ]
+    },
+    {
+      "iteration": 5,
+      "score": [
+        183,
+        37,
+        -326
+      ]
+    },
+    {
+      "iteration": 6,
+      "score": [
+        183,
+        37,
+        -322
+      ]
+    },
+    {
+      "iteration": 7,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 8,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 9,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 10,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 11,
+      "score": [
+        182,
+        37,
+        -322
+      ]
+    },
+    {
+      "iteration": 12,
+      "score": [
+        182,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 13,
+      "score": [
+        182,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 14,
+      "score": [
+        181,
+        37,
+        -333
+      ]
+    },
+    {
+      "iteration": 15,
+      "score": [
+        181,
+        37,
+        -331
+      ]
+    },
+    {
+      "iteration": 16,
+      "score": [
+        181,
+        37,
+        -324
+      ]
+    },
+    {
+      "iteration": 17,
+      "score": [
+        181,
+        37,
+        -324
+      ]
+    },
+    {
+      "iteration": 18,
+      "score": [
+        181,
+        37,
+        -324
+      ]
+    },
+    {
+      "iteration": 19,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 20,
+      "score": [
+        182,
+        37,
+        -319
+      ]
+    },
+    {
+      "iteration": 21,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 22,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 23,
+      "score": [
+        182,
+        37,
+        -336
+      ]
+    },
+    {
+      "iteration": 24,
+      "score": [
+        182,
+        37,
+        -325
+      ]
+    },
+    {
+      "iteration": 25,
+      "score": [
+        182,
+        37,
+        -323
+      ]
+    },
+    {
+      "iteration": 26,
+      "score": [
+        182,
+        37,
+        -330
+      ]
+    },
+    {
+      "iteration": 27,
+      "score": [
+        182,
+        37,
+        -319
+      ]
+    },
+    {
+      "iteration": 28,
+      "score": [
+        183,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 29,
+      "score": [
+        183,
+        37,
+        -323
+      ]
+    },
+    {
+      "iteration": 30,
+      "score": [
+        183,
+        37,
+        -319
+      ]
+    },
+    {
+      "iteration": 31,
+      "score": [
+        183,
+        37,
+        -319
+      ]
+    },
+    {
+      "iteration": 32,
+      "score": [
+        183,
+        37,
+        -323
+      ]
+    },
+    {
+      "iteration": 33,
+      "score": [
+        183,
+        37,
+        -321
+      ]
+    },
+    {
+      "iteration": 34,
+      "score": [
+        183,
+        37,
+        -321
+      ]
+    },
+    {
+      "iteration": 35,
+      "score": [
+        181,
+        37,
+        -324
+      ]
+    },
+    {
+      "iteration": 36,
+      "score": [
+        182,
+        37,
+        -323
+      ]
+    },
+    {
+      "iteration": 37,
+      "score": [
+        183,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 38,
+      "score": [
+        183,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 39,
+      "score": [
+        183,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 40,
+      "score": [
+        183,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 41,
+      "score": [
+        183,
+        37,
+        -326
+      ]
+    },
+    {
+      "iteration": 42,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 43,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 44,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 45,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 46,
+      "score": [
+        182,
+        37,
+        -316
+      ]
+    },
+    {
+      "iteration": 47,
+      "score": [
+        183,
+        37,
+        -318
+      ]
+    },
+    {
+      "iteration": 48,
+      "score": [
+        183,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 49,
+      "score": [
+        182,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 50,
+      "score": [
+        182,
+        37,
+        -323
+      ]
+    },
+    {
+      "iteration": 51,
+      "score": [
+        182,
+        37,
+        -321
+      ]
+    },
+    {
+      "iteration": 52,
+      "score": [
+        182,
+        37,
+        -319
+      ]
+    },
+    {
+      "iteration": 53,
+      "score": [
+        182,
+        37,
+        -327
+      ]
+    },
+    {
+      "iteration": 54,
+      "score": [
+        183,
+        37,
+        -320
+      ]
+    },
+    {
+      "iteration": 55,
+      "score": [
+        183,
+        37,
+        -317
+      ]
+    },
+    {
+      "iteration": 56,
+      "score": [
+        180,
+        37,
+        -331
+      ]
+    },
+    {
+      "iteration": 57,
+      "score": [
+        181,
+        37,
+        -327
+      ]
+    },
+    {
+      "iteration": 58,
+      "score": [
+        181,
+        37,
+        -327
+      ]
+    },
+    {
+      "iteration": 59,
+      "score": [
+        182,
+        37,
+        -335
+      ]
+    }
+  ]
+}

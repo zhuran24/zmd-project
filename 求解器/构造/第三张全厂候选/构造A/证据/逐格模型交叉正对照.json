@@ -1,0 +1,195 @@
+{
+  "static_pass": false,
+  "local_checks_pass": true,
+  "full_mode": false,
+  "runtime_certified": false,
+  "checks": {
+    "schema": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "unique_ids": {
+      "status": "PASS",
+      "instances": 17,
+      "failures": []
+    },
+    "bounds": {
+      "status": "PASS",
+      "instances": 49,
+      "failures": []
+    },
+    "overlap": {
+      "status": "PASS",
+      "instances": 49,
+      "failures": []
+    },
+    "machine_dimensions": {
+      "status": "PASS",
+      "instances": 4,
+      "failures": []
+    },
+    "machine_contract": {
+      "status": "PASS",
+      "instances": 4,
+      "failures": []
+    },
+    "allowed_units": {
+      "status": "PASS",
+      "instances": 13,
+      "failures": []
+    },
+    "belt_ports": {
+      "status": "PASS",
+      "instances": 12,
+      "failures": []
+    },
+    "unique_channel_ids": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "all_automatic_channels": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "directed_routes": {
+      "status": "PASS",
+      "instances": 2,
+      "failures": []
+    },
+    "slot_exclusivity": {
+      "status": "PASS",
+      "instances": 14,
+      "failures": []
+    },
+    "s2_routes": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "no_extra_channels": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "logical_feed_ids": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "logical_feed_claims": {
+      "status": "PASS",
+      "instances": 2,
+      "failures": []
+    },
+    "logical_feed_coverage": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "channel_item_labels": {
+      "status": "PASS",
+      "instances": 16,
+      "failures": []
+    },
+    "declared_bridge_reverse_channels": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "no_unused_transport": {
+      "status": "PASS",
+      "instances": 13,
+      "failures": []
+    },
+    "bridge_axis_coverage": {
+      "status": "PASS",
+      "instances": 2,
+      "failures": []
+    },
+    "bridge_direction": {
+      "status": "PASS",
+      "instances": 2,
+      "failures": []
+    },
+    "bridge_distinct_routes": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    },
+    "independent_rectangle": {
+      "status": "PASS",
+      "instances": 1,
+      "failures": []
+    }
+  },
+  "statistics": {
+    "machines": 4,
+    "routes": 2,
+    "physical_channels": 16,
+    "transport_units": 13,
+    "transport_slots": 14,
+    "bridges": 1,
+    "adjacent_bridge_pairs": 0,
+    "reverse_bridge_channels": 0,
+    "occupied_cells": 49
+  },
+  "maximum_empty_rectangle": {
+    "x0": 7,
+    "y0": 7,
+    "x1": 12,
+    "y1": 12,
+    "area": 36,
+    "short_side": 6
+  },
+  "independent_maximum": {
+    "x0": 7,
+    "x1": 12,
+    "y0": 7,
+    "y1": 12,
+    "area": 36,
+    "short_side": 6
+  },
+  "bridges": [
+    {
+      "id": "T4_5",
+      "x": 4,
+      "y": 5,
+      "axes": [
+        {
+          "axis": "H_in",
+          "route": [
+            "RF1",
+            "KF1",
+            "蓝铁块"
+          ]
+        },
+        {
+          "axis": "V_in",
+          "route": [
+            "RF2",
+            "KF2",
+            "蓝铁块"
+          ]
+        }
+      ]
+    }
+  ],
+  "adjacent_bridges": [],
+  "route_lengths": [
+    {
+      "source": "RF1",
+      "target": "KF1",
+      "item": "蓝铁块",
+      "length": 7
+    },
+    {
+      "source": "RF2",
+      "target": "KF2",
+      "item": "蓝铁块",
+      "length": 7
+    }
+  ]
+}

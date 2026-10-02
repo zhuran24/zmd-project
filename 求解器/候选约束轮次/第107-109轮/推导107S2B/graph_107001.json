@@ -1,0 +1,6549 @@
+{
+  "machines": {
+    "精炼炉": 51,
+    "粉碎机": 71,
+    "研磨机": 32,
+    "采种机": 19,
+    "种植机": 38,
+    "配件机": 6,
+    "塑形机": 6,
+    "封装机": 3,
+    "灌装机": 4
+  },
+  "machine_count": 230,
+  "route_count": 325,
+  "sources": 47,
+  "core_outlets": 6,
+  "routes": [
+    {
+      "id": 0,
+      "from": "仓库取货口0",
+      "to": "矿精炼0",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:0:0",
+        "B:200",
+        "L:0:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 1,
+      "from": "矿精炼0",
+      "to": "铁粉碎0",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:1:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 2,
+      "from": "仓库取货口1",
+      "to": "矿精炼1",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:44",
+        "L:2:1",
+        "B:65",
+        "L:2:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "from": "矿精炼1",
+      "to": "铁粉碎1",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:3:0",
+        "B:213"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 4,
+      "from": "仓库取货口2",
+      "to": "矿精炼2",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:63",
+        "L:4:1",
+        "L:4:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "from": "矿精炼2",
+      "to": "铁粉碎2",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:5:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 6,
+      "from": "仓库取货口3",
+      "to": "矿精炼3",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:140",
+        "B:89",
+        "B:0",
+        "L:6:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 7,
+      "from": "矿精炼3",
+      "to": "铁粉碎3",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:85",
+        "B:98",
+        "B:113"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "from": "仓库取货口4",
+      "to": "矿精炼4",
+      "item": "蓝铁矿",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:147",
+        "L:8:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 9,
+      "from": "矿精炼4",
+      "to": "铁粉碎4",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:125",
+        "B:60",
+        "L:9:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 10,
+      "from": "仓库取货口5",
+      "to": "矿精炼5",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:109",
+        "B:68",
+        "B:112",
+        "L:10:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 11,
+      "from": "矿精炼5",
+      "to": "铁粉碎5",
+      "item": "蓝铁块",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:55",
+        "B:146",
+        "L:11:2",
+        "L:11:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 12,
+      "from": "仓库取货口6",
+      "to": "矿精炼6",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:12:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 13,
+      "from": "矿精炼6",
+      "to": "铁粉碎6",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:13:0",
+        "L:13:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 14,
+      "from": "仓库取货口7",
+      "to": "矿精炼7",
+      "item": "蓝铁矿",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:248",
+        "B:122"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 15,
+      "from": "矿精炼7",
+      "to": "铁粉碎7",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:15:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 16,
+      "from": "仓库取货口8",
+      "to": "矿精炼8",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:16:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 17,
+      "from": "矿精炼8",
+      "to": "铁粉碎8",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:126",
+        "L:17:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 18,
+      "from": "仓库取货口9",
+      "to": "矿精炼9",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:116"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 19,
+      "from": "矿精炼9",
+      "to": "铁粉碎9",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:19:0",
+        "B:96",
+        "L:19:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 20,
+      "from": "仓库取货口10",
+      "to": "矿精炼10",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:254",
+        "L:20:1",
+        "B:73",
+        "B:130"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 21,
+      "from": "矿精炼10",
+      "to": "铁粉碎10",
+      "item": "蓝铁块",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:150",
+        "L:21:1",
+        "B:119",
+        "B:1"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 22,
+      "from": "仓库取货口11",
+      "to": "矿精炼11",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:72",
+        "L:22:1",
+        "L:22:2",
+        "B:134"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 23,
+      "from": "矿精炼11",
+      "to": "铁粉碎11",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:128",
+        "B:168"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 24,
+      "from": "仓库取货口12",
+      "to": "矿精炼12",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:119",
+        "L:24:1",
+        "L:24:2",
+        "L:24:3"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 25,
+      "from": "矿精炼12",
+      "to": "铁粉碎12",
+      "item": "蓝铁块",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:25:0",
+        "L:25:1",
+        "B:197",
+        "B:34"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 26,
+      "from": "仓库取货口13",
+      "to": "矿精炼13",
+      "item": "蓝铁矿",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:53",
+        "B:11"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 27,
+      "from": "矿精炼13",
+      "to": "铁粉碎13",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:27:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 28,
+      "from": "仓库取货口14",
+      "to": "矿精炼14",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:41",
+        "B:13",
+        "B:59"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 29,
+      "from": "矿精炼14",
+      "to": "铁粉碎14",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:29:0",
+        "B:20",
+        "B:45"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 30,
+      "from": "仓库取货口15",
+      "to": "矿精炼15",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:177"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 31,
+      "from": "矿精炼15",
+      "to": "铁粉碎15",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:217",
+        "B:138"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 32,
+      "from": "仓库取货口16",
+      "to": "矿精炼16",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:32:0",
+        "B:102",
+        "B:77"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 33,
+      "from": "矿精炼16",
+      "to": "铁粉碎16",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:33:0",
+        "L:33:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 34,
+      "from": "仓库取货口17",
+      "to": "矿精炼17",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:34:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 35,
+      "from": "矿精炼17",
+      "to": "铁粉碎17",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:35:0",
+        "B:181",
+        "B:203"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 36,
+      "from": "仓库取货口18",
+      "to": "矿精炼18",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:108"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 37,
+      "from": "矿精炼18",
+      "to": "铁粉碎18",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:87"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 38,
+      "from": "仓库取货口19",
+      "to": "矿精炼19",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:139",
+        "B:252",
+        "B:131"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 39,
+      "from": "矿精炼19",
+      "to": "铁粉碎19",
+      "item": "蓝铁块",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:155",
+        "B:32",
+        "B:30",
+        "B:94"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 40,
+      "from": "仓库取货口20",
+      "to": "矿精炼20",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:40:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 41,
+      "from": "矿精炼20",
+      "to": "铁粉碎20",
+      "item": "蓝铁块",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:41:0",
+        "B:143",
+        "B:126",
+        "B:81"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 42,
+      "from": "仓库取货口21",
+      "to": "矿精炼21",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:162",
+        "B:75",
+        "L:42:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 43,
+      "from": "矿精炼21",
+      "to": "铁粉碎21",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:177"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 44,
+      "from": "仓库取货口22",
+      "to": "矿精炼22",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:74",
+        "B:101",
+        "L:44:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 45,
+      "from": "矿精炼22",
+      "to": "铁粉碎22",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:27",
+        "B:239"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 46,
+      "from": "仓库取货口23",
+      "to": "矿精炼23",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:136",
+        "L:46:1",
+        "L:46:2",
+        "B:208"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 47,
+      "from": "矿精炼23",
+      "to": "铁粉碎23",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:47:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 48,
+      "from": "仓库取货口24",
+      "to": "矿精炼24",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:48:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 49,
+      "from": "矿精炼24",
+      "to": "铁粉碎24",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:30"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 50,
+      "from": "仓库取货口25",
+      "to": "矿精炼25",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:50:0",
+        "B:154",
+        "L:50:2",
+        "L:50:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 51,
+      "from": "矿精炼25",
+      "to": "铁粉碎25",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:182",
+        "B:76",
+        "L:51:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 52,
+      "from": "仓库取货口26",
+      "to": "矿精炼26",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:52:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 53,
+      "from": "矿精炼26",
+      "to": "铁粉碎26",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:67",
+        "L:53:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 54,
+      "from": "仓库取货口27",
+      "to": "矿精炼27",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:81"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 55,
+      "from": "矿精炼27",
+      "to": "铁粉碎27",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:216",
+        "B:58"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 56,
+      "from": "仓库取货口28",
+      "to": "矿精炼28",
+      "item": "蓝铁矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:184",
+        "B:237",
+        "B:242",
+        "B:210"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 57,
+      "from": "矿精炼28",
+      "to": "铁粉碎28",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:57:0",
+        "B:188"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 58,
+      "from": "仓库取货口29",
+      "to": "矿精炼29",
+      "item": "蓝铁矿",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:58:0",
+        "L:58:1",
+        "B:226"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 59,
+      "from": "矿精炼29",
+      "to": "铁粉碎29",
+      "item": "蓝铁块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:59:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 60,
+      "from": "仓库取货口30",
+      "to": "矿精炼30",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:71"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 61,
+      "from": "矿精炼30",
+      "to": "铁粉碎30",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:61:0",
+        "B:196"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 62,
+      "from": "仓库取货口31",
+      "to": "矿精炼31",
+      "item": "蓝铁矿",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:118",
+        "L:62:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 63,
+      "from": "矿精炼31",
+      "to": "铁粉碎31",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:63:0",
+        "L:63:1",
+        "L:63:2"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 64,
+      "from": "仓库取货口32",
+      "to": "矿精炼32",
+      "item": "蓝铁矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:64:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 65,
+      "from": "矿精炼32",
+      "to": "铁粉碎32",
+      "item": "蓝铁块",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:115",
+        "L:65:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 66,
+      "from": "仓库取货口33",
+      "to": "矿精炼33",
+      "item": "蓝铁矿",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:66:0",
+        "B:116"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 67,
+      "from": "矿精炼33",
+      "to": "铁粉碎33",
+      "item": "蓝铁块",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:151",
+        "B:31",
+        "L:67:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 68,
+      "from": "协议核心取货",
+      "to": "源粉碎0",
+      "item": "源矿",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:68:0",
+        "L:68:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 69,
+      "from": "协议核心取货",
+      "to": "源粉碎1",
+      "item": "源矿",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:69:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 70,
+      "from": "协议核心取货",
+      "to": "源粉碎2",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:80",
+        "B:231",
+        "B:111",
+        "B:225"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 71,
+      "from": "协议核心取货",
+      "to": "源粉碎3",
+      "item": "源矿",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:47"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 72,
+      "from": "协议核心取货",
+      "to": "源粉碎4",
+      "item": "源矿",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:72:0",
+        "L:72:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 73,
+      "from": "协议核心取货",
+      "to": "源粉碎5",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:73",
+        "L:73:1",
+        "L:73:2",
+        "L:73:3"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 74,
+      "from": "仓库取货口40",
+      "to": "源粉碎6",
+      "item": "源矿",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:70",
+        "L:74:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 75,
+      "from": "仓库取货口41",
+      "to": "源粉碎7",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:153",
+        "L:75:1",
+        "L:75:2",
+        "B:124"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 76,
+      "from": "仓库取货口42",
+      "to": "源粉碎8",
+      "item": "源矿",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:187",
+        "L:76:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 77,
+      "from": "仓库取货口43",
+      "to": "源粉碎9",
+      "item": "源矿",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:77:0",
+        "B:64"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 78,
+      "from": "仓库取货口44",
+      "to": "源粉碎10",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:78:0",
+        "L:78:1",
+        "B:13",
+        "B:178"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 79,
+      "from": "仓库取货口45",
+      "to": "源粉碎11",
+      "item": "源矿",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:157",
+        "B:60",
+        "B:15"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 80,
+      "from": "仓库取货口46",
+      "to": "源粉碎12",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:17",
+        "L:80:1",
+        "L:80:2",
+        "L:80:3"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 81,
+      "from": "仓库取货口47",
+      "to": "源粉碎13",
+      "item": "源矿",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:48",
+        "B:127"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 82,
+      "from": "仓库取货口48",
+      "to": "源粉碎14",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:148",
+        "B:134",
+        "B:4",
+        "B:130"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 83,
+      "from": "仓库取货口49",
+      "to": "源粉碎15",
+      "item": "源矿",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:135",
+        "B:192",
+        "B:46"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 84,
+      "from": "仓库取货口50",
+      "to": "源粉碎16",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:16",
+        "B:165",
+        "B:111",
+        "B:152"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 85,
+      "from": "仓库取货口51",
+      "to": "源粉碎17",
+      "item": "源矿",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:105",
+        "B:187",
+        "B:84",
+        "L:85:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 86,
+      "from": "铁粉碎0",
+      "to": "铁研磨0",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:79",
+        "L:86:1",
+        "B:159"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 87,
+      "from": "铁粉碎1",
+      "to": "铁研磨0",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:43",
+        "B:133"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 88,
+      "from": "铁粉碎2",
+      "to": "铁研磨1",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:180",
+        "B:240",
+        "L:88:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 89,
+      "from": "铁粉碎3",
+      "to": "铁研磨1",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:172",
+        "L:89:1",
+        "B:201"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 90,
+      "from": "铁粉碎4",
+      "to": "铁研磨2",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:90:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 91,
+      "from": "铁粉碎5",
+      "to": "铁研磨2",
+      "item": "蓝铁粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:91:0",
+        "L:91:1",
+        "B:228",
+        "B:115"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 92,
+      "from": "铁粉碎6",
+      "to": "铁研磨3",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:219"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 93,
+      "from": "铁粉碎7",
+      "to": "铁研磨3",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:29"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 94,
+      "from": "铁粉碎8",
+      "to": "铁研磨4",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:94:0",
+        "L:94:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 95,
+      "from": "铁粉碎9",
+      "to": "铁研磨4",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:158",
+        "B:109"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 96,
+      "from": "铁粉碎10",
+      "to": "铁研磨5",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:87",
+        "B:102"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 97,
+      "from": "铁粉碎11",
+      "to": "铁研磨5",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:97:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 98,
+      "from": "铁粉碎12",
+      "to": "铁研磨6",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:137"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 99,
+      "from": "铁粉碎13",
+      "to": "铁研磨6",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:95",
+        "B:220",
+        "B:82"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 100,
+      "from": "铁粉碎14",
+      "to": "铁研磨7",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:249",
+        "B:127"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 101,
+      "from": "铁粉碎15",
+      "to": "铁研磨7",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:206"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 102,
+      "from": "铁粉碎16",
+      "to": "铁研磨8",
+      "item": "蓝铁粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:102:0",
+        "L:102:1",
+        "B:128",
+        "B:227"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 103,
+      "from": "铁粉碎17",
+      "to": "铁研磨8",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:83",
+        "L:103:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 104,
+      "from": "铁粉碎18",
+      "to": "铁研磨9",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:104:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 105,
+      "from": "铁粉碎19",
+      "to": "铁研磨9",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:190"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 106,
+      "from": "铁粉碎20",
+      "to": "铁研磨10",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:106:0",
+        "B:23",
+        "L:106:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 107,
+      "from": "铁粉碎21",
+      "to": "铁研磨10",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:253",
+        "B:105"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 108,
+      "from": "铁粉碎22",
+      "to": "铁研磨11",
+      "item": "蓝铁粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:212",
+        "B:129",
+        "L:108:2",
+        "L:108:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 109,
+      "from": "铁粉碎23",
+      "to": "铁研磨11",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:78",
+        "B:14",
+        "B:88"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 110,
+      "from": "铁粉碎24",
+      "to": "铁研磨12",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:193",
+        "B:106",
+        "B:157"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 111,
+      "from": "铁粉碎25",
+      "to": "铁研磨12",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:64",
+        "L:111:1",
+        "L:111:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 112,
+      "from": "铁粉碎26",
+      "to": "铁研磨13",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:112:0",
+        "B:99"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 113,
+      "from": "铁粉碎27",
+      "to": "铁研磨13",
+      "item": "蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:207"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 114,
+      "from": "铁粉碎28",
+      "to": "铁研磨14",
+      "item": "蓝铁粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:78",
+        "B:148",
+        "L:114:2",
+        "L:114:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 115,
+      "from": "铁粉碎29",
+      "to": "铁研磨14",
+      "item": "蓝铁粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:115:0",
+        "B:143",
+        "L:115:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 116,
+      "from": "铁粉碎30",
+      "to": "铁研磨15",
+      "item": "蓝铁粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:116:0",
+        "B:193",
+        "B:61",
+        "L:116:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 117,
+      "from": "铁粉碎31",
+      "to": "铁研磨15",
+      "item": "蓝铁粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:156",
+        "L:117:1",
+        "B:137",
+        "L:117:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 118,
+      "from": "铁粉碎32",
+      "to": "铁研磨16",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:152",
+        "B:222"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 119,
+      "from": "铁粉碎33",
+      "to": "铁研磨16",
+      "item": "蓝铁粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:119:0",
+        "B:42"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 120,
+      "from": "源粉碎0",
+      "to": "源研磨0",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:120:0",
+        "B:22",
+        "B:90",
+        "L:120:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 121,
+      "from": "源粉碎1",
+      "to": "源研磨0",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:29",
+        "B:166",
+        "L:121:2",
+        "L:121:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 122,
+      "from": "源粉碎2",
+      "to": "源研磨1",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:149",
+        "L:122:1",
+        "B:206",
+        "B:77"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 123,
+      "from": "源粉碎3",
+      "to": "源研磨1",
+      "item": "源石粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:123:0",
+        "L:123:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 124,
+      "from": "源粉碎4",
+      "to": "源研磨2",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:4",
+        "L:124:1",
+        "B:69",
+        "B:247"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 125,
+      "from": "源粉碎5",
+      "to": "源研磨2",
+      "item": "源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:175",
+        "B:2",
+        "L:125:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 126,
+      "from": "源粉碎6",
+      "to": "源研磨3",
+      "item": "源石粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:126:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 127,
+      "from": "源粉碎7",
+      "to": "源研磨3",
+      "item": "源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:55",
+        "L:127:1",
+        "L:127:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 128,
+      "from": "源粉碎8",
+      "to": "源研磨4",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:128:0",
+        "L:128:1",
+        "B:28",
+        "B:91"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 129,
+      "from": "源粉碎9",
+      "to": "源研磨4",
+      "item": "源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:145",
+        "L:129:1",
+        "B:141"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 130,
+      "from": "源粉碎10",
+      "to": "源研磨5",
+      "item": "源石粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:156"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 131,
+      "from": "源粉碎11",
+      "to": "源研磨5",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:142",
+        "L:131:1",
+        "L:131:2",
+        "L:131:3"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 132,
+      "from": "源粉碎12",
+      "to": "源研磨6",
+      "item": "源石粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:132:0",
+        "L:132:1",
+        "L:132:2"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 133,
+      "from": "源粉碎13",
+      "to": "源研磨6",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:153",
+        "B:219",
+        "B:17",
+        "B:45"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 134,
+      "from": "源粉碎14",
+      "to": "源研磨7",
+      "item": "源石粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:134:0",
+        "B:39"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 135,
+      "from": "源粉碎15",
+      "to": "源研磨7",
+      "item": "源石粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:135:0",
+        "B:10",
+        "B:18",
+        "L:135:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 136,
+      "from": "源粉碎16",
+      "to": "源研磨8",
+      "item": "源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:139",
+        "B:195",
+        "L:136:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 137,
+      "from": "源粉碎17",
+      "to": "源研磨8",
+      "item": "源石粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:170",
+        "L:137:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 138,
+      "from": "砂叶采种0",
+      "to": "砂叶种植A0",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:15",
+        "B:183"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 139,
+      "from": "砂叶采种0",
+      "to": "砂叶种植B0",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:139:0",
+        "L:139:1",
+        "L:139:2"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 140,
+      "from": "砂叶种植A0",
+      "to": "砂叶采种0",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:159",
+        "B:174"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 141,
+      "from": "砂叶种植B0",
+      "to": "砂叶粉碎0",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:141:0",
+        "B:170",
+        "B:217",
+        "B:56"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 142,
+      "from": "砂叶采种1",
+      "to": "砂叶种植A1",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:39",
+        "B:218"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 143,
+      "from": "砂叶采种1",
+      "to": "砂叶种植B1",
+      "item": "砂叶种子",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:143:0",
+        "B:20",
+        "B:124",
+        "B:203"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 144,
+      "from": "砂叶种植A1",
+      "to": "砂叶采种1",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:14",
+        "L:144:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 145,
+      "from": "砂叶种植B1",
+      "to": "砂叶粉碎1",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:100"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 146,
+      "from": "砂叶采种2",
+      "to": "砂叶种植A2",
+      "item": "砂叶种子",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:101"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 147,
+      "from": "砂叶采种2",
+      "to": "砂叶种植B2",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:3",
+        "B:155"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 148,
+      "from": "砂叶种植A2",
+      "to": "砂叶采种2",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:148:0",
+        "B:255"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 149,
+      "from": "砂叶种植B2",
+      "to": "砂叶粉碎2",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:149:0",
+        "B:97"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 150,
+      "from": "砂叶采种3",
+      "to": "砂叶种植A3",
+      "item": "砂叶种子",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:150:0",
+        "L:150:1",
+        "B:48",
+        "L:150:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 151,
+      "from": "砂叶采种3",
+      "to": "砂叶种植B3",
+      "item": "砂叶种子",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:151:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 152,
+      "from": "砂叶种植A3",
+      "to": "砂叶采种3",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:152:0",
+        "L:152:1",
+        "B:117",
+        "B:138"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 153,
+      "from": "砂叶种植B3",
+      "to": "砂叶粉碎3",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:164",
+        "L:153:1",
+        "B:35",
+        "B:169"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 154,
+      "from": "砂叶采种4",
+      "to": "砂叶种植A4",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:154:0",
+        "L:154:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 155,
+      "from": "砂叶采种4",
+      "to": "砂叶种植B4",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:155:0",
+        "B:174",
+        "L:155:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 156,
+      "from": "砂叶种植A4",
+      "to": "砂叶采种4",
+      "item": "砂叶",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:114",
+        "B:82",
+        "B:243"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 157,
+      "from": "砂叶种植B4",
+      "to": "砂叶粉碎4",
+      "item": "砂叶",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:157:0",
+        "B:221",
+        "B:112"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 158,
+      "from": "砂叶采种5",
+      "to": "砂叶种植A5",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:106",
+        "L:158:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 159,
+      "from": "砂叶采种5",
+      "to": "砂叶种植B5",
+      "item": "砂叶种子",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:244",
+        "L:159:1",
+        "B:218",
+        "B:120"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 160,
+      "from": "砂叶种植A5",
+      "to": "砂叶采种5",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:185",
+        "L:160:1",
+        "L:160:2",
+        "B:215"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 161,
+      "from": "砂叶种植B5",
+      "to": "砂叶粉碎5",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:165",
+        "L:161:1",
+        "B:62",
+        "B:171"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 162,
+      "from": "砂叶采种6",
+      "to": "砂叶种植A6",
+      "item": "砂叶种子",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:184",
+        "B:6",
+        "L:162:2",
+        "L:162:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 163,
+      "from": "砂叶采种6",
+      "to": "砂叶种植B6",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:142",
+        "B:235"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 164,
+      "from": "砂叶种植A6",
+      "to": "砂叶采种6",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:86"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 165,
+      "from": "砂叶种植B6",
+      "to": "砂叶粉碎6",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:165:0",
+        "L:165:1",
+        "B:104",
+        "B:261"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 166,
+      "from": "砂叶采种7",
+      "to": "砂叶种植A7",
+      "item": "砂叶种子",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:166:0",
+        "B:75"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 167,
+      "from": "砂叶采种7",
+      "to": "砂叶种植B7",
+      "item": "砂叶种子",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:183"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 168,
+      "from": "砂叶种植A7",
+      "to": "砂叶采种7",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:31",
+        "B:200"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 169,
+      "from": "砂叶种植B7",
+      "to": "砂叶粉碎7",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:169:0",
+        "B:238"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 170,
+      "from": "砂叶采种8",
+      "to": "砂叶种植A8",
+      "item": "砂叶种子",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:33",
+        "B:176",
+        "B:135",
+        "B:145"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 171,
+      "from": "砂叶采种8",
+      "to": "砂叶种植B8",
+      "item": "砂叶种子",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:27"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 172,
+      "from": "砂叶种植A8",
+      "to": "砂叶采种8",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:202"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 173,
+      "from": "砂叶种植B8",
+      "to": "砂叶粉碎8",
+      "item": "砂叶",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:173:0",
+        "L:173:1",
+        "L:173:2",
+        "L:173:3"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 174,
+      "from": "砂叶采种9",
+      "to": "砂叶种植A9",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:161",
+        "B:10",
+        "B:204"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 175,
+      "from": "砂叶采种9",
+      "to": "砂叶种植B9",
+      "item": "砂叶种子",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:21"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 176,
+      "from": "砂叶种植A9",
+      "to": "砂叶采种9",
+      "item": "砂叶",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:146",
+        "L:176:1",
+        "B:22"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 177,
+      "from": "砂叶种植B9",
+      "to": "砂叶粉碎9",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:8",
+        "L:177:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 178,
+      "from": "砂叶采种10",
+      "to": "砂叶种植A10",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:178:0",
+        "B:168",
+        "L:178:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 179,
+      "from": "砂叶采种10",
+      "to": "砂叶种植B10",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:86",
+        "B:33",
+        "L:179:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 180,
+      "from": "砂叶种植A10",
+      "to": "砂叶采种10",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:180:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 181,
+      "from": "砂叶种植B10",
+      "to": "砂叶粉碎10",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:131"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 182,
+      "from": "砂叶采种11",
+      "to": "砂叶种植A11",
+      "item": "砂叶种子",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:182:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 183,
+      "from": "砂叶采种11",
+      "to": "砂叶种植B11",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:175",
+        "L:183:1",
+        "B:216"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 184,
+      "from": "砂叶种植A11",
+      "to": "砂叶采种11",
+      "item": "砂叶",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:97",
+        "L:184:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 185,
+      "from": "砂叶种植B11",
+      "to": "砂叶粉碎11",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:136"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 186,
+      "from": "砂叶采种12",
+      "to": "砂叶种植A12",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:186:0",
+        "B:256",
+        "B:179"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 187,
+      "from": "砂叶采种12",
+      "to": "砂叶种植B12",
+      "item": "砂叶种子",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:187:0",
+        "B:74",
+        "L:187:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 188,
+      "from": "砂叶种植A12",
+      "to": "砂叶采种12",
+      "item": "砂叶",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:188:0",
+        "L:188:1",
+        "B:198"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 189,
+      "from": "砂叶种植B12",
+      "to": "砂叶粉碎12",
+      "item": "砂叶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:92"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 190,
+      "from": "荞花采种0",
+      "to": "荞花种植A0",
+      "item": "荞花种子",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:190:0",
+        "B:204",
+        "L:190:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 191,
+      "from": "荞花采种0",
+      "to": "荞花种植B0",
+      "item": "荞花种子",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:0",
+        "L:191:1",
+        "L:191:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 192,
+      "from": "荞花种植A0",
+      "to": "荞花采种0",
+      "item": "荞花",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:192:0",
+        "B:6",
+        "B:34"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 193,
+      "from": "荞花种植B0",
+      "to": "荞花粉碎0",
+      "item": "荞花",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:79",
+        "B:103"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 194,
+      "from": "荞花采种1",
+      "to": "荞花种植A1",
+      "item": "荞花种子",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:194:0",
+        "B:88"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 195,
+      "from": "荞花采种1",
+      "to": "荞花种植B1",
+      "item": "荞花种子",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:181",
+        "L:195:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 196,
+      "from": "荞花种植A1",
+      "to": "荞花采种1",
+      "item": "荞花",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:36"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 197,
+      "from": "荞花种植B1",
+      "to": "荞花粉碎1",
+      "item": "荞花",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:197:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 198,
+      "from": "荞花采种2",
+      "to": "荞花种植A2",
+      "item": "荞花种子",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:198:0",
+        "B:167",
+        "B:104",
+        "B:66"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 199,
+      "from": "荞花采种2",
+      "to": "荞花种植B2",
+      "item": "荞花种子",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:199:0",
+        "B:229",
+        "B:194",
+        "L:199:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 200,
+      "from": "荞花种植A2",
+      "to": "荞花采种2",
+      "item": "荞花",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:200:0",
+        "L:200:1",
+        "B:7"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 201,
+      "from": "荞花种植B2",
+      "to": "荞花粉碎2",
+      "item": "荞花",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:209"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 202,
+      "from": "荞花采种3",
+      "to": "荞花种植A3",
+      "item": "荞花种子",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:224",
+        "L:202:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 203,
+      "from": "荞花采种3",
+      "to": "荞花种植B3",
+      "item": "荞花种子",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:66",
+        "B:234"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 204,
+      "from": "荞花种植A3",
+      "to": "荞花采种3",
+      "item": "荞花",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:100",
+        "B:160",
+        "B:21"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 205,
+      "from": "荞花种植B3",
+      "to": "荞花粉碎3",
+      "item": "荞花",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:205:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 206,
+      "from": "荞花采种4",
+      "to": "荞花种植A4",
+      "item": "荞花种子",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:54"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 207,
+      "from": "荞花采种4",
+      "to": "荞花种植B4",
+      "item": "荞花种子",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:207:0",
+        "B:258"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 208,
+      "from": "荞花种植A4",
+      "to": "荞花采种4",
+      "item": "荞花",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:7",
+        "L:208:1",
+        "L:208:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 209,
+      "from": "荞花种植B4",
+      "to": "荞花粉碎4",
+      "item": "荞花",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:5"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 210,
+      "from": "荞花采种5",
+      "to": "荞花种植A5",
+      "item": "荞花种子",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:147"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 211,
+      "from": "荞花采种5",
+      "to": "荞花种植B5",
+      "item": "荞花种子",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:211:0",
+        "L:211:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 212,
+      "from": "荞花种植A5",
+      "to": "荞花采种5",
+      "item": "荞花",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:212:0",
+        "L:212:1",
+        "B:114",
+        "L:212:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 213,
+      "from": "荞花种植B5",
+      "to": "荞花粉碎5",
+      "item": "荞花",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:213:0",
+        "B:24",
+        "B:205"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 214,
+      "from": "砂叶粉碎0",
+      "to": "铁研磨0",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:83",
+        "L:214:1",
+        "L:214:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 215,
+      "from": "砂叶粉碎0",
+      "to": "铁研磨1",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:61",
+        "B:32"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 216,
+      "from": "砂叶粉碎0",
+      "to": "源研磨0",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:2",
+        "L:216:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 217,
+      "from": "砂叶粉碎1",
+      "to": "源研磨1",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:198",
+        "B:108"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 218,
+      "from": "砂叶粉碎1",
+      "to": "源研磨2",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:186",
+        "B:52",
+        "B:129",
+        "L:218:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 219,
+      "from": "砂叶粉碎2",
+      "to": "铁研磨2",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:54"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 220,
+      "from": "砂叶粉碎2",
+      "to": "铁研磨3",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:43"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 221,
+      "from": "砂叶粉碎2",
+      "to": "源研磨3",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:25",
+        "B:5",
+        "B:24"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 222,
+      "from": "砂叶粉碎3",
+      "to": "源研磨4",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:222:0",
+        "B:180"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 223,
+      "from": "砂叶粉碎3",
+      "to": "源研磨5",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:23",
+        "L:223:1",
+        "B:195",
+        "B:91"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 224,
+      "from": "砂叶粉碎4",
+      "to": "铁研磨4",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:161",
+        "B:160",
+        "B:151"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 225,
+      "from": "砂叶粉碎4",
+      "to": "铁研磨5",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:225:0",
+        "L:225:1",
+        "B:37"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 226,
+      "from": "砂叶粉碎4",
+      "to": "源研磨6",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:18",
+        "B:213",
+        "B:95",
+        "B:260"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 227,
+      "from": "砂叶粉碎5",
+      "to": "源研磨7",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:94"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 228,
+      "from": "砂叶粉碎5",
+      "to": "源研磨8",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:228:0",
+        "B:110",
+        "B:179",
+        "L:228:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 229,
+      "from": "砂叶粉碎6",
+      "to": "铁研磨6",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:71"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 230,
+      "from": "砂叶粉碎6",
+      "to": "铁研磨7",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:230:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 231,
+      "from": "砂叶粉碎6",
+      "to": "铁研磨8",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:38",
+        "L:231:1",
+        "B:47",
+        "L:231:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 232,
+      "from": "砂叶粉碎7",
+      "to": "铁研磨9",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:232:0",
+        "L:232:1",
+        "B:214"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 233,
+      "from": "砂叶粉碎7",
+      "to": "荞研磨0",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:44"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 234,
+      "from": "砂叶粉碎7",
+      "to": "荞研磨1",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:68",
+        "L:234:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 235,
+      "from": "砂叶粉碎8",
+      "to": "铁研磨10",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:46",
+        "B:236",
+        "B:38"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 236,
+      "from": "砂叶粉碎8",
+      "to": "铁研磨11",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:236:0",
+        "L:236:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 237,
+      "from": "砂叶粉碎8",
+      "to": "铁研磨12",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:89",
+        "B:12",
+        "L:237:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 238,
+      "from": "砂叶粉碎9",
+      "to": "铁研磨13",
+      "item": "砂叶粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:238:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 239,
+      "from": "砂叶粉碎9",
+      "to": "荞研磨2",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:239:0",
+        "B:99",
+        "B:28"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 240,
+      "from": "砂叶粉碎9",
+      "to": "荞研磨3",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:92",
+        "B:163",
+        "L:240:2",
+        "L:240:3"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 241,
+      "from": "砂叶粉碎10",
+      "to": "铁研磨14",
+      "item": "砂叶粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:241:0",
+        "L:241:1",
+        "B:98",
+        "B:93"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 242,
+      "from": "砂叶粉碎10",
+      "to": "铁研磨15",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:149",
+        "L:242:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 243,
+      "from": "砂叶粉碎10",
+      "to": "荞研磨4",
+      "item": "砂叶粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:199",
+        "L:243:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 244,
+      "from": "砂叶粉碎11",
+      "to": "铁研磨16",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:8",
+        "B:76",
+        "B:50"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 245,
+      "from": "砂叶粉碎12",
+      "to": "荞研磨5",
+      "item": "砂叶粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:40",
+        "B:85",
+        "B:133"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 246,
+      "from": "荞花粉碎0",
+      "to": "荞研磨0",
+      "item": "荞花粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:246:0",
+        "B:69"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 247,
+      "from": "荞花粉碎0",
+      "to": "荞研磨0",
+      "item": "荞花粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:247:0",
+        "B:173",
+        "B:26"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 248,
+      "from": "荞花粉碎1",
+      "to": "荞研磨1",
+      "item": "荞花粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:248:0",
+        "B:36",
+        "L:248:2",
+        "B:211"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 249,
+      "from": "荞花粉碎1",
+      "to": "荞研磨1",
+      "item": "荞花粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:249:0",
+        "B:251",
+        "B:51",
+        "L:249:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 250,
+      "from": "荞花粉碎2",
+      "to": "荞研磨2",
+      "item": "荞花粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:113"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 251,
+      "from": "荞花粉碎2",
+      "to": "荞研磨2",
+      "item": "荞花粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:178",
+        "B:208",
+        "B:53",
+        "B:80"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 252,
+      "from": "荞花粉碎3",
+      "to": "荞研磨3",
+      "item": "荞花粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:252:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 253,
+      "from": "荞花粉碎3",
+      "to": "荞研磨3",
+      "item": "荞花粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:253:0",
+        "B:144",
+        "B:212"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 254,
+      "from": "荞花粉碎4",
+      "to": "荞研磨4",
+      "item": "荞花粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:199",
+        "B:207"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 255,
+      "from": "荞花粉碎4",
+      "to": "荞研磨4",
+      "item": "荞花粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:221"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 256,
+      "from": "荞花粉碎5",
+      "to": "荞研磨5",
+      "item": "荞花粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:172"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 257,
+      "from": "铁研磨0",
+      "to": "钢精炼0",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:57",
+        "B:169"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 258,
+      "from": "铁研磨1",
+      "to": "钢精炼1",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:258:0",
+        "L:258:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 259,
+      "from": "铁研磨2",
+      "to": "钢精炼2",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:259:0",
+        "B:117"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 260,
+      "from": "铁研磨3",
+      "to": "钢精炼3",
+      "item": "致密蓝铁粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:260:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 261,
+      "from": "铁研磨4",
+      "to": "钢精炼4",
+      "item": "致密蓝铁粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:261:0",
+        "B:56",
+        "B:90"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 262,
+      "from": "铁研磨5",
+      "to": "钢精炼5",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:107",
+        "B:182"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 263,
+      "from": "铁研磨6",
+      "to": "钢精炼6",
+      "item": "致密蓝铁粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:121",
+        "L:263:1",
+        "B:1"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 264,
+      "from": "铁研磨7",
+      "to": "钢精炼7",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:246",
+        "B:215"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 265,
+      "from": "铁研磨8",
+      "to": "钢精炼8",
+      "item": "致密蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:214"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 266,
+      "from": "铁研磨9",
+      "to": "钢精炼9",
+      "item": "致密蓝铁粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:173",
+        "L:266:1",
+        "B:11",
+        "L:266:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 267,
+      "from": "铁研磨10",
+      "to": "钢精炼10",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:140",
+        "B:223"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 268,
+      "from": "铁研磨11",
+      "to": "钢精炼11",
+      "item": "致密蓝铁粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:268:0",
+        "B:209",
+        "B:163"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 269,
+      "from": "铁研磨12",
+      "to": "钢精炼12",
+      "item": "致密蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:3"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 270,
+      "from": "铁研磨13",
+      "to": "钢精炼13",
+      "item": "致密蓝铁粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:270:0",
+        "B:232"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 271,
+      "from": "铁研磨14",
+      "to": "钢精炼14",
+      "item": "致密蓝铁粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:84",
+        "L:271:1",
+        "B:49",
+        "B:154"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 272,
+      "from": "铁研磨15",
+      "to": "钢精炼15",
+      "item": "致密蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:189"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 273,
+      "from": "铁研磨16",
+      "to": "钢精炼16",
+      "item": "致密蓝铁粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:19"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 274,
+      "from": "钢精炼0",
+      "to": "配件0",
+      "item": "钢块",
+      "length": 3,
+      "types": [
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:274:0",
+        "L:274:1",
+        "L:274:2"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 275,
+      "from": "钢精炼1",
+      "to": "配件1",
+      "item": "钢块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:275:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 276,
+      "from": "钢精炼2",
+      "to": "配件2",
+      "item": "钢块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:52"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 277,
+      "from": "钢精炼3",
+      "to": "配件3",
+      "item": "钢块",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:230",
+        "L:277:1",
+        "B:192",
+        "B:67"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 278,
+      "from": "钢精炼4",
+      "to": "配件4",
+      "item": "钢块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:150"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 279,
+      "from": "钢精炼5",
+      "to": "配件5",
+      "item": "钢块",
+      "length": 2,
+      "types": [
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "L:279:0",
+        "B:158"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 280,
+      "from": "钢精炼6",
+      "to": "塑形0",
+      "item": "钢块",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:58",
+        "L:280:1",
+        "B:107"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 281,
+      "from": "钢精炼7",
+      "to": "塑形0",
+      "item": "钢块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:51",
+        "B:19"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 282,
+      "from": "钢精炼8",
+      "to": "塑形1",
+      "item": "钢块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:185"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 283,
+      "from": "钢精炼9",
+      "to": "塑形1",
+      "item": "钢块",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:194",
+        "L:283:1",
+        "B:12",
+        "B:164"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 284,
+      "from": "钢精炼10",
+      "to": "塑形2",
+      "item": "钢块",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:144",
+        "L:284:1",
+        "L:284:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 285,
+      "from": "钢精炼11",
+      "to": "塑形2",
+      "item": "钢块",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:285:0",
+        "B:118",
+        "L:285:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 286,
+      "from": "钢精炼12",
+      "to": "塑形3",
+      "item": "钢块",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:210"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 287,
+      "from": "钢精炼13",
+      "to": "塑形3",
+      "item": "钢块",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:287:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 288,
+      "from": "钢精炼14",
+      "to": "塑形4",
+      "item": "钢块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:16",
+        "B:42"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 289,
+      "from": "钢精炼15",
+      "to": "塑形4",
+      "item": "钢块",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:162",
+        "B:125"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 290,
+      "from": "钢精炼16",
+      "to": "塑形5",
+      "item": "钢块",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:167",
+        "B:241",
+        "L:290:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 291,
+      "from": "配件0",
+      "to": "封装0",
+      "item": "钢制零件",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:205"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 292,
+      "from": "配件1",
+      "to": "封装0",
+      "item": "钢制零件",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:62"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 293,
+      "from": "源研磨0",
+      "to": "封装0",
+      "item": "致密源石粉末",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:35",
+        "B:110"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 294,
+      "from": "源研磨1",
+      "to": "封装0",
+      "item": "致密源石粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:294:0",
+        "L:294:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 295,
+      "from": "源研磨2",
+      "to": "封装0",
+      "item": "致密源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:50",
+        "B:132",
+        "L:295:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 296,
+      "from": "封装0",
+      "to": "协议核心收货",
+      "item": "高容谷地电池",
+      "length": 2,
+      "types": [
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:141",
+        "L:296:1"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 297,
+      "from": "配件2",
+      "to": "封装1",
+      "item": "钢制零件",
+      "length": 4,
+      "types": [
+        "L",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:297:0",
+        "B:93",
+        "B:41",
+        "B:72"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 298,
+      "from": "配件3",
+      "to": "封装1",
+      "item": "钢制零件",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:191"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 299,
+      "from": "源研磨3",
+      "to": "封装1",
+      "item": "致密源石粉末",
+      "length": 4,
+      "types": [
+        "L",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:299:0",
+        "L:299:1",
+        "B:233",
+        "B:245"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 300,
+      "from": "源研磨4",
+      "to": "封装1",
+      "item": "致密源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "B"
+      ],
+      "physical_units": [
+        "B:9",
+        "L:300:1",
+        "B:197"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 301,
+      "from": "源研磨5",
+      "to": "封装1",
+      "item": "致密源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:196",
+        "B:121",
+        "B:120",
+        "B:211"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 302,
+      "from": "封装1",
+      "to": "协议核心收货",
+      "item": "高容谷地电池",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:132",
+        "L:302:1",
+        "L:302:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 303,
+      "from": "配件4",
+      "to": "封装2",
+      "item": "钢制零件",
+      "length": 3,
+      "types": [
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:123",
+        "B:202",
+        "B:122"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 304,
+      "from": "配件5",
+      "to": "封装2",
+      "item": "钢制零件",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "L:304:0",
+        "B:26",
+        "B:166"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 305,
+      "from": "源研磨6",
+      "to": "封装2",
+      "item": "致密源石粉末",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "B:57",
+        "B:189",
+        "B:65",
+        "L:305:3"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 306,
+      "from": "源研磨7",
+      "to": "封装2",
+      "item": "致密源石粉末",
+      "length": 2,
+      "types": [
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "L:306:0",
+        "L:306:1"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 307,
+      "from": "源研磨8",
+      "to": "封装2",
+      "item": "致密源石粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:171",
+        "L:307:1",
+        "L:307:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 308,
+      "from": "封装2",
+      "to": "协议核心收货",
+      "item": "高容谷地电池",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:220",
+        "B:250"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 309,
+      "from": "塑形0",
+      "to": "灌装0",
+      "item": "钢质瓶",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:309:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 310,
+      "from": "荞研磨0",
+      "to": "灌装0",
+      "item": "细磨荞花粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:310:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 311,
+      "from": "塑形1",
+      "to": "灌装0",
+      "item": "钢质瓶",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:186",
+        "B:201",
+        "B:103",
+        "B:63"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 312,
+      "from": "荞研磨1",
+      "to": "灌装0",
+      "item": "细磨荞花粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:312:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 313,
+      "from": "塑形2",
+      "to": "灌装1",
+      "item": "钢质瓶",
+      "length": 2,
+      "types": [
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:25",
+        "B:190"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 314,
+      "from": "荞研磨2",
+      "to": "灌装1",
+      "item": "细磨荞花粉末",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:314:0",
+        "B:176",
+        "L:314:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 315,
+      "from": "塑形3",
+      "to": "灌装1",
+      "item": "钢质瓶",
+      "length": 4,
+      "types": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:40",
+        "B:191",
+        "B:37",
+        "B:123"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 316,
+      "from": "荞研磨3",
+      "to": "灌装1",
+      "item": "细磨荞花粉末",
+      "length": 3,
+      "types": [
+        "B",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:9",
+        "L:316:1",
+        "L:316:2"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 317,
+      "from": "塑形4",
+      "to": "灌装2",
+      "item": "钢质瓶",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:59"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 318,
+      "from": "荞研磨4",
+      "to": "灌装2",
+      "item": "细磨荞花粉末",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:318:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 319,
+      "from": "塑形5",
+      "to": "灌装3",
+      "item": "钢质瓶",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:319:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 320,
+      "from": "荞研磨5",
+      "to": "灌装3",
+      "item": "细磨荞花粉末",
+      "length": 1,
+      "types": [
+        "B"
+      ],
+      "physical_units": [
+        "B:49"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 321,
+      "from": "灌装0",
+      "to": "协议核心收货",
+      "item": "精选荞愈胶囊",
+      "length": 1,
+      "types": [
+        "L"
+      ],
+      "physical_units": [
+        "L:321:0"
+      ],
+      "component_layers": [
+        1
+      ]
+    },
+    {
+      "id": 322,
+      "from": "灌装1",
+      "to": "协议核心收货",
+      "item": "精选荞愈胶囊",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "L",
+        "L"
+      ],
+      "physical_units": [
+        "B:257",
+        "L:322:1",
+        "L:322:2",
+        "L:322:3"
+      ],
+      "component_layers": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": 323,
+      "from": "灌装2",
+      "to": "协议核心收货",
+      "item": "精选荞愈胶囊",
+      "length": 4,
+      "types": [
+        "B",
+        "L",
+        "B",
+        "B"
+      ],
+      "physical_units": [
+        "B:96",
+        "L:323:1",
+        "B:188",
+        "B:259"
+      ],
+      "component_layers": [
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 324,
+      "from": "灌装3",
+      "to": "协议核心收货",
+      "item": "精选荞愈胶囊",
+      "length": 3,
+      "types": [
+        "L",
+        "B",
+        "L"
+      ],
+      "physical_units": [
+        "L:324:0",
+        "B:70",
+        "L:324:2"
+      ],
+      "component_layers": [
+        3,
+        2,
+        1
+      ]
+    }
+  ],
+  "is_layout": false,
+  "bridges": 262,
+  "double_axis_bridges": 222,
+  "components": 719,
+  "transport_slots": 789,
+  "adjacent_bridge_pairs": 182,
+  "maximum_bridge_run": 4,
+  "different_F4_segmentation": true
+}

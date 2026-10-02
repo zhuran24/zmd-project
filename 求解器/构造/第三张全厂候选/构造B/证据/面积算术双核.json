@@ -1,0 +1,21 @@
+{
+  "machine_area": 3567,
+  "omega": "203/2",
+  "best_rational_upper": "6681/8",
+  "wide_rational_upper": "6743/8",
+  "best_budget_P": 11,
+  "best_budget_J": 1,
+  "dimension_upper_A": [
+    833,
+    17,
+    49,
+    17
+  ],
+  "dimension_upper_B": [
+    833,
+    17,
+    49,
+    17
+  ],
+  "scope": "两种编码核对 S2B 候选第9节的算术和整数尺寸枚举；不重新证明方向计数，不认证可实现性，不替换正式全局 U=1110。"
+}

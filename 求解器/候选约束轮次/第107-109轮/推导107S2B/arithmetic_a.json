@@ -1,0 +1,68 @@
+{
+  "machine_counts": {
+    "精炼炉": 51,
+    "粉碎机": 71,
+    "研磨机": 32,
+    "采种机": 19,
+    "种植机": 38,
+    "配件机": 6,
+    "塑形机": 6,
+    "封装机": 3,
+    "灌装机": 4
+  },
+  "machine_total": 230,
+  "body": 3567,
+  "E": 276,
+  "small": 134,
+  "medium": 57,
+  "large": 39,
+  "power_weight": 556,
+  "route_count": 325,
+  "nontransport_interfaces": 650,
+  "minimum_active_slots": 333,
+  "omega": "203/2",
+  "minimum_P": 11,
+  "best_PJ": [
+    11,
+    1
+  ],
+  "formal_bound": "6743/8",
+  "formal_integer": 842,
+  "formal_rectangle": [
+    841,
+    29,
+    29
+  ],
+  "formal_T_min": 205,
+  "formal_TF_at_best": 228,
+  "exact_route_bound": "6681/8",
+  "exact_route_integer": 835,
+  "exact_route_rectangle": [
+    833,
+    17,
+    49
+  ],
+  "exact_route_T_min": 213,
+  "exact_route_TF_at_best": 235,
+  "pure_belt_bound": 737,
+  "minimum_double_bridges_for_833": 96,
+  "transport_capacity_for_startup": 2228,
+  "plant_powder_flows": [
+    "63/2",
+    "11"
+  ],
+  "ore_flows": [
+    "18",
+    "34"
+  ],
+  "product_rates": [
+    "3/5",
+    "11/20"
+  ],
+  "filler_rates": [
+    "1/5",
+    "1/5",
+    "1/10",
+    "1/20"
+  ]
+}

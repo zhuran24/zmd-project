@@ -1,0 +1,34 @@
+{
+ "schema": "s2-polyline-joint-v1",
+ "is_layout": false,
+ "partial_search": true,
+ "W": 70,
+ "H": 70,
+ "machines": 230,
+ "routes_count": 325,
+ "rect": [
+  64,
+  64,
+  6,
+  6
+ ],
+ "fixed_poles": true,
+ "poles": 25,
+ "regions": false,
+ "restrictions": [
+  "three segments per route",
+  "no bridge on any waypoint",
+  "fixed outlet order and corner gaps"
+ ],
+ "workers": 1,
+ "seed": 1,
+ "variables": 32717,
+ "constraints": 66176,
+ "build_seconds": 0.15034035500138998,
+ "validation": "",
+ "status": "INFEASIBLE",
+ "wall_seconds": 0.102630047,
+ "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.10263\nusertime: 0.10263\ndeterministic_time: 0.000327819\ngap_integral: 0\n",
+ "is_valid_search_result": false,
+ "invalid_reason": "部分模式未启用端点仍被要求在基地内；本记录仅为调试，不作不可行证据。"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/求解充分条件.txt",
+    "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435",
+    "bytes": 17489
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/求解约束.txt",
+    "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+    "bytes": 48292
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+    "bytes": 7538
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/求解任务.txt",
+    "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+    "bytes": 1350
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/不补的设定.txt",
+    "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba",
+    "bytes": 4161
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/临时规则.md",
+    "sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d",
+    "bytes": 2089
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2.md",
+    "sha256": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af",
+    "bytes": 38983
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/三审-第92-106轮/三审报告.md",
+    "sha256": "dc79666bcd9238df14c7a5824fd1ca47e13dd748789d72a2a30a21bfb1651a46",
+    "bytes": 3566
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/推导92D.md",
+    "sha256": "438f2541e36d5e980a8c4f449b5d1814dd96264219650a365bf4dd9394085ffe",
+    "bytes": 35848
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S.md",
+    "sha256": "c41eec39cb3e01937621d8548fcd29bf633ae1a0ca67dd16da1ea6c77f112eba",
+    "bytes": 31242
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95M.md",
+    "sha256": "4f8d960b0d6db885ef16601f0d926f987d1eacc518496e0e03cc6b9f1929f01d",
+    "bytes": 66081
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/复核97M.md",
+    "sha256": "5a58ae4b9139a1e4d05e196046b4578d96c622280c573d825d21efae23dfb9fc",
+    "bytes": 24850
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/factory_check.py",
+    "sha256": "b3cca5a6d0bdaf8b1a44dda02778ef7f8afd5aab7abf4aedd009a673fa1ea55f",
+    "bytes": 17026
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/engine_a.py",
+    "sha256": "608c6f114cad5934aef4aa683ae13bfe373d5b4c109c2332dfe1ce6655dff724",
+    "bytes": 10389
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/engine_b.py",
+    "sha256": "9ef3472473d0c20826aa6ce96ac8aa1d4aa8022ace2d0a587cf74ebedc34fa7c",
+    "bytes": 6176
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/startup_budget.py",
+    "sha256": "d769826ae64fa28d377a1674b9976fb5202463861f152d77a29779f68ff5b6a1",
+    "bytes": 4046
+  }
+]

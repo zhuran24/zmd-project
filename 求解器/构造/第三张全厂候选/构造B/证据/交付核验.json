@@ -1,0 +1,70 @@
+{
+  "status": "evidence_consistent_candidate_rejected",
+  "static_pass": false,
+  "candidate_sha256": "de2176eee2f0b50693c8716d47c692e58abdafec9a7836e5f22e91849c273945",
+  "report_sha256": "8dddfa4f5496cf426521d7efe604dd19743f4f1bb910020f55e7c1c96ef0fd54",
+  "summary": {
+    "machines": 230,
+    "powered": 230,
+    "completed_routes": 195,
+    "missing_routes": 130,
+    "empty_rectangle_area_on_failing_candidate": 36
+  },
+  "original_inputs": [
+    {
+      "path": "求解器/候选约束轮次/第107-109轮/前提快照/求解充分条件.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第107-109轮/前提快照/求解约束.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第107-109轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第107-109轮/前提快照/求解任务.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第107-109轮/前提快照/不补的设定.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第107-109轮/临时规则.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第98-100轮/推导98S2.md",
+      "unchanged": true
+    }
+  ],
+  "original_checkers": [
+    {
+      "path": "求解器/构造/第一张全厂候选/检查器A/catalog.py",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/构造/第一张全厂候选/检查器A/geometry.py",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/构造/第一张全厂候选/检查器B/catalog.py",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/构造/第一张全厂候选/检查器B/geometry.py",
+      "unchanged": true
+    }
+  ],
+  "local_links_valid": true,
+  "replay_byte_identical": true,
+  "started_utc": "2026-10-02T13:15:06+00:00",
+  "checked_utc": "2026-10-02T15:16:04.530109+00:00",
+  "elapsed_seconds": 7258.530109,
+  "configured_max_compute_workers": 4,
+  "ran_cargo_tests": false,
+  "used_git": false,
+  "notes": "验证脚本成功退出仅表示证据一致；未给出达标全厂，不更新 L。"
+}

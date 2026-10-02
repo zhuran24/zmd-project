@@ -1,0 +1,2 @@
+model loose 105 1975 2266
+{'status': 'UNKNOWN', 'wall': 240.03056908200003, 'objective': 48138.0, 'bound': 3712.0, 'mode': 'loose', 'workers': 4}

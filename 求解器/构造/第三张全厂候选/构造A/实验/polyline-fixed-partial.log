@@ -1,0 +1,79 @@
+{"schema": "s2-polyline-joint-v1", "is_layout": false, "partial_search": true, "W": 70, "H": 70, "machines": 230, "routes_count": 325, "rect": [64, 64, 6, 6], "fixed_poles": true, "poles": 25, "regions": false, "restrictions": ["three segments per route", "no bridge on any waypoint", "fixed outlet order and corner gaps"], "workers": 1, "seed": 1, "variables": 32717, "constraints": 66176, "build_seconds": 0.15034035500138998, "validation": ""}
+
+Starting CP-SAT solver v9.15.6755
+Parameters: random_seed: 1 max_time_in_seconds: 60 log_search_progress: true num_workers: 1
+
+Initial optimization model '': (model_fingerprint: 0xa92456eb06516049)
+#Variables: 32'717 (#bools: 325 #ints: 325 in objective) (18'561 primary variables)
+  - 14'850 Booleans in [0,1]
+  - 1'300 in [-1,9]
+  - 881 in [0,3]
+  - 8'262 in [0,69]
+  - 3'900 in [0,70]
+  - 1'950 in [0,71]
+  - 325 in [0,280]
+  - 462 in [1,70]
+  - 325 in [1,280]
+  - 462 in [2,9]
+#kBoolAnd: 4'550 (#enforced: 4'550) (#literals: 13'650)
+#kBoolOr: 4'780 (#enforced: 4'550) (#literals: 14'850)
+#kInterval: 9'056 (#enforced: 8'450) (#fixed: 144)
+#kLinMax: 7'800 (#expressions: 15'600)
+#kLinear1: 20'318 (#enforced: 19'625)
+#kLinear2: 14'518 (#enforced: 12'475)
+#kLinear3: 3'620
+#kLinearN: 651 (#enforced: 650) (#terms: 2'925)
+#kNoOverlap2D: 2 (#rectangles: 7'106, #optional: 6'500, #linear_areas: 1'950, #quadratic_areas: 462, #fixed_rectangles: 144)
+#kTable: 881
+
+Starting presolve at 0.02s
+INFEASIBLE: 'table: positive table without tuples'
+Unsat after presolving constraint #46443 (warning, dump might be inconsistent): table { exprs { } }
+  6.50e-02s  3.28e-04d  [PresolveToFixPoint] 
+
+Presolve summary:
+  - 4424 affine relations were detected.
+  - rule 'affine: new relation' was applied 4'424 times.
+  - rule 'bool_or: always true' was applied 3'026 times.
+  - rule 'bool_or: only one literal' was applied 5'316 times.
+  - rule 'enforcement: false literal' was applied 724 times.
+  - rule 'intervals: change duplicate index inside constraint' was applied 164 times.
+  - rule 'lin_max: affine_max target domain reduced' was applied 71 times.
+  - rule 'lin_max: converted to equality' was applied 781 times.
+  - rule 'lin_max: removed exprs' was applied 726 times.
+  - rule 'lin_max: target domain reduced' was applied 7'593 times.
+  - rule 'linear1: x in domain' was applied 693 times.
+  - rule 'linear: always true' was applied 13'728 times.
+  - rule 'linear: empty' was applied 924 times.
+  - rule 'linear: fixed or dup variables' was applied 3'789 times.
+  - rule 'linear: reduced variable domains' was applied 5'662 times.
+  - rule 'linear: remapped using affine relations' was applied 24'068 times.
+  - rule 'presolve: iteration' was applied 1 time.
+  - rule 'propagators: changed bounds' was applied 552 times.
+  - rule 'propagators: fixed booleans' was applied 6 times.
+  - rule 'table: all tuples invalid' was applied 1 time.
+  - rule 'table: all tuples!' was applied 757 times.
+  - rule 'table: reduce variable domain' was applied 2'058 times.
+  - rule 'table: remove expressions' was applied 764 times.
+  - rule 'table: remove tuples' was applied 764 times.
+  - rule 'variables: canonicalize domain' was applied 1'105 times.
+  - rule 'variables: detect fully reified value encoding' was applied 3'900 times.
+  - rule 'variables: detect half reified value encoding' was applied 8'303 times.
+Problem closed by presolve.
+CpSolverResponse summary:
+status: INFEASIBLE
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.10263
+usertime: 0.10263
+deterministic_time: 0.000327819
+gap_integral: 0
+

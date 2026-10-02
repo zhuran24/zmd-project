@@ -1,0 +1,12 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第三张全厂候选/构造A.md",
+  "layout_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第三张全厂候选/构造A/未通过候选.json",
+  "static_pass": false,
+  "empty_rect": "无",
+  "summary": "未找到合法全厂；失败候选仅接通150/325路。",
+  "blockers": [
+    "缺175条进路；固定摆放下135条不可达",
+    "H6与Q6至F4的等长要求未通过",
+    "平均流检查精确不可行"
+  ]
+}

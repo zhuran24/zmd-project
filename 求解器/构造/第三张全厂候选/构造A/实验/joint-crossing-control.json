@@ -1,0 +1,246 @@
+{
+ "schema": "joint-cp-run-v1",
+ "W": 13,
+ "H": 13,
+ "routes": [
+  {
+   "id": "LF001",
+   "source": "RF1",
+   "target": "KF1",
+   "item": "蓝铁块",
+   "rate": "1",
+   "start_index": 274,
+   "end_index": 296
+  },
+  {
+   "id": "LF003",
+   "source": "RF2",
+   "target": "KF2",
+   "item": "蓝铁块",
+   "rate": "1",
+   "start_index": 175,
+   "end_index": 485
+  }
+ ],
+ "machines": 4,
+ "fixed_rectangle": null,
+ "bridge_restriction": "two used axes; no adjacent bridges",
+ "near_placement_radius": null,
+ "power_poles": 0,
+ "seed": 1,
+ "workers": 1,
+ "build_seconds": 0.026638109004125,
+ "variables": 4957,
+ "constraints": 12899,
+ "validation": "",
+ "status": "OPTIMAL",
+ "wall_seconds": 11.61135836399626,
+ "response_stats": "CpSolverResponse summary:\nstatus: OPTIMAL\nobjective: 130012\nbest_bound: 130012\nintegers: 1959\nbooleans: 5769\nconflicts: 3003\nbranches: 717994\npropagations: 8782587\ninteger_propagations: 2746761\nrestarts: 11\nlp_iterations: 191852\nwalltime: 11.6109\nusertime: 11.6109\ndeterministic_time: 17.0803\ngap_integral: 0\nsolution_fingerprint: 0x26dcaf5ed0c2c49e\n",
+ "placements": {
+  "RF1": {
+   "x0": 0,
+   "y0": 4,
+   "x1": 2,
+   "y1": 6,
+   "Din": 2,
+   "kind": "machine"
+  },
+  "KF1": {
+   "x0": 10,
+   "y0": 4,
+   "x1": 12,
+   "y1": 6,
+   "Din": 2,
+   "kind": "machine"
+  },
+  "RF2": {
+   "x0": 4,
+   "y0": 0,
+   "x1": 6,
+   "y1": 2,
+   "Din": 3,
+   "kind": "machine"
+  },
+  "KF2": {
+   "x0": 4,
+   "y0": 10,
+   "x1": 6,
+   "y1": 12,
+   "Din": 3,
+   "kind": "machine"
+  }
+ },
+ "transport": [
+  {
+   "x": 4,
+   "y": 3,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    1
+   ],
+   "H": 2,
+   "V": 2
+  },
+  {
+   "x": 4,
+   "y": 4,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    1
+   ],
+   "H": 2,
+   "V": 2
+  },
+  {
+   "x": 3,
+   "y": 5,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    0
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 4,
+   "y": 5,
+   "type": "bridge",
+   "in": [
+    2,
+    3
+   ],
+   "out": [
+    0,
+    1
+   ],
+   "H": 1,
+   "V": 2
+  },
+  {
+   "x": 5,
+   "y": 5,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    0
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 6,
+   "y": 5,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    0
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 7,
+   "y": 5,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    0
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 8,
+   "y": 5,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    0
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 9,
+   "y": 5,
+   "type": "belt",
+   "in": [
+    2
+   ],
+   "out": [
+    0
+   ],
+   "H": 1,
+   "V": 1
+  },
+  {
+   "x": 4,
+   "y": 6,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    1
+   ],
+   "H": 2,
+   "V": 2
+  },
+  {
+   "x": 4,
+   "y": 7,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    1
+   ],
+   "H": 2,
+   "V": 2
+  },
+  {
+   "x": 4,
+   "y": 8,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    1
+   ],
+   "H": 2,
+   "V": 2
+  },
+  {
+   "x": 4,
+   "y": 9,
+   "type": "belt",
+   "in": [
+    3
+   ],
+   "out": [
+    1
+   ],
+   "H": 2,
+   "V": 2
+  }
+ ]
+}

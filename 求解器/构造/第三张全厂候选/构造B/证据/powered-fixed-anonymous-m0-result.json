@@ -1,0 +1,9 @@
+{
+  "status": "INFEASIBLE",
+  "wall": 0.919955257,
+  "objective": 0.0,
+  "bound": 0.0,
+  "margin": 0,
+  "workers": 4,
+  "variables": 3518
+}

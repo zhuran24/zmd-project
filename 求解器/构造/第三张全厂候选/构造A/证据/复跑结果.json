@@ -1,0 +1,52 @@
+{
+  "all_expected_results": true,
+  "static_pass": false,
+  "runtime_certified": false,
+  "checks": [
+    {
+      "check": "frozen_input_hashes",
+      "pass_": true
+    },
+    {
+      "program": "arithmetic_check.py",
+      "returncode": 0,
+      "expected": 0,
+      "pass_": true
+    },
+    {
+      "program": "check_components.py",
+      "returncode": 0,
+      "expected": 0,
+      "pass_": true
+    },
+    {
+      "program": "static_check.py",
+      "returncode": 1,
+      "expected": 1,
+      "pass_": true
+    },
+    {
+      "program": "connectivity_certificate.py",
+      "returncode": 0,
+      "expected": 0,
+      "pass_": true
+    },
+    {
+      "program": "legacy_components.py",
+      "returncode": 0,
+      "expected": 0,
+      "pass_": true
+    },
+    {
+      "program": "legacy_components.py",
+      "returncode": 0,
+      "expected": 0,
+      "pass_": true
+    },
+    {
+      "check": "three_geometry_counts_and_two_flow_rejections",
+      "pass_": true
+    }
+  ],
+  "seconds": 1.583174973995483
+}

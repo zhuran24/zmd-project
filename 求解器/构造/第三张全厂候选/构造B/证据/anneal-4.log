@@ -1,0 +1,12 @@
+seed 4 sec 10 score 1771650 best 1769110 iter 5498236 accepted 787309
+seed 4 sec 20 score 1734450 best 1733770 iter 10867334 accepted 1150169
+seed 4 sec 30 score 1732590 best 1732550 iter 16254411 accepted 1440897
+seed 4 sec 40 score 1843510 best 1732550 iter 21714836 accepted 2264664
+seed 4 sec 50 score 1812680 best 1732550 iter 27030661 accepted 2648530
+seed 4 sec 60 score 1810880 best 1732550 iter 32357681 accepted 2932552
+seed 4 sec 70 score 1854540 best 1732550 iter 37874971 accepted 3789569
+seed 4 sec 80 score 1838220 best 1732550 iter 43296010 accepted 4261265
+seed 4 sec 90 score 1833590 best 1732550 iter 51083340 accepted 4693418
+seed 4 sec 100 score 1764690 best 1732550 iter 59247025 accepted 5952928
+seed 4 sec 110 score 1749260 best 1732550 iter 67265710 accepted 6656154
+FINAL 1732550 iterations 75254296 accepted 7104440

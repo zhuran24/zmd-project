@@ -1,0 +1,25 @@
+{
+ "schema": "joint-cp-run-v1",
+ "W": 70,
+ "H": 70,
+ "routes": 325,
+ "machines": 230,
+ "fixed_rectangle": [
+  64,
+  64,
+  6,
+  6
+ ],
+ "bridge_restriction": "two used axes; no adjacent bridges",
+ "near_placement_radius": 6,
+ "power_poles": 25,
+ "seed": 1,
+ "workers": 2,
+ "build_seconds": 3.6428659339944716,
+ "variables": 183792,
+ "constraints": 464411,
+ "validation": "",
+ "status": "MEMORY_LIMIT",
+ "memory_cap_gib": 10,
+ "error": "std::bad_alloc in C++ worker after presolve; no incumbent"
+}

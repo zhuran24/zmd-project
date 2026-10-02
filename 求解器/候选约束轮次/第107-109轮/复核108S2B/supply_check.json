@@ -1,0 +1,573 @@
+{
+  "event_closure": {
+    "cases": 41,
+    "closed_states": 117,
+    "state_gap_transitions": 936,
+    "complete_service_schedules": 83007,
+    "deadline_violations": 0,
+    "cases_detail": [
+      {
+        "n": 1,
+        "D": 0,
+        "offsets": [
+          0
+        ],
+        "states": 1,
+        "latest": 1
+      },
+      {
+        "n": 2,
+        "D": 0,
+        "offsets": [
+          0,
+          0
+        ],
+        "states": 1,
+        "latest": 2
+      },
+      {
+        "n": 2,
+        "D": 1,
+        "offsets": [
+          0,
+          1
+        ],
+        "states": 1,
+        "latest": 2
+      },
+      {
+        "n": 2,
+        "D": 2,
+        "offsets": [
+          0,
+          2
+        ],
+        "states": 1,
+        "latest": 3
+      },
+      {
+        "n": 3,
+        "D": 0,
+        "offsets": [
+          0,
+          0,
+          0
+        ],
+        "states": 1,
+        "latest": 3
+      },
+      {
+        "n": 3,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          1
+        ],
+        "states": 2,
+        "latest": 3
+      },
+      {
+        "n": 3,
+        "D": 1,
+        "offsets": [
+          0,
+          1,
+          1
+        ],
+        "states": 1,
+        "latest": 3
+      },
+      {
+        "n": 3,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          2
+        ],
+        "states": 1,
+        "latest": 3
+      },
+      {
+        "n": 3,
+        "D": 2,
+        "offsets": [
+          0,
+          1,
+          2
+        ],
+        "states": 1,
+        "latest": 3
+      },
+      {
+        "n": 3,
+        "D": 2,
+        "offsets": [
+          0,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 0,
+        "offsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "states": 1,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "states": 3,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "states": 3,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 1,
+        "offsets": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "states": 1,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          0,
+          2
+        ],
+        "states": 2,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          1,
+          2
+        ],
+        "states": 4,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 2,
+        "offsets": [
+          0,
+          1,
+          1,
+          2
+        ],
+        "states": 2,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 2,
+        "offsets": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 4
+      },
+      {
+        "n": 4,
+        "D": 2,
+        "offsets": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 0,
+        "offsets": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "states": 1,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "states": 4,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "states": 6,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "states": 4,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 1,
+        "offsets": [
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "states": 1,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          0,
+          0,
+          2
+        ],
+        "states": 3,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          0,
+          1,
+          2
+        ],
+        "states": 9,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          0,
+          2,
+          2
+        ],
+        "states": 3,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          1,
+          1,
+          2
+        ],
+        "states": 9,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          1,
+          2,
+          2
+        ],
+        "states": 6,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          0,
+          2,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          1,
+          1,
+          1,
+          2
+        ],
+        "states": 3,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          1,
+          1,
+          2,
+          2
+        ],
+        "states": 3,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          1,
+          2,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 5
+      },
+      {
+        "n": 5,
+        "D": 2,
+        "offsets": [
+          0,
+          2,
+          2,
+          2,
+          2
+        ],
+        "states": 1,
+        "latest": 6
+      },
+      {
+        "n": 6,
+        "D": 0,
+        "offsets": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "states": 1,
+        "latest": 6
+      },
+      {
+        "n": 6,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "states": 5,
+        "latest": 6
+      },
+      {
+        "n": 6,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "states": 10,
+        "latest": 6
+      },
+      {
+        "n": 6,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "states": 10,
+        "latest": 6
+      },
+      {
+        "n": 6,
+        "D": 1,
+        "offsets": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "states": 5,
+        "latest": 6
+      },
+      {
+        "n": 6,
+        "D": 1,
+        "offsets": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "states": 1,
+        "latest": 6
+      }
+    ]
+  },
+  "physical_trials": {
+    "trials": 48,
+    "rounds": 3408,
+    "steps": 50117,
+    "physical_scalar_comparisons": 50117,
+    "exact_head_recurrence_violations": 0,
+    "deadline_violations": 0,
+    "trial_types": [
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        false
+      ],
+      [
+        [
+          0,
+          0,
+          2
+        ],
+        false
+      ],
+      [
+        [
+          0,
+          2,
+          2
+        ],
+        false
+      ],
+      [
+        [
+          0,
+          0
+        ],
+        true
+      ],
+      [
+        [
+          2,
+          2,
+          2
+        ],
+        true
+      ],
+      [
+        [
+          0
+        ],
+        false
+      ]
+    ]
+  }
+}

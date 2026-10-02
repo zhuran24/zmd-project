@@ -1,0 +1,92 @@
+[
+ {
+  "mode": "axis",
+  "seed": 109301,
+  "delivered_500tick": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "need": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "ore_total_500tick": 26000,
+  "ore_need": 26000,
+  "ore_min_path": 500
+ },
+ {
+  "mode": "axis",
+  "seed": 109302,
+  "delivered_500tick": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "need": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "ore_total_500tick": 26000,
+  "ore_need": 26000,
+  "ore_min_path": 500
+ },
+ {
+  "mode": "cross",
+  "seed": 109301,
+  "delivered_500tick": {
+   "高容谷地电池": 115,
+   "精选荞愈胶囊": 12
+  },
+  "need": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "ore_total_500tick": 5838,
+  "ore_need": 26000,
+  "ore_min_path": 0
+ },
+ {
+  "mode": "cross",
+  "seed": 109302,
+  "delivered_500tick": {
+   "高容谷地电池": 79,
+   "精选荞愈胶囊": 0
+  },
+  "need": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "ore_total_500tick": 3642,
+  "ore_need": 26000,
+  "ore_min_path": 0
+ },
+ {
+  "mode": "rev_undet",
+  "seed": 109301,
+  "delivered_500tick": {
+   "高容谷地电池": 0,
+   "精选荞愈胶囊": 0
+  },
+  "need": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "ore_total_500tick": 0,
+  "ore_need": 26000,
+  "ore_min_path": 0
+ },
+ {
+  "mode": "rev_undet",
+  "seed": 109302,
+  "delivered_500tick": {
+   "高容谷地电池": 0,
+   "精选荞愈胶囊": 0
+  },
+  "need": {
+   "高容谷地电池": 300,
+   "精选荞愈胶囊": 275
+  },
+  "ore_total_500tick": 0,
+  "ore_need": 26000,
+  "ore_min_path": 0
+ }
+]

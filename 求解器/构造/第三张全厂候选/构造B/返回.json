@@ -1,0 +1,12 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第三张全厂候选/构造B.md",
+  "layout_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第三张全厂候选/构造B/候选布局.json",
+  "static_pass": false,
+  "empty_rect": "未实现达标布局；不完整候选为6×6=36格。",
+  "summary": "230台全供电，完成195/325条进路，未达标。",
+  "blockers": [
+    "缺130条进路，其中113条被固定几何阻断。",
+    "七条成品入库路均缺失，当前入库率为0。",
+    "H6→F4与Q6→F4均未布出。"
+  ]
+}

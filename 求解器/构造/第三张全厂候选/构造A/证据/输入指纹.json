@@ -1,0 +1,58 @@
+[
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+    "copy": "依据快照/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/求解任务.txt",
+    "copy": "依据快照/求解任务.txt",
+    "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/求解约束.txt",
+    "copy": "依据快照/求解约束.txt",
+    "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/求解充分条件.txt",
+    "copy": "依据快照/求解充分条件.txt",
+    "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/前提快照/不补的设定.txt",
+    "copy": "依据快照/不补的设定.txt",
+    "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/临时规则.md",
+    "copy": "依据快照/临时规则.md",
+    "sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2.md",
+    "copy": "依据快照/推导98S2.md",
+    "sha256": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/三审-第92-106轮/三审报告.md",
+    "copy": "依据快照/三审报告.md",
+    "sha256": "dc79666bcd9238df14c7a5824fd1ca47e13dd748789d72a2a30a21bfb1651a46"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/格式.md",
+    "copy": "依据快照/格式.md",
+    "sha256": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A/逻辑接法.json",
+    "copy": "依据快照/逻辑接法-原.json",
+    "sha256": "2d160ae218d3ced0a807b15a8bdebe688bbbea324e9543896a9bca326c53f4e3"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第107-109轮/推导107S2B.md",
+    "copy": "依据快照/推导107S2B-读入时.md",
+    "sha256": "a0686ba02fd1f7faa523a780cd82db8950e8563becf194080c22a5ff94c3cc5f",
+    "role": "additional_candidate_reference_pending_review"
+  }
+]

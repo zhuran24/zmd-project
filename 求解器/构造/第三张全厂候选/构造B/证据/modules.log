@@ -1,0 +1,46 @@
+plant-12x11 OPTIMAL 4.5 10
+....v#bbbbB.
+AAAAA.bbbbB.
+aaaaa.bbbbB.
+aaaaa.bbbbB.
+aaaaavbbbbB<
+aaaaa>Aaaaa^
+..v...Aaaaa.
+CCC...Aaaaa.
+ccc...Aaaaa.
+ccc...Aaaaa.
+#<v.........
+plant-13x11 OPTIMAL 14.3 9
+.............
+.......Aaaaa.
+.aaaaA.Aaaaa.
+.aaaaA.Aaaaa.
+.aaaaA.Aaaaa.
+.aaaaA>Aaaaav
+vaaaaA#bbbbB<
+CCC...^bbbbB.
+ccc....bbbbB.
+ccc....bbbbB.
+#vv....bbbbB.
+plant-12x12 OPTIMAL 15.8 10
+......>v....
+..aaaaaBBBBB
+..aaaaabbbbb
+..aaaaabbbbb
+..aaaaabbbbb
+..AAAAAbbbbb
+......^<..v.
+.....aaaaA<.
+#ccC#aaaaA..
+<ccC.aaaaA..
+#ccC.aaaaA..
+.....aaaaA..
+plant-16x8 OPTIMAL 0.7 15
+....v<...>Aaaaa.
+AAAAAbbbbbAaaaa.
+aaaaabbbbbAaaaa.
+aaaaabbbbbAaaaa.
+aaaaabbbbbAaaaav
+aaaaaBBBBBv<ccC<
+....>^...v#<ccC.
+.........#vvccC.

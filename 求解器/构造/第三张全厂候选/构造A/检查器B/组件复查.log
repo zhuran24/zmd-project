@@ -1,0 +1,1 @@
+{"seat": "B", "geometry": {"occupied_cells": 4211, "channels": 482, "paths": 144, "maximum": {"area": 42, "short_side": 6, "rectangles": [{"x0": 64, "y0": 63, "x1": 69, "y1": 69}]}, "power_all": true}, "flow": {"status": "INFEASIBLE_EXACT", "certificate": {"zero_row": "source:('WFE1', 0, 1)", "rhs": "1", "relation": "eq", "basis": "约束·取货口配置/矿石需求；格式 §9.2"}}}

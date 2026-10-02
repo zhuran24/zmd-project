@@ -1,0 +1,9 @@
+{
+  "status": "OPTIMAL",
+  "wall": 0.9362406790000001,
+  "objective": 4533.0,
+  "bound": 4533.0,
+  "margin": 0,
+  "workers": 4,
+  "variables": 5005
+}

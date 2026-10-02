@@ -1,0 +1,5098 @@
+{
+  "fixed": {
+    "W": 70,
+    "H": 70,
+    "machines": [
+      {
+        "id": "T1",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 16,
+        "x1": 4,
+        "y1": 18,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB1",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 16,
+        "x1": 8,
+        "y1": 18,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T2",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 19,
+        "x1": 4,
+        "y1": 21,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB2",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 19,
+        "x1": 8,
+        "y1": 21,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T3",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 22,
+        "x1": 4,
+        "y1": 24,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB3",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 22,
+        "x1": 8,
+        "y1": 24,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T4",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 25,
+        "x1": 4,
+        "y1": 27,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB4",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 25,
+        "x1": 8,
+        "y1": 27,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T5",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 28,
+        "x1": 4,
+        "y1": 30,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB5",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 28,
+        "x1": 8,
+        "y1": 30,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T6",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 31,
+        "x1": 4,
+        "y1": 33,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB6",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 31,
+        "x1": 8,
+        "y1": 33,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T7",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 34,
+        "x1": 4,
+        "y1": 36,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB7",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 34,
+        "x1": 8,
+        "y1": 36,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T8",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 37,
+        "x1": 4,
+        "y1": 39,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB8",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 37,
+        "x1": 8,
+        "y1": 39,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T9",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 40,
+        "x1": 4,
+        "y1": 42,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB9",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 40,
+        "x1": 8,
+        "y1": 42,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T10",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 43,
+        "x1": 4,
+        "y1": 45,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB10",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 43,
+        "x1": 8,
+        "y1": 45,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T11",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 46,
+        "x1": 4,
+        "y1": 48,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB11",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 46,
+        "x1": 8,
+        "y1": 48,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T12",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 49,
+        "x1": 4,
+        "y1": 51,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB12",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 49,
+        "x1": 8,
+        "y1": 51,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T13",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 52,
+        "x1": 4,
+        "y1": 54,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB13",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 52,
+        "x1": 8,
+        "y1": 54,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T14",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 55,
+        "x1": 4,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB14",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 55,
+        "x1": 8,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T15",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 58,
+        "x1": 4,
+        "y1": 60,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB15",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 58,
+        "x1": 8,
+        "y1": 60,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T16",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 61,
+        "x1": 4,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB16",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 61,
+        "x1": 8,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T17",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 64,
+        "x1": 4,
+        "y1": 66,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB17",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 64,
+        "x1": 8,
+        "y1": 66,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T18",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 67,
+        "x1": 4,
+        "y1": 69,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB18",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 67,
+        "x1": 8,
+        "y1": 69,
+        "Din": 2,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T19",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 22,
+        "y0": 2,
+        "x1": 24,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB19",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 6,
+        "x1": 24,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T20",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 25,
+        "y0": 2,
+        "x1": 27,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB20",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 25,
+        "y0": 6,
+        "x1": 27,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T21",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 28,
+        "y0": 2,
+        "x1": 30,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB21",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 6,
+        "x1": 30,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T22",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 31,
+        "y0": 2,
+        "x1": 33,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB22",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 31,
+        "y0": 6,
+        "x1": 33,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T23",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 34,
+        "y0": 2,
+        "x1": 36,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB23",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 34,
+        "y0": 6,
+        "x1": 36,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T24",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 37,
+        "y0": 2,
+        "x1": 39,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB24",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 37,
+        "y0": 6,
+        "x1": 39,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T25",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 40,
+        "y0": 2,
+        "x1": 42,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB25",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 40,
+        "y0": 6,
+        "x1": 42,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T26",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 43,
+        "y0": 2,
+        "x1": 45,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB26",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 43,
+        "y0": 6,
+        "x1": 45,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T27",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 46,
+        "y0": 2,
+        "x1": 48,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB27",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 46,
+        "y0": 6,
+        "x1": 48,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T28",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 49,
+        "y0": 2,
+        "x1": 51,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB28",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 49,
+        "y0": 6,
+        "x1": 51,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T29",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 52,
+        "y0": 2,
+        "x1": 54,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB29",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 52,
+        "y0": 6,
+        "x1": 54,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T30",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 55,
+        "y0": 2,
+        "x1": 57,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB30",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 55,
+        "y0": 6,
+        "x1": 57,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T31",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 2,
+        "x1": 60,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB31",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 58,
+        "y0": 6,
+        "x1": 60,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T32",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 61,
+        "y0": 2,
+        "x1": 63,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB32",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 61,
+        "y0": 6,
+        "x1": 63,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T33",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 64,
+        "y0": 2,
+        "x1": 66,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB33",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 64,
+        "y0": 6,
+        "x1": 66,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "T34",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 2,
+        "x1": 69,
+        "y1": 4,
+        "Din": 3,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "KB34",
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 67,
+        "y0": 6,
+        "x1": 69,
+        "y1": 8,
+        "Din": 3,
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 32,
+        "y0": 31,
+        "x1": 36,
+        "y1": 35,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 27,
+        "x1": 42,
+        "y1": 31,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC1",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 32,
+        "x1": 42,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 22,
+        "x1": 43,
+        "y1": 26,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 26,
+        "x1": 37,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC2",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 21,
+        "x1": 37,
+        "y1": 25,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 32,
+        "y0": 47,
+        "x1": 36,
+        "y1": 51,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 43,
+        "x1": 42,
+        "y1": 47,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC3",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 48,
+        "x1": 42,
+        "y1": 52,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 38,
+        "x1": 43,
+        "y1": 42,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 42,
+        "x1": 37,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC4",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 37,
+        "x1": 37,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 32,
+        "y0": 63,
+        "x1": 36,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 59,
+        "x1": 42,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC5",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 64,
+        "x1": 42,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 54,
+        "x1": 43,
+        "y1": 58,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 58,
+        "x1": 37,
+        "y1": 62,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC6",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 53,
+        "x1": 37,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB7",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 45,
+        "y0": 31,
+        "x1": 49,
+        "y1": 35,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA7",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 27,
+        "x1": 55,
+        "y1": 31,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC7",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 32,
+        "x1": 55,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB8",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 52,
+        "y0": 22,
+        "x1": 56,
+        "y1": 26,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA8",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 46,
+        "y0": 26,
+        "x1": 50,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC8",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 46,
+        "y0": 21,
+        "x1": 50,
+        "y1": 25,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB9",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 45,
+        "y0": 47,
+        "x1": 49,
+        "y1": 51,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA9",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 43,
+        "x1": 55,
+        "y1": 47,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC9",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 48,
+        "x1": 55,
+        "y1": 52,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB10",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 52,
+        "y0": 38,
+        "x1": 56,
+        "y1": 42,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA10",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 46,
+        "y0": 42,
+        "x1": 50,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC10",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 46,
+        "y0": 37,
+        "x1": 50,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB11",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 45,
+        "y0": 63,
+        "x1": 49,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA11",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 59,
+        "x1": 55,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC11",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 64,
+        "x1": 55,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB12",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 52,
+        "y0": 54,
+        "x1": 56,
+        "y1": 58,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA12",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 46,
+        "y0": 58,
+        "x1": 50,
+        "y1": 62,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC12",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 46,
+        "y0": 53,
+        "x1": 50,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SB13",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 58,
+        "y0": 31,
+        "x1": 62,
+        "y1": 35,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SA13",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 27,
+        "x1": 68,
+        "y1": 31,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "SC13",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 32,
+        "x1": 68,
+        "y1": 36,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 22,
+        "x1": 69,
+        "y1": 26,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA1",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 26,
+        "x1": 63,
+        "y1": 30,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC1",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 21,
+        "x1": 63,
+        "y1": 25,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 58,
+        "y0": 47,
+        "x1": 62,
+        "y1": 51,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA2",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 43,
+        "x1": 68,
+        "y1": 47,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC2",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 48,
+        "x1": 68,
+        "y1": 52,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 38,
+        "x1": 69,
+        "y1": 42,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA3",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 42,
+        "x1": 63,
+        "y1": 46,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC3",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 37,
+        "x1": 63,
+        "y1": 41,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 58,
+        "y0": 63,
+        "x1": 62,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA4",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 59,
+        "x1": 68,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC4",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 64,
+        "x1": 68,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 54,
+        "x1": 69,
+        "y1": 58,
+        "Din": 3,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA5",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 58,
+        "x1": 63,
+        "y1": 62,
+        "Din": 0,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC5",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 53,
+        "x1": 63,
+        "y1": 57,
+        "Din": 2,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QB6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 18,
+        "y0": 63,
+        "x1": 22,
+        "y1": 67,
+        "Din": 1,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QA6",
+        "model": "种植机",
+        "kind": "中",
+        "x0": 24,
+        "y0": 59,
+        "x1": 28,
+        "y1": 63,
+        "Din": 2,
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      {
+        "id": "QC6",
+        "model": "采种机",
+        "kind": "中",
+        "x0": 24,
+        "y0": 64,
+        "x1": 28,
+        "y1": 68,
+        "Din": 0,
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    ],
+    "warehouse_outlets": [
+      {
+        "id": "OB1",
+        "x0": 0,
+        "y0": 16,
+        "x1": 0,
+        "y1": 18,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB2",
+        "x0": 0,
+        "y0": 19,
+        "x1": 0,
+        "y1": 21,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB3",
+        "x0": 0,
+        "y0": 22,
+        "x1": 0,
+        "y1": 24,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB4",
+        "x0": 0,
+        "y0": 25,
+        "x1": 0,
+        "y1": 27,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB5",
+        "x0": 0,
+        "y0": 28,
+        "x1": 0,
+        "y1": 30,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB6",
+        "x0": 0,
+        "y0": 31,
+        "x1": 0,
+        "y1": 33,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB7",
+        "x0": 0,
+        "y0": 34,
+        "x1": 0,
+        "y1": 36,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB8",
+        "x0": 0,
+        "y0": 37,
+        "x1": 0,
+        "y1": 39,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB9",
+        "x0": 0,
+        "y0": 40,
+        "x1": 0,
+        "y1": 42,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB10",
+        "x0": 0,
+        "y0": 43,
+        "x1": 0,
+        "y1": 45,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB11",
+        "x0": 0,
+        "y0": 46,
+        "x1": 0,
+        "y1": 48,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB12",
+        "x0": 0,
+        "y0": 49,
+        "x1": 0,
+        "y1": 51,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB13",
+        "x0": 0,
+        "y0": 52,
+        "x1": 0,
+        "y1": 54,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB14",
+        "x0": 0,
+        "y0": 55,
+        "x1": 0,
+        "y1": 57,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB15",
+        "x0": 0,
+        "y0": 58,
+        "x1": 0,
+        "y1": 60,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB16",
+        "x0": 0,
+        "y0": 61,
+        "x1": 0,
+        "y1": 63,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB17",
+        "x0": 0,
+        "y0": 64,
+        "x1": 0,
+        "y1": 66,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB18",
+        "x0": 0,
+        "y0": 67,
+        "x1": 0,
+        "y1": 69,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB19",
+        "x0": 22,
+        "y0": 0,
+        "x1": 24,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB20",
+        "x0": 25,
+        "y0": 0,
+        "x1": 27,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB21",
+        "x0": 28,
+        "y0": 0,
+        "x1": 30,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB22",
+        "x0": 31,
+        "y0": 0,
+        "x1": 33,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB23",
+        "x0": 34,
+        "y0": 0,
+        "x1": 36,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB24",
+        "x0": 37,
+        "y0": 0,
+        "x1": 39,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB25",
+        "x0": 40,
+        "y0": 0,
+        "x1": 42,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB26",
+        "x0": 43,
+        "y0": 0,
+        "x1": 45,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB27",
+        "x0": 46,
+        "y0": 0,
+        "x1": 48,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB28",
+        "x0": 49,
+        "y0": 0,
+        "x1": 51,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB29",
+        "x0": 52,
+        "y0": 0,
+        "x1": 54,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB30",
+        "x0": 55,
+        "y0": 0,
+        "x1": 57,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB31",
+        "x0": 58,
+        "y0": 0,
+        "x1": 60,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB32",
+        "x0": 61,
+        "y0": 0,
+        "x1": 63,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB33",
+        "x0": 64,
+        "y0": 0,
+        "x1": 66,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OB34",
+        "x0": 67,
+        "y0": 0,
+        "x1": 69,
+        "y1": 0,
+        "Dout": 1,
+        "item": "蓝铁矿"
+      },
+      {
+        "id": "OO7",
+        "x0": 0,
+        "y0": 1,
+        "x1": 0,
+        "y1": 3,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO8",
+        "x0": 0,
+        "y0": 4,
+        "x1": 0,
+        "y1": 6,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO9",
+        "x0": 0,
+        "y0": 7,
+        "x1": 0,
+        "y1": 9,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO10",
+        "x0": 0,
+        "y0": 10,
+        "x1": 0,
+        "y1": 12,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO11",
+        "x0": 0,
+        "y0": 13,
+        "x1": 0,
+        "y1": 15,
+        "Dout": 0,
+        "item": "源矿"
+      },
+      {
+        "id": "OO12",
+        "x0": 1,
+        "y0": 0,
+        "x1": 3,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO13",
+        "x0": 4,
+        "y0": 0,
+        "x1": 6,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO14",
+        "x0": 7,
+        "y0": 0,
+        "x1": 9,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO15",
+        "x0": 10,
+        "y0": 0,
+        "x1": 12,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO16",
+        "x0": 13,
+        "y0": 0,
+        "x1": 15,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO17",
+        "x0": 16,
+        "y0": 0,
+        "x1": 18,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      },
+      {
+        "id": "OO18",
+        "x0": 19,
+        "y0": 0,
+        "x1": 21,
+        "y1": 0,
+        "Dout": 1,
+        "item": "源矿"
+      }
+    ],
+    "core": {
+      "id": "CORE",
+      "x0": 7,
+      "y0": 6,
+      "x1": 15,
+      "y1": 14,
+      "Din": 0,
+      "output_items": [
+        {
+          "side": 1,
+          "offset": 1,
+          "item": "源矿"
+        },
+        {
+          "side": 1,
+          "offset": 4,
+          "item": "源矿"
+        },
+        {
+          "side": 1,
+          "offset": 7,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 1,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 4,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 7,
+          "item": "源矿"
+        }
+      ]
+    },
+    "power_poles": [],
+    "storage_boxes": [],
+    "transport": [
+      {
+        "id": "TR_1_17",
+        "x": 1,
+        "y": 17,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_17",
+        "x": 5,
+        "y": 17,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_20",
+        "x": 1,
+        "y": 20,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_20",
+        "x": 5,
+        "y": 20,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_23",
+        "x": 1,
+        "y": 23,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_23",
+        "x": 5,
+        "y": 23,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_26",
+        "x": 1,
+        "y": 26,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_26",
+        "x": 5,
+        "y": 26,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_29",
+        "x": 1,
+        "y": 29,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_29",
+        "x": 5,
+        "y": 29,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_32",
+        "x": 1,
+        "y": 32,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_32",
+        "x": 5,
+        "y": 32,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_35",
+        "x": 1,
+        "y": 35,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_35",
+        "x": 5,
+        "y": 35,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_38",
+        "x": 1,
+        "y": 38,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_38",
+        "x": 5,
+        "y": 38,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_41",
+        "x": 1,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_41",
+        "x": 5,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_44",
+        "x": 1,
+        "y": 44,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_44",
+        "x": 5,
+        "y": 44,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_47",
+        "x": 1,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_47",
+        "x": 5,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_50",
+        "x": 1,
+        "y": 50,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_50",
+        "x": 5,
+        "y": 50,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_53",
+        "x": 1,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_53",
+        "x": 5,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_56",
+        "x": 1,
+        "y": 56,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_56",
+        "x": 5,
+        "y": 56,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_59",
+        "x": 1,
+        "y": 59,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_59",
+        "x": 5,
+        "y": 59,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_62",
+        "x": 1,
+        "y": 62,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_62",
+        "x": 5,
+        "y": 62,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_65",
+        "x": 1,
+        "y": 65,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_65",
+        "x": 5,
+        "y": 65,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_1_68",
+        "x": 1,
+        "y": 68,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_5_68",
+        "x": 5,
+        "y": 68,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_23_1",
+        "x": 23,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_23_5",
+        "x": 23,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_26_1",
+        "x": 26,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_26_5",
+        "x": 26,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_29_1",
+        "x": 29,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_29_5",
+        "x": 29,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_32_1",
+        "x": 32,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_32_5",
+        "x": 32,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_35_1",
+        "x": 35,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_35_5",
+        "x": 35,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_1",
+        "x": 38,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_5",
+        "x": 38,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_1",
+        "x": 41,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_41_5",
+        "x": 41,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_44_1",
+        "x": 44,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_44_5",
+        "x": 44,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_47_1",
+        "x": 47,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_47_5",
+        "x": 47,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_50_1",
+        "x": 50,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_50_5",
+        "x": 50,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_53_1",
+        "x": 53,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_53_5",
+        "x": 53,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_1",
+        "x": 56,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_5",
+        "x": 56,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_59_1",
+        "x": 59,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_59_5",
+        "x": 59,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_1",
+        "x": 62,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_62_5",
+        "x": 62,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_65_1",
+        "x": 65,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_65_5",
+        "x": 65,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_68_1",
+        "x": 68,
+        "y": 1,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_68_5",
+        "x": 68,
+        "y": 5,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 1
+      },
+      {
+        "id": "TR_37_36",
+        "x": 37,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_36_36",
+        "x": 36,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_37_32",
+        "x": 37,
+        "y": 32,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_37_31",
+        "x": 37,
+        "y": 31,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_43_31",
+        "x": 43,
+        "y": 31,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_43_32",
+        "x": 43,
+        "y": 32,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_38_21",
+        "x": 38,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_39_21",
+        "x": 39,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_25",
+        "x": 38,
+        "y": 25,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_26",
+        "x": 38,
+        "y": 26,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_32_26",
+        "x": 32,
+        "y": 26,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_32_25",
+        "x": 32,
+        "y": 25,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_37_52",
+        "x": 37,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_36_52",
+        "x": 36,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_37_48",
+        "x": 37,
+        "y": 48,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_37_47",
+        "x": 37,
+        "y": 47,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_43_47",
+        "x": 43,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_43_48",
+        "x": 43,
+        "y": 48,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_38_37",
+        "x": 38,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_39_37",
+        "x": 39,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_41",
+        "x": 38,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_42",
+        "x": 38,
+        "y": 42,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_32_42",
+        "x": 32,
+        "y": 42,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_32_41",
+        "x": 32,
+        "y": 41,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_37_68",
+        "x": 37,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_36_68",
+        "x": 36,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_37_64",
+        "x": 37,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_37_63",
+        "x": 37,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_43_63",
+        "x": 43,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_43_64",
+        "x": 43,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_38_53",
+        "x": 38,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_39_53",
+        "x": 39,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_57",
+        "x": 38,
+        "y": 57,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_38_58",
+        "x": 38,
+        "y": 58,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_32_58",
+        "x": 32,
+        "y": 58,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_32_57",
+        "x": 32,
+        "y": 57,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_50_36",
+        "x": 50,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_49_36",
+        "x": 49,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_50_32",
+        "x": 50,
+        "y": 32,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_50_31",
+        "x": 50,
+        "y": 31,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_56_31",
+        "x": 56,
+        "y": 31,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_32",
+        "x": 56,
+        "y": 32,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_51_21",
+        "x": 51,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_52_21",
+        "x": 52,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_51_25",
+        "x": 51,
+        "y": 25,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_51_26",
+        "x": 51,
+        "y": 26,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_45_26",
+        "x": 45,
+        "y": 26,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_45_25",
+        "x": 45,
+        "y": 25,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_50_52",
+        "x": 50,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_49_52",
+        "x": 49,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_50_48",
+        "x": 50,
+        "y": 48,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_50_47",
+        "x": 50,
+        "y": 47,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_56_47",
+        "x": 56,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_48",
+        "x": 56,
+        "y": 48,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_51_37",
+        "x": 51,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_52_37",
+        "x": 52,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_51_41",
+        "x": 51,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_51_42",
+        "x": 51,
+        "y": 42,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_45_42",
+        "x": 45,
+        "y": 42,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_45_41",
+        "x": 45,
+        "y": 41,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_50_68",
+        "x": 50,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_49_68",
+        "x": 49,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_50_64",
+        "x": 50,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_50_63",
+        "x": 50,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_56_63",
+        "x": 56,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_56_64",
+        "x": 56,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_51_53",
+        "x": 51,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_52_53",
+        "x": 52,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_51_57",
+        "x": 51,
+        "y": 57,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_51_58",
+        "x": 51,
+        "y": 58,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_45_58",
+        "x": 45,
+        "y": 58,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_45_57",
+        "x": 45,
+        "y": 57,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_63_36",
+        "x": 63,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_62_36",
+        "x": 62,
+        "y": 36,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_63_32",
+        "x": 63,
+        "y": 32,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_63_31",
+        "x": 63,
+        "y": 31,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_69_31",
+        "x": 69,
+        "y": 31,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_69_32",
+        "x": 69,
+        "y": 32,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_64_21",
+        "x": 64,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_65_21",
+        "x": 65,
+        "y": 21,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_64_25",
+        "x": 64,
+        "y": 25,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_64_26",
+        "x": 64,
+        "y": 26,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_58_26",
+        "x": 58,
+        "y": 26,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_58_25",
+        "x": 58,
+        "y": 25,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_63_52",
+        "x": 63,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_62_52",
+        "x": 62,
+        "y": 52,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_63_48",
+        "x": 63,
+        "y": 48,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_63_47",
+        "x": 63,
+        "y": 47,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_69_47",
+        "x": 69,
+        "y": 47,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_69_48",
+        "x": 69,
+        "y": 48,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_64_37",
+        "x": 64,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_65_37",
+        "x": 65,
+        "y": 37,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_64_41",
+        "x": 64,
+        "y": 41,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_64_42",
+        "x": 64,
+        "y": 42,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_58_42",
+        "x": 58,
+        "y": 42,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_58_41",
+        "x": 58,
+        "y": 41,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_63_68",
+        "x": 63,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_62_68",
+        "x": 62,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_63_64",
+        "x": 63,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_63_63",
+        "x": 63,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_69_63",
+        "x": 69,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_69_64",
+        "x": 69,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_64_53",
+        "x": 64,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "id": "TR_65_53",
+        "x": 65,
+        "y": 53,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_64_57",
+        "x": 64,
+        "y": 57,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_64_58",
+        "x": 64,
+        "y": 58,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      },
+      {
+        "id": "TR_58_58",
+        "x": 58,
+        "y": 58,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_58_57",
+        "x": 58,
+        "y": 57,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_23_68",
+        "x": 23,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 2
+      },
+      {
+        "id": "TR_22_68",
+        "x": 22,
+        "y": 68,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_23_64",
+        "x": 23,
+        "y": 64,
+        "type": "belt",
+        "in_side": 0,
+        "out_side": 3
+      },
+      {
+        "id": "TR_23_63",
+        "x": 23,
+        "y": 63,
+        "type": "belt",
+        "in_side": 1,
+        "out_side": 0
+      },
+      {
+        "id": "TR_29_63",
+        "x": 29,
+        "y": 63,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 1
+      },
+      {
+        "id": "TR_29_64",
+        "x": 29,
+        "y": 64,
+        "type": "belt",
+        "in_side": 3,
+        "out_side": 2
+      }
+    ],
+    "vin": [],
+    "vout": []
+  },
+  "reserved_rectangle": {
+    "x0": 18,
+    "y0": 18,
+    "x1": 23,
+    "y1": 23
+  },
+  "protected": [
+    [
+      9,
+      17
+    ],
+    [
+      9,
+      20
+    ],
+    [
+      9,
+      23
+    ],
+    [
+      9,
+      26
+    ],
+    [
+      9,
+      29
+    ],
+    [
+      9,
+      32
+    ],
+    [
+      9,
+      35
+    ],
+    [
+      9,
+      38
+    ],
+    [
+      9,
+      41
+    ],
+    [
+      9,
+      44
+    ],
+    [
+      9,
+      47
+    ],
+    [
+      9,
+      50
+    ],
+    [
+      9,
+      53
+    ],
+    [
+      9,
+      56
+    ],
+    [
+      9,
+      59
+    ],
+    [
+      9,
+      62
+    ],
+    [
+      9,
+      65
+    ],
+    [
+      9,
+      68
+    ],
+    [
+      23,
+      9
+    ],
+    [
+      26,
+      9
+    ],
+    [
+      29,
+      9
+    ],
+    [
+      32,
+      9
+    ],
+    [
+      35,
+      9
+    ],
+    [
+      38,
+      9
+    ],
+    [
+      41,
+      9
+    ],
+    [
+      44,
+      9
+    ],
+    [
+      47,
+      9
+    ],
+    [
+      50,
+      9
+    ],
+    [
+      53,
+      9
+    ],
+    [
+      56,
+      9
+    ],
+    [
+      59,
+      9
+    ],
+    [
+      62,
+      9
+    ],
+    [
+      65,
+      9
+    ],
+    [
+      68,
+      9
+    ],
+    [
+      32,
+      30
+    ],
+    [
+      43,
+      27
+    ],
+    [
+      32,
+      46
+    ],
+    [
+      43,
+      43
+    ],
+    [
+      32,
+      62
+    ],
+    [
+      43,
+      59
+    ],
+    [
+      45,
+      30
+    ],
+    [
+      56,
+      27
+    ],
+    [
+      45,
+      46
+    ],
+    [
+      56,
+      43
+    ],
+    [
+      45,
+      62
+    ],
+    [
+      56,
+      59
+    ],
+    [
+      58,
+      30
+    ],
+    [
+      69,
+      27
+    ],
+    [
+      58,
+      46
+    ],
+    [
+      69,
+      43
+    ],
+    [
+      58,
+      62
+    ],
+    [
+      69,
+      59
+    ],
+    [
+      20,
+      62
+    ]
+  ],
+  "moving": [
+    {
+      "kind": "小",
+      "x0": 1,
+      "y0": 1,
+      "x1": 3,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 1,
+      "y0": 4,
+      "x1": 3,
+      "y1": 6,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 1,
+      "y0": 7,
+      "x1": 3,
+      "y1": 9,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 1,
+      "y0": 10,
+      "x1": 3,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 1,
+      "y0": 13,
+      "x1": 3,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 4,
+      "y0": 1,
+      "x1": 6,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 4,
+      "y0": 4,
+      "x1": 6,
+      "y1": 6,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 4,
+      "y0": 7,
+      "x1": 6,
+      "y1": 9,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 4,
+      "y0": 10,
+      "x1": 6,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 4,
+      "y0": 13,
+      "x1": 6,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 7,
+      "y0": 1,
+      "x1": 9,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 1,
+      "x1": 12,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 15,
+      "x1": 12,
+      "y1": 17,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 18,
+      "x1": 12,
+      "y1": 20,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 21,
+      "x1": 12,
+      "y1": 23,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 24,
+      "x1": 12,
+      "y1": 26,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 27,
+      "x1": 12,
+      "y1": 29,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 30,
+      "x1": 12,
+      "y1": 32,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 33,
+      "x1": 12,
+      "y1": 35,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 10,
+      "y0": 36,
+      "x1": 12,
+      "y1": 38,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 1,
+      "x1": 15,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 15,
+      "x1": 15,
+      "y1": 17,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 18,
+      "x1": 15,
+      "y1": 20,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 21,
+      "x1": 15,
+      "y1": 23,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 24,
+      "x1": 15,
+      "y1": 26,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 27,
+      "x1": 15,
+      "y1": 29,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 30,
+      "x1": 15,
+      "y1": 32,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 33,
+      "x1": 15,
+      "y1": 35,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 13,
+      "y0": 36,
+      "x1": 15,
+      "y1": 38,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 1,
+      "x1": 18,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 4,
+      "x1": 18,
+      "y1": 6,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 7,
+      "x1": 18,
+      "y1": 9,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 10,
+      "x1": 18,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 13,
+      "x1": 18,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 24,
+      "x1": 18,
+      "y1": 26,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 27,
+      "x1": 18,
+      "y1": 29,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 16,
+      "y0": 30,
+      "x1": 18,
+      "y1": 32,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 1,
+      "x1": 21,
+      "y1": 3,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 4,
+      "x1": 21,
+      "y1": 6,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 7,
+      "x1": 21,
+      "y1": 9,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 10,
+      "x1": 21,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 13,
+      "x1": 21,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 24,
+      "x1": 21,
+      "y1": 26,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 27,
+      "x1": 21,
+      "y1": 29,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 19,
+      "y0": 30,
+      "x1": 21,
+      "y1": 32,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 22,
+      "y0": 10,
+      "x1": 24,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 22,
+      "y0": 13,
+      "x1": 24,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 22,
+      "y0": 25,
+      "x1": 24,
+      "y1": 27,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 24,
+      "y0": 16,
+      "x1": 26,
+      "y1": 18,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 24,
+      "y0": 19,
+      "x1": 26,
+      "y1": 21,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 24,
+      "y0": 22,
+      "x1": 26,
+      "y1": 24,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 25,
+      "y0": 10,
+      "x1": 27,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 25,
+      "y0": 13,
+      "x1": 27,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 25,
+      "y0": 25,
+      "x1": 27,
+      "y1": 27,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 27,
+      "y0": 16,
+      "x1": 29,
+      "y1": 18,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 27,
+      "y0": 19,
+      "x1": 29,
+      "y1": 21,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 27,
+      "y0": 22,
+      "x1": 29,
+      "y1": 24,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 28,
+      "y0": 10,
+      "x1": 30,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 28,
+      "y0": 13,
+      "x1": 30,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 30,
+      "y0": 16,
+      "x1": 32,
+      "y1": 18,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 30,
+      "y0": 19,
+      "x1": 32,
+      "y1": 21,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 30,
+      "y0": 22,
+      "x1": 32,
+      "y1": 24,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 31,
+      "y0": 10,
+      "x1": 33,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 31,
+      "y0": 13,
+      "x1": 33,
+      "y1": 15,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 34,
+      "y0": 10,
+      "x1": 36,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "小",
+      "x0": 37,
+      "y0": 10,
+      "x1": 39,
+      "y1": 12,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 28,
+      "y0": 25,
+      "x1": 31,
+      "y1": 30,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 28,
+      "y0": 31,
+      "x1": 31,
+      "y1": 36,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 28,
+      "y0": 37,
+      "x1": 31,
+      "y1": 42,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 28,
+      "y0": 43,
+      "x1": 31,
+      "y1": 48,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 46,
+      "y0": 14,
+      "x1": 49,
+      "y1": 19,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 50,
+      "y0": 14,
+      "x1": 53,
+      "y1": 19,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 54,
+      "y0": 14,
+      "x1": 57,
+      "y1": 19,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 58,
+      "y0": 14,
+      "x1": 61,
+      "y1": 19,
+      "Din": 0
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 39,
+      "x1": 15,
+      "y1": 42,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 43,
+      "x1": 15,
+      "y1": 46,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 47,
+      "x1": 15,
+      "y1": 50,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 51,
+      "x1": 15,
+      "y1": 54,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 55,
+      "x1": 15,
+      "y1": 58,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 59,
+      "x1": 15,
+      "y1": 62,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 10,
+      "y0": 63,
+      "x1": 15,
+      "y1": 66,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 33,
+      "x1": 21,
+      "y1": 36,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 37,
+      "x1": 21,
+      "y1": 40,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 41,
+      "x1": 21,
+      "y1": 44,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 45,
+      "x1": 21,
+      "y1": 48,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 49,
+      "x1": 21,
+      "y1": 52,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 53,
+      "x1": 21,
+      "y1": 56,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 16,
+      "y0": 57,
+      "x1": 21,
+      "y1": 60,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 28,
+      "x1": 27,
+      "y1": 31,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 32,
+      "x1": 27,
+      "y1": 35,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 36,
+      "x1": 27,
+      "y1": 39,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 40,
+      "x1": 27,
+      "y1": 43,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 44,
+      "x1": 27,
+      "y1": 47,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 48,
+      "x1": 27,
+      "y1": 51,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 22,
+      "y0": 52,
+      "x1": 27,
+      "y1": 55,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 33,
+      "y0": 17,
+      "x1": 38,
+      "y1": 20,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 34,
+      "y0": 13,
+      "x1": 39,
+      "y1": 16,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 40,
+      "y0": 10,
+      "x1": 45,
+      "y1": 13,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 40,
+      "y0": 14,
+      "x1": 45,
+      "y1": 17,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 40,
+      "y0": 18,
+      "x1": 45,
+      "y1": 21,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 46,
+      "y0": 10,
+      "x1": 51,
+      "y1": 13,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 52,
+      "y0": 10,
+      "x1": 57,
+      "y1": 13,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 58,
+      "y0": 10,
+      "x1": 63,
+      "y1": 13,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 62,
+      "y0": 14,
+      "x1": 67,
+      "y1": 17,
+      "Din": 1
+    },
+    {
+      "kind": "大",
+      "x0": 64,
+      "y0": 10,
+      "x1": 69,
+      "y1": 13,
+      "Din": 1
+    }
+  ],
+  "todo": [
+    "U1",
+    "U2",
+    "U3",
+    "U4",
+    "U5",
+    "U6",
+    "U7",
+    "U8",
+    "U9",
+    "U10",
+    "U11",
+    "U12",
+    "U13",
+    "U14",
+    "U15",
+    "U16",
+    "U17",
+    "U18",
+    "B1",
+    "R1",
+    "B2",
+    "R2",
+    "B3",
+    "R3",
+    "B4",
+    "R4",
+    "B5",
+    "R5",
+    "B6",
+    "R6",
+    "B7",
+    "R7",
+    "B8",
+    "R8",
+    "B9",
+    "R9",
+    "B10",
+    "R10",
+    "B11",
+    "R11",
+    "B12",
+    "R12",
+    "B13",
+    "R13",
+    "B14",
+    "R14",
+    "B15",
+    "R15",
+    "B16",
+    "R16",
+    "B17",
+    "R17",
+    "O1",
+    "O2",
+    "O3",
+    "O4",
+    "O5",
+    "O6",
+    "O7",
+    "O8",
+    "O9",
+    "P1",
+    "H1",
+    "Q1",
+    "P2",
+    "H2",
+    "Q2",
+    "P3",
+    "H3",
+    "Q3",
+    "P4",
+    "H4",
+    "Q4",
+    "P5",
+    "H5",
+    "Q5",
+    "P6",
+    "H6",
+    "Q6",
+    "E1",
+    "E2",
+    "E3",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "KQ1",
+    "KQ2",
+    "KQ3",
+    "KQ4",
+    "KQ5",
+    "KQ6"
+  ],
+  "margin": 0,
+  "objective": 4533.0,
+  "wall": 0.9278710450000001
+}

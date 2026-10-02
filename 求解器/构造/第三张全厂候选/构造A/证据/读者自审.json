@@ -1,0 +1,258 @@
+{
+  "date": "2026-10-02",
+  "report_status": "completed_no_full_solution",
+  "reader_pass": {
+    "self_contained": true,
+    "current_state_not_chronology": true,
+    "header_matches_conclusion": true,
+    "no_instruction_echo": true,
+    "numbers_have_one_current_scope": true,
+    "names_defined_by_S2_and_machine_models": true,
+    "cross_references_exist": true
+  },
+  "scope_review": [
+    "150 routes is a failed candidate, not a valid full factory",
+    "135 unreachable routes concern exactly the current fixed nontransport positions",
+    "four-cell CP-SAT rejection concerns the explicitly linked 146-route reference, fixed outlets/poles and nonadjacent bridges",
+    "833 is arithmetic of the cited candidate area argument, not a new globally certified U"
+  ],
+  "figure_review": "Final 150-route PNG manually inspected: grid, labels, legend, failure warning and rectangle visible",
+  "python_syntax_files": [
+    "static_check.py",
+    "placement_cp.py",
+    "skeleton_place.py",
+    "arithmetic_check.py",
+    "connectivity_certificate.py",
+    "joint_cp.py",
+    "package_candidate.py",
+    "legacy_components.py",
+    "assign_route.py",
+    "polyline_cp.py",
+    "check_components.py",
+    "write_report.py",
+    "prepare_route_seed.py",
+    "replay.py",
+    "draw_layout.py",
+    "export_candidate.py",
+    "anneal_driver.py"
+  ],
+  "source_changes_since_freezing": [],
+  "unfinished_solver_records": [],
+  "checked_links": [
+    {
+      "document": "构造A.md",
+      "target": "构造A/未通过候选.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/未通过候选.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/图/失败候选布局.svg",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/图/失败候选布局.png",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/代码/static_check.py",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/静态检查结果.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/固定摆放不可连通证书.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/代码/connectivity_certificate.py",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/检查器A/组件复查结果.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/检查器B/组件复查结果.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/整数模型.md",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/代码/",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/格式扩展.md",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/代码/replay.py",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/复跑结果.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/图/失败候选布局.png",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/依据快照/",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/输入指纹.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/双重算术核验.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/代码/legacy_components.py",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/旧检查器副本指纹.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/依据快照/推导107S2B-读入时.md",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/单桥交叉-局部检查.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/三桥相邻-局部检查.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/routing-four-dir-11.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/routing-sources-21.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/placement-01.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/joint-full-01.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/polyline-full-01.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/skeleton-01.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/skeleton-02.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/packing-no-rectangle.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/joint-neighborhood-06.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/joint-neighborhood-06wide.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/joint-neighborhood-06-nolp.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/joint-neighborhood-sources-hint.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/实验/polyline-control-vector.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/静态检查组件对照.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/读者自审.json",
+      "exists": true
+    },
+    {
+      "document": "构造A.md",
+      "target": "构造A/证据/文件清单.json",
+      "exists": true
+    },
+    {
+      "document": "构造A/整数模型.md",
+      "target": "逻辑接法.json",
+      "exists": true
+    },
+    {
+      "document": "构造A/整数模型.md",
+      "target": "代码/replay.py",
+      "exists": true
+    },
+    {
+      "document": "构造A/整数模型.md",
+      "target": "实验/",
+      "exists": true
+    }
+  ]
+}

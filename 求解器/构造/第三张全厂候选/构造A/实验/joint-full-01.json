@@ -1,0 +1,25 @@
+{
+  "schema": "joint-cp-run-v1",
+  "W": 70,
+  "H": 70,
+  "routes": 325,
+  "machines": 230,
+  "fixed_rectangle": [
+    64,
+    64,
+    6,
+    6
+  ],
+  "bridge_restriction": "two used axes; no adjacent bridges",
+  "power_poles": 25,
+  "seed": 1,
+  "workers": 4,
+  "build_seconds": 8.143245523999212,
+  "variables": 183791,
+  "constraints": 464222,
+  "validation": "",
+  "status": "MEMORY_LIMIT",
+  "is_layout": false,
+  "memory_cap_gib": 10,
+  "error": "std::bad_alloc during CP-SAT presolve"
+}

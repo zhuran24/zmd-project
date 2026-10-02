@@ -1,0 +1,2827 @@
+{
+  "candidate_sha256": "de2176eee2f0b50693c8716d47c692e58abdafec9a7836e5f22e91849c273945",
+  "port_deficits": [
+    {
+      "unit": "KB1",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          5,
+          16
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          5,
+          18
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "KB12",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          5,
+          49
+        ],
+        [
+          5,
+          50
+        ],
+        [
+          5,
+          51
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "KB13",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          5,
+          52
+        ],
+        [
+          5,
+          53
+        ],
+        [
+          5,
+          54
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "KB14",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          5,
+          55
+        ],
+        [
+          5,
+          56
+        ],
+        [
+          5,
+          57
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "KB22",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          31,
+          5
+        ],
+        [
+          32,
+          5
+        ],
+        [
+          33,
+          5
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "KB28",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          49,
+          5
+        ],
+        [
+          50,
+          5
+        ],
+        [
+          51,
+          5
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "QB2",
+      "in_required": 1,
+      "in_available": 5,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          63,
+          21
+        ],
+        [
+          64,
+          21
+        ],
+        [
+          65,
+          21
+        ],
+        [
+          66,
+          21
+        ],
+        [
+          67,
+          21
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "QB5",
+      "in_required": 1,
+      "in_available": 4,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          63,
+          53
+        ],
+        [
+          64,
+          53
+        ],
+        [
+          65,
+          53
+        ],
+        [
+          66,
+          53
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "U4",
+      "in_required": 1,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          11,
+          15
+        ],
+        [
+          11,
+          16
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "U7",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          27,
+          24
+        ]
+      ]
+    },
+    {
+      "unit": "U10",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          11,
+          52
+        ]
+      ]
+    },
+    {
+      "unit": "U13",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          30,
+          18
+        ]
+      ]
+    },
+    {
+      "unit": "U14",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          49,
+          21
+        ]
+      ]
+    },
+    {
+      "unit": "U15",
+      "in_required": 1,
+      "in_available": 1,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          10,
+          1
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "U17",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          39,
+          16
+        ]
+      ]
+    },
+    {
+      "unit": "B3",
+      "in_required": 3,
+      "in_available": 4,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          10,
+          38
+        ],
+        [
+          10,
+          41
+        ],
+        [
+          10,
+          42
+        ],
+        [
+          10,
+          43
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "B5",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          1,
+          16
+        ],
+        [
+          5,
+          16
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "R5",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          24,
+          50
+        ]
+      ]
+    },
+    {
+      "unit": "B6",
+      "in_required": 3,
+      "in_available": 1,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          28,
+          18
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "R6",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 3,
+      "input_cells": [],
+      "output_cells": [
+        [
+          30,
+          40
+        ],
+        [
+          30,
+          41
+        ],
+        [
+          30,
+          42
+        ]
+      ]
+    },
+    {
+      "unit": "B7",
+      "in_required": 3,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [],
+      "output_cells": []
+    },
+    {
+      "unit": "R7",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 2,
+      "input_cells": [],
+      "output_cells": [
+        [
+          27,
+          28
+        ],
+        [
+          27,
+          29
+        ]
+      ]
+    },
+    {
+      "unit": "B9",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          10,
+          65
+        ],
+        [
+          15,
+          65
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "R9",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          24,
+          45
+        ]
+      ]
+    },
+    {
+      "unit": "B10",
+      "in_required": 3,
+      "in_available": 6,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          23,
+          9
+        ],
+        [
+          24,
+          9
+        ],
+        [
+          25,
+          9
+        ],
+        [
+          26,
+          9
+        ],
+        [
+          27,
+          9
+        ],
+        [
+          28,
+          9
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "R10",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 3,
+      "input_cells": [],
+      "output_cells": [
+        [
+          24,
+          37
+        ],
+        [
+          25,
+          37
+        ],
+        [
+          26,
+          37
+        ]
+      ]
+    },
+    {
+      "unit": "B11",
+      "in_required": 3,
+      "in_available": 4,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          16,
+          9
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          21,
+          9
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "B12",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          13,
+          18
+        ],
+        [
+          13,
+          19
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "B13",
+      "in_required": 3,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          1,
+          7
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "R13",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 3,
+      "input_cells": [],
+      "output_cells": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          61
+        ],
+        [
+          30,
+          62
+        ]
+      ]
+    },
+    {
+      "unit": "B16",
+      "in_required": 3,
+      "in_available": 4,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          59,
+          10
+        ],
+        [
+          60,
+          10
+        ],
+        [
+          61,
+          10
+        ],
+        [
+          62,
+          10
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "R16",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [],
+      "output_cells": [
+        [
+          24,
+          55
+        ]
+      ]
+    },
+    {
+      "unit": "B17",
+      "in_required": 3,
+      "in_available": 5,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          65,
+          10
+        ],
+        [
+          66,
+          10
+        ],
+        [
+          67,
+          10
+        ],
+        [
+          68,
+          10
+        ],
+        [
+          69,
+          10
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "O2",
+      "in_required": 3,
+      "in_available": 1,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [
+        [
+          42,
+          15
+        ]
+      ],
+      "output_cells": [
+        [
+          47,
+          15
+        ]
+      ]
+    },
+    {
+      "unit": "O3",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [
+        [
+          13,
+          30
+        ],
+        [
+          13,
+          31
+        ]
+      ],
+      "output_cells": [
+        [
+          18,
+          33
+        ]
+      ]
+    },
+    {
+      "unit": "O4",
+      "in_required": 3,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          1,
+          5
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "O5",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 6,
+      "input_cells": [
+        [
+          11,
+          47
+        ],
+        [
+          11,
+          51
+        ]
+      ],
+      "output_cells": [
+        [
+          16,
+          46
+        ],
+        [
+          16,
+          47
+        ],
+        [
+          16,
+          48
+        ],
+        [
+          16,
+          49
+        ],
+        [
+          16,
+          50
+        ],
+        [
+          16,
+          51
+        ]
+      ]
+    },
+    {
+      "unit": "O6",
+      "in_required": 3,
+      "in_available": 1,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [
+        [
+          15,
+          56
+        ]
+      ],
+      "output_cells": [
+        [
+          16,
+          51
+        ]
+      ]
+    },
+    {
+      "unit": "O7",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 1,
+      "input_cells": [
+        [
+          28,
+          18
+        ],
+        [
+          29,
+          18
+        ]
+      ],
+      "output_cells": [
+        [
+          29,
+          13
+        ]
+      ]
+    },
+    {
+      "unit": "Q1",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          18,
+          13
+        ],
+        [
+          22,
+          13
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "Q2",
+      "in_required": 3,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          29,
+          12
+        ],
+        [
+          29,
+          13
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "Q6",
+      "in_required": 2,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [],
+      "output_cells": []
+    },
+    {
+      "unit": "E3",
+      "in_required": 5,
+      "in_available": 6,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          10,
+          1
+        ],
+        [
+          11,
+          1
+        ],
+        [
+          12,
+          1
+        ],
+        [
+          13,
+          1
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          15,
+          1
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "F1",
+      "in_required": 4,
+      "in_available": 5,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          19,
+          28
+        ],
+        [
+          20,
+          28
+        ],
+        [
+          21,
+          28
+        ],
+        [
+          22,
+          28
+        ],
+        [
+          23,
+          28
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "F2",
+      "in_required": 4,
+      "in_available": 5,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          57,
+          16
+        ],
+        [
+          57,
+          17
+        ],
+        [
+          57,
+          18
+        ],
+        [
+          57,
+          19
+        ],
+        [
+          57,
+          20
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "F3",
+      "in_required": 2,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          9,
+          60
+        ],
+        [
+          10,
+          60
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "F4",
+      "in_required": 2,
+      "in_available": 0,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [],
+      "output_cells": []
+    },
+    {
+      "unit": "S5",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 3,
+      "out_available": 3,
+      "input_cells": [],
+      "output_cells": [
+        [
+          28,
+          18
+        ],
+        [
+          29,
+          18
+        ],
+        [
+          30,
+          18
+        ]
+      ]
+    },
+    {
+      "unit": "S13",
+      "in_required": 1,
+      "in_available": 2,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          28,
+          56
+        ],
+        [
+          29,
+          56
+        ]
+      ],
+      "output_cells": []
+    },
+    {
+      "unit": "KQ1",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 2,
+      "out_available": 2,
+      "input_cells": [],
+      "output_cells": [
+        [
+          16,
+          14
+        ],
+        [
+          17,
+          14
+        ]
+      ]
+    },
+    {
+      "unit": "KQ5",
+      "in_required": 1,
+      "in_available": 0,
+      "out_required": 2,
+      "out_available": 3,
+      "input_cells": [],
+      "output_cells": [
+        [
+          18,
+          55
+        ],
+        [
+          19,
+          55
+        ],
+        [
+          20,
+          55
+        ]
+      ]
+    },
+    {
+      "unit": "KQ6",
+      "in_required": 1,
+      "in_available": 3,
+      "out_required": 1,
+      "out_available": 0,
+      "input_cells": [
+        [
+          18,
+          60
+        ],
+        [
+          18,
+          61
+        ],
+        [
+          18,
+          62
+        ]
+      ],
+      "output_cells": []
+    }
+  ],
+  "unrouted": [
+    {
+      "id": "L003",
+      "source": "KB1",
+      "target": "B1",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        29
+      ]
+    },
+    {
+      "id": "L006",
+      "source": "KB2",
+      "target": "B1",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        8
+      ],
+      "target_components": [
+        29
+      ]
+    },
+    {
+      "id": "L015",
+      "source": "KB5",
+      "target": "B3",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        9
+      ],
+      "target_components": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": "L027",
+      "source": "KB9",
+      "target": "B5",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        10
+      ],
+      "target_components": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "L030",
+      "source": "KB10",
+      "target": "B5",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        10
+      ],
+      "target_components": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "L033",
+      "source": "KB11",
+      "target": "B6",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        11
+      ],
+      "target_components": [
+        48
+      ]
+    },
+    {
+      "id": "L036",
+      "source": "KB12",
+      "target": "B6",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        48
+      ]
+    },
+    {
+      "id": "L039",
+      "source": "KB13",
+      "target": "B7",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L042",
+      "source": "KB14",
+      "target": "B7",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L054",
+      "source": "KB18",
+      "target": "B9",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        13
+      ],
+      "target_components": [
+        13,
+        22
+      ]
+    },
+    {
+      "id": "L063",
+      "source": "KB21",
+      "target": "B11",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        33
+      ],
+      "target_components": [
+        23,
+        33
+      ]
+    },
+    {
+      "id": "L066",
+      "source": "KB22",
+      "target": "B11",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        23,
+        33
+      ]
+    },
+    {
+      "id": "L069",
+      "source": "KB23",
+      "target": "B12",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        58
+      ],
+      "target_components": [
+        17
+      ]
+    },
+    {
+      "id": "L072",
+      "source": "KB24",
+      "target": "B12",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        58
+      ],
+      "target_components": [
+        17
+      ]
+    },
+    {
+      "id": "L075",
+      "source": "KB25",
+      "target": "B13",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        58
+      ],
+      "target_components": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "L078",
+      "source": "KB26",
+      "target": "B13",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        66
+      ],
+      "target_components": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "L084",
+      "source": "KB28",
+      "target": "B14",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        67,
+        68
+      ]
+    },
+    {
+      "id": "L090",
+      "source": "KB30",
+      "target": "B15",
+      "item": "蓝铁粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        75
+      ],
+      "target_components": [
+        72,
+        75
+      ]
+    },
+    {
+      "id": "L103",
+      "source": "CORE",
+      "target": "U1",
+      "item": "源矿",
+      "rate": "1",
+      "source_port_index": 0,
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        6,
+        15
+      ],
+      "target_components": [
+        20
+      ]
+    },
+    {
+      "id": "L105",
+      "source": "CORE",
+      "target": "U2",
+      "item": "源矿",
+      "rate": "1",
+      "source_port_index": 1,
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        6,
+        15
+      ],
+      "target_components": [
+        15
+      ]
+    },
+    {
+      "id": "L106",
+      "source": "U2",
+      "target": "O1",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        8
+      ],
+      "target_components": [
+        29
+      ]
+    },
+    {
+      "id": "L107",
+      "source": "CORE",
+      "target": "U3",
+      "item": "源矿",
+      "rate": "1",
+      "source_port_index": 2,
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        6,
+        15
+      ],
+      "target_components": [
+        66
+      ]
+    },
+    {
+      "id": "L110",
+      "source": "U4",
+      "target": "O2",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        64
+      ]
+    },
+    {
+      "id": "L111",
+      "source": "CORE",
+      "target": "U5",
+      "item": "源矿",
+      "rate": "1",
+      "source_port_index": 4,
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        6,
+        15
+      ],
+      "target_components": [
+        8
+      ]
+    },
+    {
+      "id": "L112",
+      "source": "U5",
+      "target": "O3",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        19
+      ],
+      "target_components": [
+        19
+      ]
+    },
+    {
+      "id": "L113",
+      "source": "CORE",
+      "target": "U6",
+      "item": "源矿",
+      "rate": "1",
+      "source_port_index": 5,
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        6,
+        15
+      ],
+      "target_components": [
+        27
+      ]
+    },
+    {
+      "id": "L114",
+      "source": "U6",
+      "target": "O3",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        19
+      ],
+      "target_components": [
+        19
+      ]
+    },
+    {
+      "id": "L115",
+      "source": "OO7",
+      "target": "U7",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L116",
+      "source": "U7",
+      "target": "O4",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        43
+      ],
+      "target_components": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "L119",
+      "source": "OO9",
+      "target": "U9",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        11
+      ]
+    },
+    {
+      "id": "L121",
+      "source": "OO10",
+      "target": "U10",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L122",
+      "source": "U10",
+      "target": "O5",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        16
+      ],
+      "target_components": [
+        11,
+        16
+      ]
+    },
+    {
+      "id": "L123",
+      "source": "OO11",
+      "target": "U11",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        22
+      ]
+    },
+    {
+      "id": "L125",
+      "source": "OO12",
+      "target": "U12",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        53
+      ]
+    },
+    {
+      "id": "L126",
+      "source": "U12",
+      "target": "O6",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        54
+      ],
+      "target_components": [
+        21
+      ]
+    },
+    {
+      "id": "L127",
+      "source": "OO13",
+      "target": "U13",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L128",
+      "source": "U13",
+      "target": "O7",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        48
+      ],
+      "target_components": [
+        48
+      ]
+    },
+    {
+      "id": "L129",
+      "source": "OO14",
+      "target": "U14",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L130",
+      "source": "U14",
+      "target": "O7",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        69
+      ],
+      "target_components": [
+        48
+      ]
+    },
+    {
+      "id": "L132",
+      "source": "U15",
+      "target": "O8",
+      "item": "源石粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        59
+      ]
+    },
+    {
+      "id": "L133",
+      "source": "OO16",
+      "target": "U16",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        14
+      ],
+      "target_components": [
+        65
+      ]
+    },
+    {
+      "id": "L135",
+      "source": "OO17",
+      "target": "U17",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L137",
+      "source": "OO18",
+      "target": "U18",
+      "item": "源矿",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        64
+      ]
+    },
+    {
+      "id": "L141",
+      "source": "B2",
+      "target": "R2",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        19
+      ],
+      "target_components": [
+        44
+      ]
+    },
+    {
+      "id": "L143",
+      "source": "B3",
+      "target": "R3",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        66
+      ]
+    },
+    {
+      "id": "L145",
+      "source": "B4",
+      "target": "R4",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        20
+      ],
+      "target_components": [
+        45
+      ]
+    },
+    {
+      "id": "L147",
+      "source": "B5",
+      "target": "R5",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L149",
+      "source": "B6",
+      "target": "R6",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L151",
+      "source": "B7",
+      "target": "R7",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L153",
+      "source": "B8",
+      "target": "R8",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        22
+      ],
+      "target_components": [
+        43
+      ]
+    },
+    {
+      "id": "L155",
+      "source": "B9",
+      "target": "R9",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L157",
+      "source": "B10",
+      "target": "R10",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L158",
+      "source": "R10",
+      "target": "H2",
+      "item": "钢块",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        39
+      ],
+      "target_components": [
+        38
+      ]
+    },
+    {
+      "id": "L159",
+      "source": "B11",
+      "target": "R11",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        83
+      ]
+    },
+    {
+      "id": "L160",
+      "source": "R11",
+      "target": "H3",
+      "item": "钢块",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        79
+      ],
+      "target_components": [
+        85
+      ]
+    },
+    {
+      "id": "L161",
+      "source": "B12",
+      "target": "R12",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        83
+      ]
+    },
+    {
+      "id": "L163",
+      "source": "B13",
+      "target": "R13",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L164",
+      "source": "R13",
+      "target": "H4",
+      "item": "钢块",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        49
+      ],
+      "target_components": [
+        49
+      ]
+    },
+    {
+      "id": "L165",
+      "source": "B14",
+      "target": "R14",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        72
+      ],
+      "target_components": [
+        42
+      ]
+    },
+    {
+      "id": "L168",
+      "source": "R15",
+      "target": "H5",
+      "item": "钢块",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        67
+      ],
+      "target_components": [
+        42
+      ]
+    },
+    {
+      "id": "L169",
+      "source": "B16",
+      "target": "R16",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L171",
+      "source": "B17",
+      "target": "R17",
+      "item": "致密蓝铁粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        78
+      ]
+    },
+    {
+      "id": "L172",
+      "source": "R17",
+      "target": "H6",
+      "item": "钢块",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        82
+      ],
+      "target_components": [
+        82
+      ]
+    },
+    {
+      "id": "L174",
+      "source": "O2",
+      "target": "E1",
+      "item": "致密源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        67
+      ],
+      "target_components": [
+        28
+      ]
+    },
+    {
+      "id": "L176",
+      "source": "O4",
+      "target": "E2",
+      "item": "致密源石粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        25
+      ]
+    },
+    {
+      "id": "L179",
+      "source": "O7",
+      "target": "E3",
+      "item": "致密源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        33
+      ],
+      "target_components": [
+        14
+      ]
+    },
+    {
+      "id": "L180",
+      "source": "O8",
+      "target": "E3",
+      "item": "致密源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        62
+      ],
+      "target_components": [
+        14
+      ]
+    },
+    {
+      "id": "L181",
+      "source": "O9",
+      "target": "E3",
+      "item": "致密源石粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        57
+      ],
+      "target_components": [
+        14
+      ]
+    },
+    {
+      "id": "L182",
+      "source": "P1",
+      "target": "E1",
+      "item": "钢制零件",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        35
+      ],
+      "target_components": [
+        28
+      ]
+    },
+    {
+      "id": "L184",
+      "source": "Q1",
+      "target": "F1",
+      "item": "细磨荞花粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        27
+      ]
+    },
+    {
+      "id": "L186",
+      "source": "H2",
+      "target": "F1",
+      "item": "钢质瓶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        40
+      ],
+      "target_components": [
+        27
+      ]
+    },
+    {
+      "id": "L187",
+      "source": "Q2",
+      "target": "F1",
+      "item": "细磨荞花粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        27
+      ]
+    },
+    {
+      "id": "L188",
+      "source": "P3",
+      "target": "E2",
+      "item": "钢制零件",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        62
+      ],
+      "target_components": [
+        25
+      ]
+    },
+    {
+      "id": "L189",
+      "source": "H3",
+      "target": "F2",
+      "item": "钢质瓶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        84
+      ],
+      "target_components": [
+        76
+      ]
+    },
+    {
+      "id": "L191",
+      "source": "P4",
+      "target": "E2",
+      "item": "钢制零件",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        40
+      ],
+      "target_components": [
+        25
+      ]
+    },
+    {
+      "id": "L192",
+      "source": "H4",
+      "target": "F2",
+      "item": "钢质瓶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        55
+      ],
+      "target_components": [
+        76
+      ]
+    },
+    {
+      "id": "L193",
+      "source": "Q4",
+      "target": "F2",
+      "item": "细磨荞花粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        38
+      ],
+      "target_components": [
+        76
+      ]
+    },
+    {
+      "id": "L194",
+      "source": "P5",
+      "target": "E3",
+      "item": "钢制零件",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        55
+      ],
+      "target_components": [
+        14
+      ]
+    },
+    {
+      "id": "L195",
+      "source": "H5",
+      "target": "F3",
+      "item": "钢质瓶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        31
+      ],
+      "target_components": [
+        12
+      ]
+    },
+    {
+      "id": "L196",
+      "source": "Q5",
+      "target": "F3",
+      "item": "细磨荞花粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        32
+      ],
+      "target_components": [
+        12
+      ]
+    },
+    {
+      "id": "L197",
+      "source": "P6",
+      "target": "E3",
+      "item": "钢制零件",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        52
+      ],
+      "target_components": [
+        14
+      ]
+    },
+    {
+      "id": "L198",
+      "source": "H6",
+      "target": "F4",
+      "item": "钢质瓶",
+      "rate": "1/2",
+      "reason": "无合法终口邻格",
+      "source_components": [
+        79
+      ],
+      "target_components": []
+    },
+    {
+      "id": "L199",
+      "source": "Q6",
+      "target": "F4",
+      "item": "细磨荞花粉末",
+      "rate": "1/2",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L200",
+      "source": "E1",
+      "target": "CORE",
+      "item": "高容谷地电池",
+      "rate": "1/5",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        27
+      ],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L201",
+      "source": "E2",
+      "target": "CORE",
+      "item": "高容谷地电池",
+      "rate": "1/5",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        35
+      ],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L202",
+      "source": "E3",
+      "target": "CORE",
+      "item": "高容谷地电池",
+      "rate": "1/5",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L203",
+      "source": "F1",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/5",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L204",
+      "source": "F2",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/5",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L205",
+      "source": "F3",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/10",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L206",
+      "source": "F4",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/20",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "id": "L210",
+      "source": "SB1",
+      "target": "S1",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        51
+      ],
+      "target_components": [
+        34
+      ]
+    },
+    {
+      "id": "L212",
+      "source": "S1",
+      "target": "B2",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        29
+      ],
+      "target_components": [
+        8
+      ]
+    },
+    {
+      "id": "L217",
+      "source": "SB2",
+      "target": "S2",
+      "item": "砂叶",
+      "rate": "2/3",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        60
+      ],
+      "target_components": [
+        27
+      ]
+    },
+    {
+      "id": "L218",
+      "source": "S2",
+      "target": "O2",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        19
+      ],
+      "target_components": [
+        64
+      ]
+    },
+    {
+      "id": "L223",
+      "source": "SB3",
+      "target": "S3",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        54
+      ],
+      "target_components": [
+        19
+      ]
+    },
+    {
+      "id": "L224",
+      "source": "S3",
+      "target": "B3",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        9
+      ],
+      "target_components": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": "L226",
+      "source": "S3",
+      "target": "O4",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        9
+      ],
+      "target_components": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "L230",
+      "source": "SB4",
+      "target": "S4",
+      "item": "砂叶",
+      "rate": "2/3",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        61
+      ],
+      "target_components": [
+        10
+      ]
+    },
+    {
+      "id": "L232",
+      "source": "S4",
+      "target": "O6",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        11
+      ],
+      "target_components": [
+        21
+      ]
+    },
+    {
+      "id": "L236",
+      "source": "SB5",
+      "target": "S5",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "无合法终口邻格",
+      "source_components": [
+        56
+      ],
+      "target_components": []
+    },
+    {
+      "id": "L237",
+      "source": "S5",
+      "target": "B5",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        48
+      ],
+      "target_components": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "L244",
+      "source": "S6",
+      "target": "O8",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        84
+      ],
+      "target_components": [
+        59
+      ]
+    },
+    {
+      "id": "L245",
+      "source": "S6",
+      "target": "O9",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        84
+      ],
+      "target_components": [
+        62
+      ]
+    },
+    {
+      "id": "L249",
+      "source": "SB7",
+      "target": "S7",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        56
+      ],
+      "target_components": [
+        18
+      ]
+    },
+    {
+      "id": "L250",
+      "source": "S7",
+      "target": "B7",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "无合法终口邻格",
+      "source_components": [
+        30
+      ],
+      "target_components": []
+    },
+    {
+      "id": "L251",
+      "source": "S7",
+      "target": "B8",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        30
+      ],
+      "target_components": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": "L252",
+      "source": "S7",
+      "target": "B9",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        30
+      ],
+      "target_components": [
+        13,
+        22
+      ]
+    },
+    {
+      "id": "L256",
+      "source": "SB8",
+      "target": "S8",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        60
+      ],
+      "target_components": [
+        24
+      ]
+    },
+    {
+      "id": "L259",
+      "source": "S8",
+      "target": "Q2",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        33
+      ],
+      "target_components": [
+        33
+      ]
+    },
+    {
+      "id": "L263",
+      "source": "SB9",
+      "target": "S9",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        70
+      ],
+      "target_components": [
+        24
+      ]
+    },
+    {
+      "id": "L265",
+      "source": "S9",
+      "target": "B12",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        23
+      ],
+      "target_components": [
+        17
+      ]
+    },
+    {
+      "id": "L266",
+      "source": "S9",
+      "target": "B13",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        23
+      ],
+      "target_components": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "L270",
+      "source": "SB10",
+      "target": "S10",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        61
+      ],
+      "target_components": [
+        68
+      ]
+    },
+    {
+      "id": "L272",
+      "source": "S10",
+      "target": "Q3",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        67
+      ],
+      "target_components": [
+        69,
+        73
+      ]
+    },
+    {
+      "id": "L273",
+      "source": "S10",
+      "target": "Q4",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        67
+      ],
+      "target_components": [
+        41
+      ]
+    },
+    {
+      "id": "L277",
+      "source": "SB11",
+      "target": "S11",
+      "item": "砂叶",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        71
+      ],
+      "target_components": [
+        72
+      ]
+    },
+    {
+      "id": "L279",
+      "source": "S11",
+      "target": "B16",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        75
+      ],
+      "target_components": [
+        77
+      ]
+    },
+    {
+      "id": "L280",
+      "source": "S11",
+      "target": "Q5",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        75
+      ],
+      "target_components": [
+        31
+      ]
+    },
+    {
+      "id": "L285",
+      "source": "S12",
+      "target": "B17",
+      "item": "砂叶粉末",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        26
+      ],
+      "target_components": [
+        81
+      ]
+    },
+    {
+      "id": "L289",
+      "source": "SB13",
+      "target": "S13",
+      "item": "砂叶",
+      "rate": "1/6",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        49
+      ],
+      "target_components": [
+        49
+      ]
+    },
+    {
+      "id": "L290",
+      "source": "S13",
+      "target": "Q6",
+      "item": "砂叶粉末",
+      "rate": "1/2",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L294",
+      "source": "QB1",
+      "target": "KQ1",
+      "item": "荞花",
+      "rate": "1",
+      "reason": "无合法终口邻格",
+      "source_components": [
+        70
+      ],
+      "target_components": []
+    },
+    {
+      "id": "L295",
+      "source": "KQ1",
+      "target": "Q1",
+      "item": "荞花粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        24
+      ],
+      "target_components": [
+        24,
+        33
+      ]
+    },
+    {
+      "id": "L300",
+      "source": "QB2",
+      "target": "KQ2",
+      "item": "荞花",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": [
+        57
+      ]
+    },
+    {
+      "id": "L302",
+      "source": "KQ2",
+      "target": "Q2",
+      "item": "荞花粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        33
+      ],
+      "target_components": [
+        33
+      ]
+    },
+    {
+      "id": "L306",
+      "source": "QB3",
+      "target": "KQ3",
+      "item": "荞花",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        71
+      ],
+      "target_components": [
+        73
+      ]
+    },
+    {
+      "id": "L308",
+      "source": "KQ3",
+      "target": "Q3",
+      "item": "荞花粉末",
+      "rate": "1",
+      "reason": "放宽为单路可达，联合布线未完成",
+      "source_components": [
+        69
+      ],
+      "target_components": [
+        69,
+        73
+      ]
+    },
+    {
+      "id": "L312",
+      "source": "QB4",
+      "target": "KQ4",
+      "item": "荞花",
+      "rate": "1",
+      "reason": "机身和供电桩阻断连通",
+      "source_components": [
+        79
+      ],
+      "target_components": [
+        42
+      ]
+    },
+    {
+      "id": "L318",
+      "source": "QB5",
+      "target": "KQ5",
+      "item": "荞花",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    },
+    {
+      "id": "L325",
+      "source": "KQ6",
+      "target": "Q6",
+      "item": "荞花粉末",
+      "rate": "1",
+      "reason": "无合法起口邻格",
+      "source_components": [],
+      "target_components": []
+    }
+  ],
+  "counts": {
+    "无合法起口邻格": 41,
+    "机身和供电桩阻断连通": 68,
+    "放宽为单路可达，联合布线未完成": 17,
+    "无合法终口邻格": 4
+  },
+  "scope": "仅固定机器、核心、仓库取货口、供电桩和所声明空矩形；运输障碍全部撤掉，允许四邻自由通行。仍不可达或端口数不足才否掉此固定几何；单路可达不证明联合布线可行。"
+}

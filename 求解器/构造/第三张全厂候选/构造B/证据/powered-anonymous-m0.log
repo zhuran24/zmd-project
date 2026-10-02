@@ -1,0 +1,2 @@
+anonymous 0 counts {'小': 66, '大': 39} variables 3518 cover 6476
+{'status': 'INFEASIBLE', 'wall': 0.919955257, 'objective': 0.0, 'bound': 0.0, 'margin': 0, 'workers': 4, 'variables': 3518}

@@ -1,0 +1,415 @@
+{
+ "schema": "full-factory-static-s2-bridges-v2",
+ "candidate_id": "s2-third-A",
+ "source_fingerprints": {
+  "rules": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+  "task": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+  "constraints": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+ },
+ "targets": {
+  "高容谷地电池": "3/5",
+  "精选荞愈胶囊": "11/20"
+ },
+ "layout": {
+  "W": 15,
+  "H": 11,
+  "machines": [
+   {
+    "x0": 5,
+    "y0": 5,
+    "x1": 9,
+    "y1": 9,
+    "id": "SC1",
+    "model": "采种机",
+    "kind": "中",
+    "Din": 3,
+    "recipe_ids": [
+     "采种-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 0,
+    "y0": 5,
+    "x1": 4,
+    "y1": 9,
+    "id": "SA1",
+    "model": "种植机",
+    "kind": "中",
+    "Din": 1,
+    "recipe_ids": [
+     "种植-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 10,
+    "y0": 5,
+    "x1": 14,
+    "y1": 9,
+    "id": "SB1",
+    "model": "种植机",
+    "kind": "中",
+    "Din": 1,
+    "recipe_ids": [
+     "种植-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 11,
+    "y0": 1,
+    "x1": 13,
+    "y1": 3,
+    "id": "S1",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 1,
+    "recipe_ids": [
+     "粉碎-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   }
+  ],
+  "warehouse_outlets": [],
+  "core": null,
+  "power_poles": [],
+  "storage_boxes": [],
+  "transport": [
+   {
+    "id": "T4_4",
+    "x": 4,
+    "y": 4,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "id": "T4_10",
+    "x": 4,
+    "y": 10,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "id": "T5_4",
+    "x": 5,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "id": "T5_10",
+    "x": 5,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "id": "T9_10",
+    "x": 9,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "id": "T10_10",
+    "x": 10,
+    "y": 10,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "id": "T11_4",
+    "x": 11,
+    "y": 4,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   }
+  ],
+  "vin": [],
+  "vout": []
+ },
+ "empty_rectangle": null,
+ "design": {
+  "class": "s2_isolated_paths",
+  "physical_channels": [
+   {
+    "id": "PC00000",
+    "from": {
+     "unit": "SC1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_10",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶种子"
+    ]
+   },
+   {
+    "id": "PC00001",
+    "from": {
+     "unit": "T5_10",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T4_10",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶种子"
+    ]
+   },
+   {
+    "id": "PC00002",
+    "from": {
+     "unit": "T4_10",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "SA1",
+     "side": 1,
+     "offset": 4
+    },
+    "allowed_items": [
+     "砂叶种子"
+    ]
+   },
+   {
+    "id": "PC00003",
+    "from": {
+     "unit": "SC1",
+     "side": 1,
+     "offset": 4
+    },
+    "to": {
+     "unit": "T9_10",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶种子"
+    ]
+   },
+   {
+    "id": "PC00004",
+    "from": {
+     "unit": "T9_10",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T10_10",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶种子"
+    ]
+   },
+   {
+    "id": "PC00005",
+    "from": {
+     "unit": "T10_10",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "SB1",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶种子"
+    ]
+   },
+   {
+    "id": "PC00006",
+    "from": {
+     "unit": "SA1",
+     "side": 3,
+     "offset": 4
+    },
+    "to": {
+     "unit": "T4_4",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶"
+    ]
+   },
+   {
+    "id": "PC00007",
+    "from": {
+     "unit": "T4_4",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_4",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶"
+    ]
+   },
+   {
+    "id": "PC00008",
+    "from": {
+     "unit": "T5_4",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "SC1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶"
+    ]
+   },
+   {
+    "id": "PC00009",
+    "from": {
+     "unit": "SB1",
+     "side": 3,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T11_4",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶"
+    ]
+   },
+   {
+    "id": "PC00010",
+    "from": {
+     "unit": "T11_4",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "S1",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶"
+    ]
+   }
+  ],
+  "logical_feeds": [
+   {
+    "id": "LF138",
+    "from": {
+     "unit": "SC1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "SA1",
+     "side": 1,
+     "offset": 4
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+     "PC00000",
+     "PC00001",
+     "PC00002"
+    ]
+   },
+   {
+    "id": "LF139",
+    "from": {
+     "unit": "SC1",
+     "side": 1,
+     "offset": 4
+    },
+    "to": {
+     "unit": "SB1",
+     "side": 1,
+     "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+     "PC00003",
+     "PC00004",
+     "PC00005"
+    ]
+   },
+   {
+    "id": "LF140",
+    "from": {
+     "unit": "SA1",
+     "side": 3,
+     "offset": 4
+    },
+    "to": {
+     "unit": "SC1",
+     "side": 3,
+     "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+     "PC00006",
+     "PC00007",
+     "PC00008"
+    ]
+   },
+   {
+    "id": "LF141",
+    "from": {
+     "unit": "SB1",
+     "side": 3,
+     "offset": 1
+    },
+    "to": {
+     "unit": "S1",
+     "side": 1,
+     "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+     "PC00009",
+     "PC00010"
+    ]
+   }
+  ],
+  "restrictions": [],
+  "bridge_reverse_channels": []
+ },
+ "flow_witness": null,
+ "temporary_rules_sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d",
+ "diagnostic_only": true
+}
