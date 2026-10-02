@@ -42,9 +42,12 @@ def run_plants():
         summary = dict(cases=count, steps_each=steps, compared_steps=0,
                        bound_failures=0, strong_normal_bound_failures=0,
                        phi_identity_failures=0, full_failures=0,
+                       full_invariants_checked=(mode == 'full'),
                        bb_events=0, minimum_bb_residual2=None,
-                       minimum_stock_BK=50, minimum_output_B=50,
-                       minimum_output_K={2: 50, 3: 50}, maximum_service_delay=0)
+                       minimum_stock_BK=50 if mode == 'full' else None,
+                       minimum_output_B=50 if mode == 'full' else None,
+                       minimum_output_K={2: 50, 3: 50} if mode == 'full' else None,
+                       maximum_service_delay=0 if mode == 'full' else None)
         for case in range(count):
             k = 2+(case % 2)
             n = case % (k+1)
@@ -236,23 +239,28 @@ def run_layers():
     count = 0
     for m in range(1, 11):
         for kinds in it.product('BT', repeat=m):
-            edges = {i: [i+1] for i in range(m)}
-            for i in range(1, m):
-                if kinds[i-1] == kinds[i] == 'B':
+            # Physical adjacent belt cells form one component under rule 29.
+            components = []
+            for kind in kinds:
+                if kind == 'T' and components and components[-1] == 'T':
+                    continue
+                components.append(kind)
+            size = len(components)
+            edges = {i: [i+1] for i in range(size)}
+            for i in range(1, size):
+                if components[i-1] == components[i] == 'B':
                     edges[i].append(i-1)
             def possible(i, visited):
-                if i == m:  # the actual nontransport endpoint, never a cycle truncation
+                if i == size:  # the actual nontransport endpoint, never a cycle truncation
                     return {0}
                 values = set()
                 for nxt in edges[i]:
                     if nxt not in visited:
                         values.update(1+v for v in possible(nxt, visited | {nxt}))
                 return values
-            for i in range(m):
-                assert possible(i, {i}) == {m-i}
+            for i in range(size):
+                assert possible(i, {i}) == {size-i}
             count += 1
-    # In this enumeration T is a complete belt component. Adjacent T components
-    # are also tested as a conservative subdivision; actual continuous belts merge.
     dead = []
     for k, m in it.product(range(2, 9), repeat=2):
         # Work backwards from an end with no outgoing channel. Its predecessor

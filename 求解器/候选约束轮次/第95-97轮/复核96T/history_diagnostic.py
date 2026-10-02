@@ -29,8 +29,7 @@ for case in range(3000):
             init['remaining'][i] = rng.randrange(9)
             init['ages'][i] = [rng.randrange(9) for _ in range(lengths[i])]
     a, b = AbsolutePlant(init), CountdownPlant(init)
-    initial = a.phi2()
-    bound = min(initial-1, 2*(lengths[0]+lengths[1]+150))
+    initial, bound = None, None
     trace = []
     for t in range(400):
         erased = t % 8 == 0
@@ -46,14 +45,40 @@ for case in range(3000):
         assert a.phi2() == b.phi2()
         trace.append(dict(step=t, erased=erased, phi2=a.phi2(), events=a.events[:],
                           state=a.state(t)))
+        if t == 0:
+            # Observe only after a complete powered/enabled step has run.
+            initial = a.phi2()
+            bound = min(initial-1, 2*(lengths[0]+lengths[1]+150))
+            continue
         if a.phi2() < bound:
             result['found'] = dict(case=case, init=init, initial_phi2=initial,
-                                   lower_bound2=bound, failing_step=t,
+                                   observation_step=0, lower_bound2=bound, failing_step=t,
                                    actual_phi2=a.phi2(), trace=trace)
             break
     result['cases_checked'] += 1
     if result['found']:
         break
+if result['found']:
+    witness = result['found']
+    trials = []
+    for erasure_at in [None]+list(range(8, witness['failing_step']+1, 8)):
+        a, b = AbsolutePlant(witness['init']), CountdownPlant(witness['init'])
+        trace = []
+        for t in range(witness['failing_step']+1):
+            if t == erasure_at:
+                a.last['C'] = [None, None]
+                b.never[0], b.queue[0] = {0, 1}, []
+            build = {'C': [1, 0], 'K': [0, 1]}
+            enabled = dict.fromkeys(NAMES, True)
+            a.step(t, [True, True], NAMES, build, enabled)
+            b.step(t, [True, True], NAMES, build, enabled)
+            assert a.state(t) == b.state(t)
+            if t == 0:
+                start = a.phi2()
+            trace.append(dict(step=t, phi2=a.phi2(), events=a.events[:]))
+        trials.append(dict(erasure_at=erasure_at, initial_phi2=start,
+                           final_phi2=a.phi2(), trace=trace))
+    result['single_erasure_replays'] = trials
 (HERE/'history_diagnostic.json').write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n')
 print(json.dumps({k: v for k, v in result.items() if k != 'found'}, ensure_ascii=False))
 print('found', None if result['found'] is None else {

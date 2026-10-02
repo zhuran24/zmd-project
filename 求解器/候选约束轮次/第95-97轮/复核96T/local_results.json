@@ -1,0 +1,121 @@
+{
+  "history_sensitivity": {
+    "preserved": {
+      "word": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        2
+      ],
+      "send_steps": [
+        0,
+        1,
+        2,
+        40,
+        41,
+        42
+      ]
+    },
+    "erased": {
+      "word": [
+        0,
+        1,
+        2,
+        2,
+        1,
+        0
+      ],
+      "send_steps": [
+        0,
+        1,
+        2,
+        40,
+        41,
+        42
+      ]
+    }
+  },
+  "history_scope": "erasure is an extra semantics diagnostic, not an asserted rule transition",
+  "capacity": [
+    {
+      "n": 1,
+      "first": 0,
+      "second": 9,
+      "period": 9,
+      "items": 1,
+      "rate": "8/9"
+    },
+    {
+      "n": 2,
+      "first": 0,
+      "second": 17,
+      "period": 17,
+      "items": 2,
+      "rate": "16/17"
+    },
+    {
+      "n": 3,
+      "first": 0,
+      "second": 25,
+      "period": 25,
+      "items": 3,
+      "rate": "24/25"
+    },
+    {
+      "n": 4,
+      "first": 0,
+      "second": 33,
+      "period": 33,
+      "items": 4,
+      "rate": "32/33"
+    },
+    {
+      "n": 5,
+      "first": 0,
+      "second": 41,
+      "period": 41,
+      "items": 5,
+      "rate": "40/41"
+    },
+    {
+      "n": 6,
+      "first": 0,
+      "second": 49,
+      "period": 49,
+      "items": 6,
+      "rate": "48/49"
+    },
+    {
+      "n": 7,
+      "first": 0,
+      "second": 57,
+      "period": 57,
+      "items": 7,
+      "rate": "56/57"
+    },
+    {
+      "n": 8,
+      "first": 0,
+      "second": 65,
+      "period": 65,
+      "items": 8,
+      "rate": "64/65"
+    }
+  ],
+  "capacity_scope": "saturated local service model; bound proof applies generally",
+  "bridge_components": {
+    "events": [
+      [
+        "bridge_horizontal",
+        "east_belt"
+      ],
+      [
+        "bridge_vertical",
+        "north_belt"
+      ]
+    ],
+    "physical_bridge_successes": 2
+  }
+}

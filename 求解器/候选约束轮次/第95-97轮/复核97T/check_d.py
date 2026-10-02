@@ -61,12 +61,12 @@ def full_start(u, rng):
         put(e, 0, None) if isinstance(e, Cell) else None
         if isinstance(e, Belt):
             for j in range(len(e.cells)):
-                e.cells[j] = Item(POWDER, rng.randint(-15, 0), None) if rng.random() < 0.5 else None
+                e.cells[j] = Item(POWDER, rng.randint(-16, -1), None) if rng.random() < 0.5 else None
         else:
-            e.item = Item(POWDER, rng.randint(-15, 0), 'K') if rng.random() < 0.5 else None
+            e.item = Item(POWDER, rng.randint(-16, -1), 'K') if rng.random() < 0.5 else None
 
 
-def run_d26(rng, steps, cross=False, unit_reading=False, kout_cross=False, reset_poll=False):
+def run_d26(rng, steps, cross=False, unit_reading=False, kout_cross=False, reset_poll=False, reset_prev=False):
     k = rng.choice([2, 3])
     segs = None
     if cross:
@@ -93,7 +93,7 @@ def run_d26(rng, steps, cross=False, unit_reading=False, kout_cross=False, reset
     bk_first = u.paths['BK'][0][0]
     for t in range(steps):
         if rng.random() < p_off:
-            w.offline_build(reset_poll=reset_poll)
+            w.offline_build(reset_poll=reset_poll, reset_prev=reset_prev)
         for sk in u.sinks:
             if rng.random() < p_tog:
                 sk.open = not sk.open
@@ -146,6 +146,8 @@ def main():
             res = run_d25(r, steps, reset_prev=True)
         elif mode == 'd26':
             res = run_d26(r, steps)
+        elif mode == 'd26_reset_prev':
+            res = run_d26(r, steps, reset_prev=True)
         elif mode == 'd26_reset_poll':
             res = run_d26(r, steps, reset_poll=True)
         elif mode == 'd26_cross_unit':

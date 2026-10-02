@@ -10,15 +10,13 @@
       "strong_normal_bound_failures": 0,
       "phi_identity_failures": 0,
       "full_failures": 0,
+      "full_invariants_checked": false,
       "bb_events": 40,
       "minimum_bb_residual2": 303,
-      "minimum_stock_BK": 50,
-      "minimum_output_B": 50,
-      "minimum_output_K": {
-        "2": 50,
-        "3": 50
-      },
-      "maximum_service_delay": 0
+      "minimum_stock_BK": null,
+      "minimum_output_B": null,
+      "minimum_output_K": null,
+      "maximum_service_delay": null
     },
     "full": {
       "cases": 480,
@@ -28,6 +26,7 @@
       "strong_normal_bound_failures": 0,
       "phi_identity_failures": 0,
       "full_failures": 0,
+      "full_invariants_checked": true,
       "bb_events": 400,
       "minimum_bb_residual2": 352,
       "minimum_stock_BK": 49,

@@ -1,0 +1,108 @@
+{
+ "U先": {
+  "layers": {
+   "belt1": 5,
+   "belt2": 5,
+   "P": 4,
+   "Q": 4,
+   "U": 3,
+   "S": 3,
+   "M": 2,
+   "N": 2,
+   "bm": 1,
+   "bn": 1
+  },
+  "element_order": [
+   "bm",
+   "bn",
+   "M",
+   "N",
+   "U",
+   "S",
+   "P",
+   "Q",
+   "belt1",
+   "belt2"
+  ],
+  "engine": {
+   "period_steps": 40,
+   "per_period": {
+    "S->M": 0,
+    "S->N": 1,
+    "U->M": 1
+   },
+   "per_tick": {
+    "S->M": "0/40",
+    "S->N": "8/40",
+    "U->M": "8/40"
+   }
+  },
+  "array": {
+   "period_steps": 40,
+   "per_period": {
+    "S->M": 0,
+    "S->N": 1,
+    "U->M": 1
+   },
+   "per_tick": {
+    "S->M": "0/40",
+    "S->N": "8/40",
+    "U->M": "8/40"
+   }
+  },
+  "identical_events": true
+ },
+ "S先": {
+  "layers": {
+   "belt1": 5,
+   "belt2": 5,
+   "P": 4,
+   "Q": 4,
+   "U": 3,
+   "S": 3,
+   "M": 2,
+   "N": 2,
+   "bm": 1,
+   "bn": 1
+  },
+  "element_order": [
+   "bm",
+   "bn",
+   "M",
+   "N",
+   "S",
+   "U",
+   "P",
+   "Q",
+   "belt1",
+   "belt2"
+  ],
+  "engine": {
+   "period_steps": 80,
+   "per_period": {
+    "S->M": 1,
+    "S->N": 1,
+    "U->M": 2
+   },
+   "per_tick": {
+    "S->M": "8/80",
+    "S->N": "8/80",
+    "U->M": "16/80"
+   }
+  },
+  "array": {
+   "period_steps": 80,
+   "per_period": {
+    "S->M": 1,
+    "S->N": 1,
+    "U->M": 2
+   },
+   "per_tick": {
+    "S->M": "8/80",
+    "S->N": "8/80",
+    "U->M": "16/80"
+   }
+  },
+  "identical_events": true
+ }
+}

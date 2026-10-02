@@ -1,0 +1,42 @@
+{
+ "Phi": {
+  "max": "177",
+  "max2": 354,
+  "b150": 150,
+  "b150_2": 300,
+  "b176": "176",
+  "b176_2": 352,
+  "agree": true
+ },
+ "C21": {
+  "steps": 400,
+  "lower": {
+   "1": 47,
+   "2": 44,
+   "3": 41
+  }
+ },
+ "E28": {
+  "1": {
+   "formula": "8/9",
+   "sim_live_per_tick": "8/9",
+   "le": true
+  },
+  "2": {
+   "formula": "16/17",
+   "sim_live_per_tick": "16/17",
+   "le": true
+  },
+  "3": {
+   "formula": "24/25",
+   "sim_live_per_tick": "24/25",
+   "le": true
+  },
+  "4": {
+   "formula": "32/33",
+   "sim_live_per_tick": "3709/3825",
+   "le": true
+  }
+ },
+ "E28_layers_k_m_2_8_ok": true
+}

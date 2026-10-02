@@ -1,0 +1,14 @@
+{
+  "scope": "X after input chains are full; same-step terminal refill proved separately",
+  "cases": 560,
+  "compared_steps": 664737,
+  "largest_first_repeated_state": 31620,
+  "violations": 0,
+  "insufficient_input_negative_control": {
+    "first": 8,
+    "second": 24,
+    "compared_steps": 25,
+    "empty_cache_in_cycle": 8,
+    "refill_failures_in_cycle": 1
+  }
+}

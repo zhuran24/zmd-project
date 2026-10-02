@@ -1,0 +1,153 @@
+{
+  "status": "pass",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/复核96T.md",
+  "report_sha256": "c60de311aa981f0c822d9f8d56b7d80daec8ca83d80f34778104062a621936b7",
+  "candidates": 3,
+  "supplementary_proofs": 7,
+  "spot_checks": 10,
+  "checked_links": 36,
+  "missing_links": [],
+  "changed_inputs": [],
+  "premise_entry_counts": {
+    "求解约束": 77,
+    "求解充分条件": 11
+  },
+  "python_sources": 7,
+  "independently_compared_plant_steps": 1848000,
+  "dedicated_compared_steps": 664737,
+  "reader_review": {
+    "status": "completed",
+    "current_header": true,
+    "complete_revised_statement": true,
+    "diagnostics_separated_from_rule_counterexamples": true,
+    "local_models_not_claimed_as_layouts": true,
+    "historical_references_separated": true
+  },
+  "files": [
+    {
+      "name": "arithmetic.json",
+      "bytes": 414,
+      "sha256": "b13fd007f5f08ce4ba0eb717d8494b340a6c07b7e16c5e6772cc4d3be54a18ce"
+    },
+    {
+      "name": "chain_results.json",
+      "bytes": 76,
+      "sha256": "60df6662f073b0104f61a67076129689ce97290e27a01ae6a8baff87f9b1e7b1"
+    },
+    {
+      "name": "checks.log",
+      "bytes": 1224,
+      "sha256": "c4c0fc1b96a3e491e7d18df5cacc743ba0aacb5e0b6d3242e9521ee6cb03df61"
+    },
+    {
+      "name": "dedicated.log",
+      "bytes": 369,
+      "sha256": "1ce743130e7a60b27d4f54977b876218abc8e481aef98cc2178251d2a8986152"
+    },
+    {
+      "name": "dedicated_check.py",
+      "bytes": 7924,
+      "sha256": "3dc88c032e88a33485a64a17d985cc8d9d87091c6b9ed97a29fa1fec75d4349e"
+    },
+    {
+      "name": "dedicated_results.json",
+      "bytes": 369,
+      "sha256": "1ce743130e7a60b27d4f54977b876218abc8e481aef98cc2178251d2a8986152"
+    },
+    {
+      "name": "delivery_check.py",
+      "bytes": 4874,
+      "sha256": "fbc467cf6ab36d12e011a0dce87dc034e5c4b2b6d17ca36f350058e83783375e"
+    },
+    {
+      "name": "density.log",
+      "bytes": 573,
+      "sha256": "63a3358ba0715b6d4bbd851218424ba8ade1f4382626b6199d984200b1d64c5c"
+    },
+    {
+      "name": "density_check.py",
+      "bytes": 10654,
+      "sha256": "2e94c13635c9f1426fa423d63195d286112c4538b3c39a473a0465906990eea3"
+    },
+    {
+      "name": "density_results.json",
+      "bytes": 10368,
+      "sha256": "6d427514c3a7bfa98d39b98c40f03e0e3493f04246e98c7542203c83e2a93571"
+    },
+    {
+      "name": "density_trace_S.json",
+      "bytes": 72717,
+      "sha256": "d3caa70329bb79dac4461b7f5f2a2a5db13bfaea196181e13c93cb2979b922c1"
+    },
+    {
+      "name": "density_trace_U.json",
+      "bytes": 38249,
+      "sha256": "d7611e18295dce5c823445ba2c54ab6f1dfaa750467f20818346a08e72547e96"
+    },
+    {
+      "name": "history_diagnostic.json",
+      "bytes": 35250,
+      "sha256": "4c81c54861ee8e5efa8b300c7013d5c190715ba10deb1056585214c2369e47be"
+    },
+    {
+      "name": "history_diagnostic.log",
+      "bytes": 3678,
+      "sha256": "d363efeb47763f91bb20140597dc0550827ac0a8598e7b201aea5a9ffe0cef6f"
+    },
+    {
+      "name": "history_diagnostic.py",
+      "bytes": 3972,
+      "sha256": "623709ce92b00c5103dfd85b4a3b4fabd7749a8fb8de6936669983010147e5fb"
+    },
+    {
+      "name": "inputs.json",
+      "bytes": 1972,
+      "sha256": "e65f18d99bbafa2ad83d55163e2d946e35f0f786a9622d20cd60bab070ba38db"
+    },
+    {
+      "name": "layer_results.json",
+      "bytes": 82,
+      "sha256": "2d776b98aa8da8abdf33cf9cea757fffa4bad89697172f1dac60c60b006250e0"
+    },
+    {
+      "name": "local.log",
+      "bytes": 1873,
+      "sha256": "8c457d64d17ea975d809c38fd0435b680d6c28c051ed3c9f32880a0c8acb9c62"
+    },
+    {
+      "name": "local_checks.py",
+      "bytes": 6538,
+      "sha256": "31edff01e5c853d396fa730d3a6f319d2ddcf4583e94f47b40ab04469b428d5f"
+    },
+    {
+      "name": "local_results.json",
+      "bytes": 1873,
+      "sha256": "8c457d64d17ea975d809c38fd0435b680d6c28c051ed3c9f32880a0c8acb9c62"
+    },
+    {
+      "name": "plant_models.py",
+      "bytes": 8613,
+      "sha256": "d649a9cfecb3db82f46225c7b767a02c278f445d0941ac709928d98612827f52"
+    },
+    {
+      "name": "plant_results.json",
+      "bytes": 1080,
+      "sha256": "19eb83ff0b10378ce78688c0ed6c18318691a2cabc13710a3de8940915f71a83"
+    },
+    {
+      "name": "reply.json",
+      "bytes": 1075,
+      "sha256": "c67b7f2b09fecef3869e2ac5720117bd03965bf5c9f04bb165159204b74ece25"
+    },
+    {
+      "name": "round_robin_results.json",
+      "bytes": 86,
+      "sha256": "f884b6ec0f728041219c53303569e8d01824ac501e21243c840993c0c6912c83"
+    },
+    {
+      "name": "run_checks.py",
+      "bytes": 18283,
+      "sha256": "55f53924e0b25931b0da8a1c6e2f1e2d28e4261e314c3165b28f35dacd5c3d87"
+    }
+  ]
+}

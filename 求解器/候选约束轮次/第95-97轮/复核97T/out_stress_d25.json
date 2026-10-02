@@ -1,0 +1,1 @@
+{"N": 600, "steps": 3000, "fail": 0, "first_fails": [], "min_floorslack2": 17, "floorslack2_hist": {"17": 2, "18": 1, "19": 2, "20": 1, "21": 3, "23": 7, "24": 2, "25": 2, "26": 2, "27": 1}, "runs_where_floor_binds": 600}

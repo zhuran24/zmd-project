@@ -1,0 +1,1 @@
+{"states": 46656, "violations": 0, "min_over_floor2": 1, "min_example": {"segs": 0, "ain": 48, "aout": 50, "cin": 50, "cout": 2, "ac": ["done"], "cc": ["done"], "phi_s_minus_L": 151.0}}

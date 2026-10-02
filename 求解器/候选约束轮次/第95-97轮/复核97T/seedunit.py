@@ -156,10 +156,10 @@ class Unit:
                      + C.inv(PLANT) + (1 if A.cache_nonempty() else 0)
                      + (1 if C.cache_nonempty() else 0)) + C.out_n)
 
-    def fill_path(self, p, kind, prob, age_lo=-15):
+    def fill_path(self, p, kind, prob, age_lo=-16):
         for (e, j, pu) in self.paths[p][1]:
             if self.rng.random() < prob:
-                put(e, j, Item(kind, self.rng.randint(age_lo, 0), pu))
+                put(e, j, Item(kind, self.rng.randint(age_lo, -1), pu))
             else:
                 put(e, j, None)
 

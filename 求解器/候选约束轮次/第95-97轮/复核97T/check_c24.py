@@ -64,12 +64,12 @@ def build(rng, cfgname):
 def randomize(rng, w, X, ys, paths, outs, prod):
     for b, kind, src in paths:
         for j in range(len(b.cells)):
-            b.cells[j] = Item(kind, rng.randint(-15, 0), None) if rng.random() < rng.random() else None
+            b.cells[j] = Item(kind, rng.randint(-16, -1), None) if rng.random() < rng.random() else None
     for n in w.nodes:
         if isinstance(n, Belt) and n.name.startswith('RB_'):
             raw = 'raw_' + n.name.split('_')[1]
             for j in range(len(n.cells)):
-                n.cells[j] = Item(raw, rng.randint(-15, 0), None) if rng.random() < 0.5 else None
+                n.cells[j] = Item(raw, rng.randint(-16, -1), None) if rng.random() < 0.5 else None
     for m in [X] + ys:
         for s in m.slots:
             s[0], s[1] = None, 0
