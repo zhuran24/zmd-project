@@ -1,0 +1,32 @@
+{
+ "axis,X2配方1tick": {
+  "cache_empty_steps": 0,
+  "steps": 5000,
+  "X1每tick": "1"
+ },
+ "axis,X2配方2tick": {
+  "cache_empty_steps": 0,
+  "steps": 5000,
+  "X1每tick": "1"
+ },
+ "axis,X2配方5tick": {
+  "cache_empty_steps": 0,
+  "steps": 5000,
+  "X1每tick": "1"
+ },
+ "unit,X2配方1tick": {
+  "cache_empty_steps": 0,
+  "steps": 5000,
+  "X1每tick": "1"
+ },
+ "unit,X2配方2tick": {
+  "cache_empty_steps": 313,
+  "steps": 5000,
+  "X1每tick": "586/625"
+ },
+ "unit,X2配方5tick": {
+  "cache_empty_steps": 501,
+  "steps": 5000,
+  "X1每tick": "562/625"
+ }
+}

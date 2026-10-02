@@ -1,0 +1,24 @@
+{
+  "values": {
+    "150": 150,
+    "176": "176",
+    "177": "177",
+    "400": 400,
+    "finite_output_bounds": [
+      47,
+      44,
+      41
+    ],
+    "K_output_bounds": [
+      48,
+      47
+    ],
+    "restricted_seeders": 18,
+    "grinder_change_rate": "4",
+    "fully_switching_grinders": 4
+  },
+  "box_exact_40_steps": 15,
+  "box_conservative": 18,
+  "run_formula_cases": 600,
+  "independent_equal": true
+}

@@ -1,0 +1,72 @@
+{
+ "甲": [
+  {
+   "reset_poll": false,
+   "phi_s2": 204,
+   "bound2": 203,
+   "min_phi2": 203,
+   "first_violation_step": null,
+   "phi2_trace": [
+    203,
+    203,
+    203,
+    203,
+    203,
+    203,
+    203,
+    203,
+    204,
+    204,
+    204,
+    204
+   ]
+  },
+  {
+   "reset_poll": true,
+   "phi_s2": 204,
+   "bound2": 203,
+   "min_phi2": 202,
+   "first_violation_step": 8,
+   "phi2_trace": [
+    203,
+    203,
+    203,
+    203,
+    203,
+    203,
+    203,
+    203,
+    202,
+    202,
+    202,
+    202
+   ]
+  }
+ ],
+ "乙": [
+  {
+   "reset_prev": false,
+   "L1": 3,
+   "L2": 2,
+   "phi_s2": 308,
+   "bound2": 307,
+   "min_phi2": 308,
+   "final_phi2": 308,
+   "first_violation_step": null,
+   "P_item_prev": "CA.b0#0",
+   "Q_item": true
+  },
+  {
+   "reset_prev": true,
+   "L1": 3,
+   "L2": 2,
+   "phi_s2": 308,
+   "bound2": 307,
+   "min_phi2": 4,
+   "final_phi2": 4,
+   "first_violation_step": 25,
+   "P_item_prev": "CA.r1_1",
+   "Q_item": false
+  }
+ ]
+}

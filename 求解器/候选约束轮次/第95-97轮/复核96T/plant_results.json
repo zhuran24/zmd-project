@@ -1,0 +1,43 @@
+{
+  "seed": 960095,
+  "scope": "abstract legal-service superset, not a layout certificate",
+  "stats": {
+    "arbitrary": {
+      "cases": 900,
+      "steps_each": 1200,
+      "compared_steps": 1080000,
+      "bound_failures": 0,
+      "strong_normal_bound_failures": 0,
+      "phi_identity_failures": 0,
+      "full_failures": 0,
+      "bb_events": 40,
+      "minimum_bb_residual2": 303,
+      "minimum_stock_BK": 50,
+      "minimum_output_B": 50,
+      "minimum_output_K": {
+        "2": 50,
+        "3": 50
+      },
+      "maximum_service_delay": 0
+    },
+    "full": {
+      "cases": 480,
+      "steps_each": 1600,
+      "compared_steps": 768000,
+      "bound_failures": 0,
+      "strong_normal_bound_failures": 0,
+      "phi_identity_failures": 0,
+      "full_failures": 0,
+      "bb_events": 400,
+      "minimum_bb_residual2": 352,
+      "minimum_stock_BK": 49,
+      "minimum_output_B": 49,
+      "minimum_output_K": {
+        "2": 48,
+        "3": 47
+      },
+      "maximum_service_delay": 2
+    }
+  },
+  "witnesses": []
+}

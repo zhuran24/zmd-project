@@ -1,0 +1,2 @@
+{"scope": "extra history-erasure semantics only; not a certified offline trace", "cases_checked": 20}
+found {'case': 19, 'initial_phi2': 17, 'lower_bound2': 16, 'failing_step': 32, 'actual_phi2': 15}

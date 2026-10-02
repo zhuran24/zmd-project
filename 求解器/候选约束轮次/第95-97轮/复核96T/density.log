@@ -1,0 +1,36 @@
+{
+  "U": {
+    "first": 144,
+    "second": 184,
+    "period_steps": 40,
+    "counts": {
+      "S>M": 0,
+      "S>N": 1,
+      "U>M": 1
+    },
+    "rates": {
+      "S>M": "0",
+      "S>N": "1/5",
+      "U>M": "1/5"
+    },
+    "minimum_warehouse": 79966,
+    "compared_steps": 3000
+  },
+  "S": {
+    "first": 128,
+    "second": 208,
+    "period_steps": 80,
+    "counts": {
+      "S>M": 1,
+      "S>N": 1,
+      "U>M": 2
+    },
+    "rates": {
+      "S>M": "1/10",
+      "S>N": "1/10",
+      "U>M": "1/5"
+    },
+    "minimum_warehouse": 79966,
+    "compared_steps": 3000
+  }
+}
