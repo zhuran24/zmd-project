@@ -1,0 +1,22 @@
+[
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/catalog.py",
+    "sha256": "a1fd6b583f8469b3b1ddcbcc524037e6dfd4e61f60b7ad600b2f96e867e88f9e",
+    "copy": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/旧检查器A/catalog.py"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/geometry.py",
+    "sha256": "96bed1c6560cf02781353577b75d1cfb6cbf5ca5fd156bf09d375a84cac1462c",
+    "copy": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/旧检查器A/geometry.py"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/catalog.py",
+    "sha256": "7d83cf061f40f5157b03384c5e4501cccd14c92ffc5d0e8f66469857bf622a27",
+    "copy": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/旧检查器B/catalog.py"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/geometry.py",
+    "sha256": "db7667d9229d0f49148a95b08130970fbc04698d31e83562834c71409573ca36",
+    "copy": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/旧检查器B/geometry.py"
+  }
+]

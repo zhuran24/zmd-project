@@ -1,0 +1,50 @@
+[
+  {
+    "name": "DL-Y:kf_a_B",
+    "source": "KF11",
+    "target": "B5",
+    "item": "蓝铁粉末",
+    "cells": [
+      [
+        9,
+        20
+      ]
+    ]
+  },
+  {
+    "name": "DL-Y:kf_b_B",
+    "source": "KF12",
+    "target": "B5",
+    "item": "蓝铁粉末",
+    "cells": [
+      [
+        9,
+        23
+      ]
+    ]
+  },
+  {
+    "name": "DL-Y:kf_c_B",
+    "source": "KF13",
+    "target": "B6",
+    "item": "蓝铁粉末",
+    "cells": [
+      [
+        9,
+        32
+      ]
+    ]
+  },
+  {
+    "name": "DL-Y:kf_d_B",
+    "source": "KF14",
+    "target": "B6",
+    "item": "蓝铁粉末",
+    "cells": [
+      [
+        9,
+        35
+      ]
+    ]
+  }
+]

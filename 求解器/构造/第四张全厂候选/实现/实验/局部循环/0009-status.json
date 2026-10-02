@@ -1,0 +1,8 @@
+{
+ "status": "OPTIMAL",
+ "wall": 0.152893734,
+ "variables": 2866,
+ "constraints": 4812,
+ "radius": 3,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0009-source.json"
+}

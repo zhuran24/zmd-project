@@ -1,0 +1,28 @@
+{
+ "schema": "joint-cp-run-v1",
+ "W": 70,
+ "H": 70,
+ "routes": 325,
+ "machines": 230,
+ "fixed_rectangle": [
+  63,
+  14,
+  6,
+  6
+ ],
+ "bridge_restriction": "two used axes; adjacent bridges allowed",
+ "near_placement_radius": 5,
+ "hinted_routes": 226,
+ "no_lp": false,
+ "feasibility_only": true,
+ "power_poles": 26,
+ "seed": 1109,
+ "workers": 3,
+ "build_seconds": 3.6402971529896604,
+ "variables": 184026,
+ "constraints": 456672,
+ "validation": "",
+ "status": "UNKNOWN",
+ "wall_seconds": 600.3718669859954,
+ "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 132216\nbooleans: 1049117\nconflicts: 98\nbranches: 30844\npropagations: 12331640\ninteger_propagations: 1229704\nrestarts: 1\nlp_iterations: 390917\nwalltime: 600.295\nusertime: 600.295\ndeterministic_time: 4760.97\ngap_integral: 0\n"
+}

@@ -1,0 +1,8 @@
+{
+ "status": "UNKNOWN",
+ "wall": 600.0585865190001,
+ "variables": 93323,
+ "constraints": 397029,
+ "radius": 6,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/全厂端口源.json"
+}

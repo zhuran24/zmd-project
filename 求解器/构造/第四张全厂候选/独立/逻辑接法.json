@@ -1,0 +1,3892 @@
+{
+  "schema": "s2b-independent-contract-v1",
+  "machines": [
+    {
+      "id": "T1",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB1",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T2",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB2",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T3",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB3",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T4",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB4",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T5",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB5",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T6",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB6",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T7",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB7",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T8",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB8",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T9",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB9",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T10",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB10",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T11",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB11",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T12",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB12",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T13",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB13",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T14",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB14",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T15",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB15",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T16",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB16",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T17",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB17",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T18",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB18",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T19",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB19",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T20",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB20",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T21",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB21",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T22",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB22",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T23",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB23",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T24",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB24",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T25",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB25",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T26",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB26",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T27",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB27",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T28",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB28",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T29",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB29",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T30",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB30",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T31",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB31",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T32",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB32",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T33",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB33",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "T34",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-蓝铁矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KB34",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-蓝铁块",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U1",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U2",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U3",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U4",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U5",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U6",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U7",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U8",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U9",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U10",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U11",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U12",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U13",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U14",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U15",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U16",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U17",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "U18",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-源矿",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B1",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R1",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B2",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R2",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B3",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R3",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B4",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R4",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B5",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R5",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B6",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R6",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B7",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R7",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B8",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R8",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B9",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R9",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B10",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R10",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B11",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R11",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B12",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R12",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B13",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R13",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B14",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R14",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B15",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R15",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B16",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R16",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "B17",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "R17",
+      "model": "精炼炉",
+      "kind": "小",
+      "recipe_id": "精炼-致密蓝铁",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O1",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O2",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O3",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O4",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O5",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O6",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O7",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O8",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "O9",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-致密源石",
+      "batch_rate": "1"
+    },
+    {
+      "id": "P1",
+      "model": "配件机",
+      "kind": "小",
+      "recipe_id": "配件-钢制零件",
+      "batch_rate": "1"
+    },
+    {
+      "id": "H1",
+      "model": "塑形机",
+      "kind": "小",
+      "recipe_id": "塑形-钢质瓶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "Q1",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-细磨荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "P2",
+      "model": "配件机",
+      "kind": "小",
+      "recipe_id": "配件-钢制零件",
+      "batch_rate": "1"
+    },
+    {
+      "id": "H2",
+      "model": "塑形机",
+      "kind": "小",
+      "recipe_id": "塑形-钢质瓶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "Q2",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-细磨荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "P3",
+      "model": "配件机",
+      "kind": "小",
+      "recipe_id": "配件-钢制零件",
+      "batch_rate": "1"
+    },
+    {
+      "id": "H3",
+      "model": "塑形机",
+      "kind": "小",
+      "recipe_id": "塑形-钢质瓶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "Q3",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-细磨荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "P4",
+      "model": "配件机",
+      "kind": "小",
+      "recipe_id": "配件-钢制零件",
+      "batch_rate": "1"
+    },
+    {
+      "id": "H4",
+      "model": "塑形机",
+      "kind": "小",
+      "recipe_id": "塑形-钢质瓶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "Q4",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-细磨荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "P5",
+      "model": "配件机",
+      "kind": "小",
+      "recipe_id": "配件-钢制零件",
+      "batch_rate": "1"
+    },
+    {
+      "id": "H5",
+      "model": "塑形机",
+      "kind": "小",
+      "recipe_id": "塑形-钢质瓶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "Q5",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-细磨荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "P6",
+      "model": "配件机",
+      "kind": "小",
+      "recipe_id": "配件-钢制零件",
+      "batch_rate": "1"
+    },
+    {
+      "id": "H6",
+      "model": "塑形机",
+      "kind": "小",
+      "recipe_id": "塑形-钢质瓶",
+      "batch_rate": "1/2"
+    },
+    {
+      "id": "Q6",
+      "model": "研磨机",
+      "kind": "大",
+      "recipe_id": "研磨-细磨荞花",
+      "batch_rate": "1/2"
+    },
+    {
+      "id": "E1",
+      "model": "封装机",
+      "kind": "大",
+      "recipe_id": "封装-电池",
+      "batch_rate": "1/5"
+    },
+    {
+      "id": "E2",
+      "model": "封装机",
+      "kind": "大",
+      "recipe_id": "封装-电池",
+      "batch_rate": "1/5"
+    },
+    {
+      "id": "E3",
+      "model": "封装机",
+      "kind": "大",
+      "recipe_id": "封装-电池",
+      "batch_rate": "1/5"
+    },
+    {
+      "id": "F1",
+      "model": "灌装机",
+      "kind": "大",
+      "recipe_id": "灌装-胶囊",
+      "batch_rate": "1/5"
+    },
+    {
+      "id": "F2",
+      "model": "灌装机",
+      "kind": "大",
+      "recipe_id": "灌装-胶囊",
+      "batch_rate": "1/5"
+    },
+    {
+      "id": "F3",
+      "model": "灌装机",
+      "kind": "大",
+      "recipe_id": "灌装-胶囊",
+      "batch_rate": "1/10"
+    },
+    {
+      "id": "F4",
+      "model": "灌装机",
+      "kind": "大",
+      "recipe_id": "灌装-胶囊",
+      "batch_rate": "1/20"
+    },
+    {
+      "id": "SC1",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA1",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB1",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S1",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC2",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SA2",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SB2",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "S2",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SC3",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA3",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB3",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S3",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC4",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SA4",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SB4",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "S4",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SC5",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA5",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB5",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S5",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC6",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SA6",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SB6",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "S6",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "2/3"
+    },
+    {
+      "id": "SC7",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA7",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB7",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S7",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC8",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA8",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB8",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S8",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC9",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA9",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB9",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S9",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC10",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA10",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB10",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S10",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC11",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SA11",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SB11",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "S11",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1"
+    },
+    {
+      "id": "SC12",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1/3"
+    },
+    {
+      "id": "SA12",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1/3"
+    },
+    {
+      "id": "SB12",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1/3"
+    },
+    {
+      "id": "S12",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1/3"
+    },
+    {
+      "id": "SC13",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-砂叶",
+      "batch_rate": "1/6"
+    },
+    {
+      "id": "SA13",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1/6"
+    },
+    {
+      "id": "SB13",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-砂叶",
+      "batch_rate": "1/6"
+    },
+    {
+      "id": "S13",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-砂叶",
+      "batch_rate": "1/6"
+    },
+    {
+      "id": "QC1",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QA1",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QB1",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KQ1",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QC2",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QA2",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QB2",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KQ2",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QC3",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QA3",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QB3",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KQ3",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QC4",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QA4",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QB4",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KQ4",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QC5",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QA5",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QB5",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "KQ5",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-荞花",
+      "batch_rate": "1"
+    },
+    {
+      "id": "QC6",
+      "model": "采种机",
+      "kind": "中",
+      "recipe_id": "采种-荞花",
+      "batch_rate": "1/2"
+    },
+    {
+      "id": "QA6",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1/2"
+    },
+    {
+      "id": "QB6",
+      "model": "种植机",
+      "kind": "中",
+      "recipe_id": "种植-荞花",
+      "batch_rate": "1/2"
+    },
+    {
+      "id": "KQ6",
+      "model": "粉碎机",
+      "kind": "小",
+      "recipe_id": "粉碎-荞花",
+      "batch_rate": "1/2"
+    }
+  ],
+  "feeds": [
+    {
+      "id": "L000",
+      "source": "OB1",
+      "target": "T1",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L001",
+      "source": "T1",
+      "target": "KB1",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L002",
+      "source": "KB1",
+      "target": "B1",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L003",
+      "source": "OB2",
+      "target": "T2",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L004",
+      "source": "T2",
+      "target": "KB2",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L005",
+      "source": "KB2",
+      "target": "B1",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L006",
+      "source": "OB3",
+      "target": "T3",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L007",
+      "source": "T3",
+      "target": "KB3",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L008",
+      "source": "KB3",
+      "target": "B2",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L009",
+      "source": "OB4",
+      "target": "T4",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L010",
+      "source": "T4",
+      "target": "KB4",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L011",
+      "source": "KB4",
+      "target": "B2",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L012",
+      "source": "OB5",
+      "target": "T5",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L013",
+      "source": "T5",
+      "target": "KB5",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L014",
+      "source": "KB5",
+      "target": "B3",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L015",
+      "source": "OB6",
+      "target": "T6",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L016",
+      "source": "T6",
+      "target": "KB6",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L017",
+      "source": "KB6",
+      "target": "B3",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L018",
+      "source": "OB7",
+      "target": "T7",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L019",
+      "source": "T7",
+      "target": "KB7",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L020",
+      "source": "KB7",
+      "target": "B4",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L021",
+      "source": "OB8",
+      "target": "T8",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L022",
+      "source": "T8",
+      "target": "KB8",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L023",
+      "source": "KB8",
+      "target": "B4",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L024",
+      "source": "OB9",
+      "target": "T9",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L025",
+      "source": "T9",
+      "target": "KB9",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L026",
+      "source": "KB9",
+      "target": "B5",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L027",
+      "source": "OB10",
+      "target": "T10",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L028",
+      "source": "T10",
+      "target": "KB10",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L029",
+      "source": "KB10",
+      "target": "B5",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L030",
+      "source": "OB11",
+      "target": "T11",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L031",
+      "source": "T11",
+      "target": "KB11",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L032",
+      "source": "KB11",
+      "target": "B6",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L033",
+      "source": "OB12",
+      "target": "T12",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L034",
+      "source": "T12",
+      "target": "KB12",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L035",
+      "source": "KB12",
+      "target": "B6",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L036",
+      "source": "OB13",
+      "target": "T13",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L037",
+      "source": "T13",
+      "target": "KB13",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L038",
+      "source": "KB13",
+      "target": "B7",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L039",
+      "source": "OB14",
+      "target": "T14",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L040",
+      "source": "T14",
+      "target": "KB14",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L041",
+      "source": "KB14",
+      "target": "B7",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L042",
+      "source": "OB15",
+      "target": "T15",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L043",
+      "source": "T15",
+      "target": "KB15",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L044",
+      "source": "KB15",
+      "target": "B8",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L045",
+      "source": "OB16",
+      "target": "T16",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L046",
+      "source": "T16",
+      "target": "KB16",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L047",
+      "source": "KB16",
+      "target": "B8",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L048",
+      "source": "OB17",
+      "target": "T17",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L049",
+      "source": "T17",
+      "target": "KB17",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L050",
+      "source": "KB17",
+      "target": "B9",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L051",
+      "source": "OB18",
+      "target": "T18",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L052",
+      "source": "T18",
+      "target": "KB18",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L053",
+      "source": "KB18",
+      "target": "B9",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L054",
+      "source": "OB19",
+      "target": "T19",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L055",
+      "source": "T19",
+      "target": "KB19",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L056",
+      "source": "KB19",
+      "target": "B10",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L057",
+      "source": "OB20",
+      "target": "T20",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L058",
+      "source": "T20",
+      "target": "KB20",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L059",
+      "source": "KB20",
+      "target": "B10",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L060",
+      "source": "OB21",
+      "target": "T21",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L061",
+      "source": "T21",
+      "target": "KB21",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L062",
+      "source": "KB21",
+      "target": "B11",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L063",
+      "source": "OB22",
+      "target": "T22",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L064",
+      "source": "T22",
+      "target": "KB22",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L065",
+      "source": "KB22",
+      "target": "B11",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L066",
+      "source": "OB23",
+      "target": "T23",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L067",
+      "source": "T23",
+      "target": "KB23",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L068",
+      "source": "KB23",
+      "target": "B12",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L069",
+      "source": "OB24",
+      "target": "T24",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L070",
+      "source": "T24",
+      "target": "KB24",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L071",
+      "source": "KB24",
+      "target": "B12",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L072",
+      "source": "OB25",
+      "target": "T25",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L073",
+      "source": "T25",
+      "target": "KB25",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L074",
+      "source": "KB25",
+      "target": "B13",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L075",
+      "source": "OB26",
+      "target": "T26",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L076",
+      "source": "T26",
+      "target": "KB26",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L077",
+      "source": "KB26",
+      "target": "B13",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L078",
+      "source": "OB27",
+      "target": "T27",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L079",
+      "source": "T27",
+      "target": "KB27",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L080",
+      "source": "KB27",
+      "target": "B14",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L081",
+      "source": "OB28",
+      "target": "T28",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L082",
+      "source": "T28",
+      "target": "KB28",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L083",
+      "source": "KB28",
+      "target": "B14",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L084",
+      "source": "OB29",
+      "target": "T29",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L085",
+      "source": "T29",
+      "target": "KB29",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L086",
+      "source": "KB29",
+      "target": "B15",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L087",
+      "source": "OB30",
+      "target": "T30",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L088",
+      "source": "T30",
+      "target": "KB30",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L089",
+      "source": "KB30",
+      "target": "B15",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L090",
+      "source": "OB31",
+      "target": "T31",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L091",
+      "source": "T31",
+      "target": "KB31",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L092",
+      "source": "KB31",
+      "target": "B16",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L093",
+      "source": "OB32",
+      "target": "T32",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L094",
+      "source": "T32",
+      "target": "KB32",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L095",
+      "source": "KB32",
+      "target": "B16",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L096",
+      "source": "OB33",
+      "target": "T33",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L097",
+      "source": "T33",
+      "target": "KB33",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L098",
+      "source": "KB33",
+      "target": "B17",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L099",
+      "source": "OB34",
+      "target": "T34",
+      "item": "蓝铁矿",
+      "rate": "1"
+    },
+    {
+      "id": "L100",
+      "source": "T34",
+      "target": "KB34",
+      "item": "蓝铁块",
+      "rate": "1"
+    },
+    {
+      "id": "L101",
+      "source": "KB34",
+      "target": "B17",
+      "item": "蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L102",
+      "source": "CORE",
+      "target": "U1",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L103",
+      "source": "U1",
+      "target": "O1",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L104",
+      "source": "CORE",
+      "target": "U2",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L105",
+      "source": "U2",
+      "target": "O1",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L106",
+      "source": "CORE",
+      "target": "U3",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L107",
+      "source": "U3",
+      "target": "O2",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L108",
+      "source": "CORE",
+      "target": "U4",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L109",
+      "source": "U4",
+      "target": "O2",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L110",
+      "source": "CORE",
+      "target": "U5",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L111",
+      "source": "U5",
+      "target": "O3",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L112",
+      "source": "CORE",
+      "target": "U6",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L113",
+      "source": "U6",
+      "target": "O3",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L114",
+      "source": "OO7",
+      "target": "U7",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L115",
+      "source": "U7",
+      "target": "O4",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L116",
+      "source": "OO8",
+      "target": "U8",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L117",
+      "source": "U8",
+      "target": "O4",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L118",
+      "source": "OO9",
+      "target": "U9",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L119",
+      "source": "U9",
+      "target": "O5",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L120",
+      "source": "OO10",
+      "target": "U10",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L121",
+      "source": "U10",
+      "target": "O5",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L122",
+      "source": "OO11",
+      "target": "U11",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L123",
+      "source": "U11",
+      "target": "O6",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L124",
+      "source": "OO12",
+      "target": "U12",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L125",
+      "source": "U12",
+      "target": "O6",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L126",
+      "source": "OO13",
+      "target": "U13",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L127",
+      "source": "U13",
+      "target": "O7",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L128",
+      "source": "OO14",
+      "target": "U14",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L129",
+      "source": "U14",
+      "target": "O7",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L130",
+      "source": "OO15",
+      "target": "U15",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L131",
+      "source": "U15",
+      "target": "O8",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L132",
+      "source": "OO16",
+      "target": "U16",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L133",
+      "source": "U16",
+      "target": "O8",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L134",
+      "source": "OO17",
+      "target": "U17",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L135",
+      "source": "U17",
+      "target": "O9",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L136",
+      "source": "OO18",
+      "target": "U18",
+      "item": "源矿",
+      "rate": "1"
+    },
+    {
+      "id": "L137",
+      "source": "U18",
+      "target": "O9",
+      "item": "源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L138",
+      "source": "B1",
+      "target": "R1",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L139",
+      "source": "R1",
+      "target": "P1",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L140",
+      "source": "B2",
+      "target": "R2",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L141",
+      "source": "R2",
+      "target": "P2",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L142",
+      "source": "B3",
+      "target": "R3",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L143",
+      "source": "R3",
+      "target": "P3",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L144",
+      "source": "B4",
+      "target": "R4",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L145",
+      "source": "R4",
+      "target": "P4",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L146",
+      "source": "B5",
+      "target": "R5",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L147",
+      "source": "R5",
+      "target": "P5",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L148",
+      "source": "B6",
+      "target": "R6",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L149",
+      "source": "R6",
+      "target": "P6",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L150",
+      "source": "B7",
+      "target": "R7",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L151",
+      "source": "R7",
+      "target": "H1",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L152",
+      "source": "B8",
+      "target": "R8",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L153",
+      "source": "R8",
+      "target": "H1",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L154",
+      "source": "B9",
+      "target": "R9",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L155",
+      "source": "R9",
+      "target": "H2",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L156",
+      "source": "B10",
+      "target": "R10",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L157",
+      "source": "R10",
+      "target": "H2",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L158",
+      "source": "B11",
+      "target": "R11",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L159",
+      "source": "R11",
+      "target": "H3",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L160",
+      "source": "B12",
+      "target": "R12",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L161",
+      "source": "R12",
+      "target": "H3",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L162",
+      "source": "B13",
+      "target": "R13",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L163",
+      "source": "R13",
+      "target": "H4",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L164",
+      "source": "B14",
+      "target": "R14",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L165",
+      "source": "R14",
+      "target": "H4",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L166",
+      "source": "B15",
+      "target": "R15",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L167",
+      "source": "R15",
+      "target": "H5",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L168",
+      "source": "B16",
+      "target": "R16",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L169",
+      "source": "R16",
+      "target": "H5",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L170",
+      "source": "B17",
+      "target": "R17",
+      "item": "致密蓝铁粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L171",
+      "source": "R17",
+      "target": "H6",
+      "item": "钢块",
+      "rate": "1"
+    },
+    {
+      "id": "L172",
+      "source": "O1",
+      "target": "E1",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L173",
+      "source": "O2",
+      "target": "E1",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L174",
+      "source": "O3",
+      "target": "E1",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L175",
+      "source": "O4",
+      "target": "E2",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L176",
+      "source": "O5",
+      "target": "E2",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L177",
+      "source": "O6",
+      "target": "E2",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L178",
+      "source": "O7",
+      "target": "E3",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L179",
+      "source": "O8",
+      "target": "E3",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L180",
+      "source": "O9",
+      "target": "E3",
+      "item": "致密源石粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L181",
+      "source": "P1",
+      "target": "E1",
+      "item": "钢制零件",
+      "rate": "1"
+    },
+    {
+      "id": "L182",
+      "source": "H1",
+      "target": "F1",
+      "item": "钢质瓶",
+      "rate": "1"
+    },
+    {
+      "id": "L183",
+      "source": "Q1",
+      "target": "F1",
+      "item": "细磨荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L184",
+      "source": "P2",
+      "target": "E1",
+      "item": "钢制零件",
+      "rate": "1"
+    },
+    {
+      "id": "L185",
+      "source": "H2",
+      "target": "F1",
+      "item": "钢质瓶",
+      "rate": "1"
+    },
+    {
+      "id": "L186",
+      "source": "Q2",
+      "target": "F1",
+      "item": "细磨荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L187",
+      "source": "P3",
+      "target": "E2",
+      "item": "钢制零件",
+      "rate": "1"
+    },
+    {
+      "id": "L188",
+      "source": "H3",
+      "target": "F2",
+      "item": "钢质瓶",
+      "rate": "1"
+    },
+    {
+      "id": "L189",
+      "source": "Q3",
+      "target": "F2",
+      "item": "细磨荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L190",
+      "source": "P4",
+      "target": "E2",
+      "item": "钢制零件",
+      "rate": "1"
+    },
+    {
+      "id": "L191",
+      "source": "H4",
+      "target": "F2",
+      "item": "钢质瓶",
+      "rate": "1"
+    },
+    {
+      "id": "L192",
+      "source": "Q4",
+      "target": "F2",
+      "item": "细磨荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L193",
+      "source": "P5",
+      "target": "E3",
+      "item": "钢制零件",
+      "rate": "1"
+    },
+    {
+      "id": "L194",
+      "source": "H5",
+      "target": "F3",
+      "item": "钢质瓶",
+      "rate": "1"
+    },
+    {
+      "id": "L195",
+      "source": "Q5",
+      "target": "F3",
+      "item": "细磨荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L196",
+      "source": "P6",
+      "target": "E3",
+      "item": "钢制零件",
+      "rate": "1"
+    },
+    {
+      "id": "L197",
+      "source": "H6",
+      "target": "F4",
+      "item": "钢质瓶",
+      "rate": "1/2"
+    },
+    {
+      "id": "L198",
+      "source": "Q6",
+      "target": "F4",
+      "item": "细磨荞花粉末",
+      "rate": "1/2"
+    },
+    {
+      "id": "L199",
+      "source": "E1",
+      "target": "CORE",
+      "item": "高容谷地电池",
+      "rate": "1/5"
+    },
+    {
+      "id": "L200",
+      "source": "E2",
+      "target": "CORE",
+      "item": "高容谷地电池",
+      "rate": "1/5"
+    },
+    {
+      "id": "L201",
+      "source": "E3",
+      "target": "CORE",
+      "item": "高容谷地电池",
+      "rate": "1/5"
+    },
+    {
+      "id": "L202",
+      "source": "F1",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/5"
+    },
+    {
+      "id": "L203",
+      "source": "F2",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/5"
+    },
+    {
+      "id": "L204",
+      "source": "F3",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/10"
+    },
+    {
+      "id": "L205",
+      "source": "F4",
+      "target": "CORE",
+      "item": "精选荞愈胶囊",
+      "rate": "1/20"
+    },
+    {
+      "id": "L206",
+      "source": "SC1",
+      "target": "SA1",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L207",
+      "source": "SC1",
+      "target": "SB1",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L208",
+      "source": "SA1",
+      "target": "SC1",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L209",
+      "source": "SB1",
+      "target": "S1",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L210",
+      "source": "S1",
+      "target": "B1",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L211",
+      "source": "S1",
+      "target": "B2",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L212",
+      "source": "S1",
+      "target": "O1",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L213",
+      "source": "SC2",
+      "target": "SA2",
+      "item": "砂叶种子",
+      "rate": "2/3"
+    },
+    {
+      "id": "L214",
+      "source": "SC2",
+      "target": "SB2",
+      "item": "砂叶种子",
+      "rate": "2/3"
+    },
+    {
+      "id": "L215",
+      "source": "SA2",
+      "target": "SC2",
+      "item": "砂叶",
+      "rate": "2/3"
+    },
+    {
+      "id": "L216",
+      "source": "SB2",
+      "target": "S2",
+      "item": "砂叶",
+      "rate": "2/3"
+    },
+    {
+      "id": "L217",
+      "source": "S2",
+      "target": "O2",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L218",
+      "source": "S2",
+      "target": "O3",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L219",
+      "source": "SC3",
+      "target": "SA3",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L220",
+      "source": "SC3",
+      "target": "SB3",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L221",
+      "source": "SA3",
+      "target": "SC3",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L222",
+      "source": "SB3",
+      "target": "S3",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L223",
+      "source": "S3",
+      "target": "B3",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L224",
+      "source": "S3",
+      "target": "B4",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L225",
+      "source": "S3",
+      "target": "O4",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L226",
+      "source": "SC4",
+      "target": "SA4",
+      "item": "砂叶种子",
+      "rate": "2/3"
+    },
+    {
+      "id": "L227",
+      "source": "SC4",
+      "target": "SB4",
+      "item": "砂叶种子",
+      "rate": "2/3"
+    },
+    {
+      "id": "L228",
+      "source": "SA4",
+      "target": "SC4",
+      "item": "砂叶",
+      "rate": "2/3"
+    },
+    {
+      "id": "L229",
+      "source": "SB4",
+      "target": "S4",
+      "item": "砂叶",
+      "rate": "2/3"
+    },
+    {
+      "id": "L230",
+      "source": "S4",
+      "target": "O5",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L231",
+      "source": "S4",
+      "target": "O6",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L232",
+      "source": "SC5",
+      "target": "SA5",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L233",
+      "source": "SC5",
+      "target": "SB5",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L234",
+      "source": "SA5",
+      "target": "SC5",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L235",
+      "source": "SB5",
+      "target": "S5",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L236",
+      "source": "S5",
+      "target": "B5",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L237",
+      "source": "S5",
+      "target": "B6",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L238",
+      "source": "S5",
+      "target": "O7",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L239",
+      "source": "SC6",
+      "target": "SA6",
+      "item": "砂叶种子",
+      "rate": "2/3"
+    },
+    {
+      "id": "L240",
+      "source": "SC6",
+      "target": "SB6",
+      "item": "砂叶种子",
+      "rate": "2/3"
+    },
+    {
+      "id": "L241",
+      "source": "SA6",
+      "target": "SC6",
+      "item": "砂叶",
+      "rate": "2/3"
+    },
+    {
+      "id": "L242",
+      "source": "SB6",
+      "target": "S6",
+      "item": "砂叶",
+      "rate": "2/3"
+    },
+    {
+      "id": "L243",
+      "source": "S6",
+      "target": "O8",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L244",
+      "source": "S6",
+      "target": "O9",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L245",
+      "source": "SC7",
+      "target": "SA7",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L246",
+      "source": "SC7",
+      "target": "SB7",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L247",
+      "source": "SA7",
+      "target": "SC7",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L248",
+      "source": "SB7",
+      "target": "S7",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L249",
+      "source": "S7",
+      "target": "B7",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L250",
+      "source": "S7",
+      "target": "B8",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L251",
+      "source": "S7",
+      "target": "B9",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L252",
+      "source": "SC8",
+      "target": "SA8",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L253",
+      "source": "SC8",
+      "target": "SB8",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L254",
+      "source": "SA8",
+      "target": "SC8",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L255",
+      "source": "SB8",
+      "target": "S8",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L256",
+      "source": "S8",
+      "target": "B10",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L257",
+      "source": "S8",
+      "target": "Q1",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L258",
+      "source": "S8",
+      "target": "Q2",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L259",
+      "source": "SC9",
+      "target": "SA9",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L260",
+      "source": "SC9",
+      "target": "SB9",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L261",
+      "source": "SA9",
+      "target": "SC9",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L262",
+      "source": "SB9",
+      "target": "S9",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L263",
+      "source": "S9",
+      "target": "B11",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L264",
+      "source": "S9",
+      "target": "B12",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L265",
+      "source": "S9",
+      "target": "B13",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L266",
+      "source": "SC10",
+      "target": "SA10",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L267",
+      "source": "SC10",
+      "target": "SB10",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L268",
+      "source": "SA10",
+      "target": "SC10",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L269",
+      "source": "SB10",
+      "target": "S10",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L270",
+      "source": "S10",
+      "target": "B14",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L271",
+      "source": "S10",
+      "target": "Q3",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L272",
+      "source": "S10",
+      "target": "Q4",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L273",
+      "source": "SC11",
+      "target": "SA11",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L274",
+      "source": "SC11",
+      "target": "SB11",
+      "item": "砂叶种子",
+      "rate": "1"
+    },
+    {
+      "id": "L275",
+      "source": "SA11",
+      "target": "SC11",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L276",
+      "source": "SB11",
+      "target": "S11",
+      "item": "砂叶",
+      "rate": "1"
+    },
+    {
+      "id": "L277",
+      "source": "S11",
+      "target": "B15",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L278",
+      "source": "S11",
+      "target": "B16",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L279",
+      "source": "S11",
+      "target": "Q5",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L280",
+      "source": "SC12",
+      "target": "SA12",
+      "item": "砂叶种子",
+      "rate": "1/3"
+    },
+    {
+      "id": "L281",
+      "source": "SC12",
+      "target": "SB12",
+      "item": "砂叶种子",
+      "rate": "1/3"
+    },
+    {
+      "id": "L282",
+      "source": "SA12",
+      "target": "SC12",
+      "item": "砂叶",
+      "rate": "1/3"
+    },
+    {
+      "id": "L283",
+      "source": "SB12",
+      "target": "S12",
+      "item": "砂叶",
+      "rate": "1/3"
+    },
+    {
+      "id": "L284",
+      "source": "S12",
+      "target": "B17",
+      "item": "砂叶粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L285",
+      "source": "SC13",
+      "target": "SA13",
+      "item": "砂叶种子",
+      "rate": "1/6"
+    },
+    {
+      "id": "L286",
+      "source": "SC13",
+      "target": "SB13",
+      "item": "砂叶种子",
+      "rate": "1/6"
+    },
+    {
+      "id": "L287",
+      "source": "SA13",
+      "target": "SC13",
+      "item": "砂叶",
+      "rate": "1/6"
+    },
+    {
+      "id": "L288",
+      "source": "SB13",
+      "target": "S13",
+      "item": "砂叶",
+      "rate": "1/6"
+    },
+    {
+      "id": "L289",
+      "source": "S13",
+      "target": "Q6",
+      "item": "砂叶粉末",
+      "rate": "1/2"
+    },
+    {
+      "id": "L290",
+      "source": "QC1",
+      "target": "QA1",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L291",
+      "source": "QC1",
+      "target": "QB1",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L292",
+      "source": "QA1",
+      "target": "QC1",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L293",
+      "source": "QB1",
+      "target": "KQ1",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L294",
+      "source": "KQ1",
+      "target": "Q1",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L295",
+      "source": "KQ1",
+      "target": "Q1",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L296",
+      "source": "QC2",
+      "target": "QA2",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L297",
+      "source": "QC2",
+      "target": "QB2",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L298",
+      "source": "QA2",
+      "target": "QC2",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L299",
+      "source": "QB2",
+      "target": "KQ2",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L300",
+      "source": "KQ2",
+      "target": "Q2",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L301",
+      "source": "KQ2",
+      "target": "Q2",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L302",
+      "source": "QC3",
+      "target": "QA3",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L303",
+      "source": "QC3",
+      "target": "QB3",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L304",
+      "source": "QA3",
+      "target": "QC3",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L305",
+      "source": "QB3",
+      "target": "KQ3",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L306",
+      "source": "KQ3",
+      "target": "Q3",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L307",
+      "source": "KQ3",
+      "target": "Q3",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L308",
+      "source": "QC4",
+      "target": "QA4",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L309",
+      "source": "QC4",
+      "target": "QB4",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L310",
+      "source": "QA4",
+      "target": "QC4",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L311",
+      "source": "QB4",
+      "target": "KQ4",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L312",
+      "source": "KQ4",
+      "target": "Q4",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L313",
+      "source": "KQ4",
+      "target": "Q4",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L314",
+      "source": "QC5",
+      "target": "QA5",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L315",
+      "source": "QC5",
+      "target": "QB5",
+      "item": "荞花种子",
+      "rate": "1"
+    },
+    {
+      "id": "L316",
+      "source": "QA5",
+      "target": "QC5",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L317",
+      "source": "QB5",
+      "target": "KQ5",
+      "item": "荞花",
+      "rate": "1"
+    },
+    {
+      "id": "L318",
+      "source": "KQ5",
+      "target": "Q5",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L319",
+      "source": "KQ5",
+      "target": "Q5",
+      "item": "荞花粉末",
+      "rate": "1"
+    },
+    {
+      "id": "L320",
+      "source": "QC6",
+      "target": "QA6",
+      "item": "荞花种子",
+      "rate": "1/2"
+    },
+    {
+      "id": "L321",
+      "source": "QC6",
+      "target": "QB6",
+      "item": "荞花种子",
+      "rate": "1/2"
+    },
+    {
+      "id": "L322",
+      "source": "QA6",
+      "target": "QC6",
+      "item": "荞花",
+      "rate": "1/2"
+    },
+    {
+      "id": "L323",
+      "source": "QB6",
+      "target": "KQ6",
+      "item": "荞花",
+      "rate": "1/2"
+    },
+    {
+      "id": "L324",
+      "source": "KQ6",
+      "target": "Q6",
+      "item": "荞花粉末",
+      "rate": "1"
+    }
+  ]
+}

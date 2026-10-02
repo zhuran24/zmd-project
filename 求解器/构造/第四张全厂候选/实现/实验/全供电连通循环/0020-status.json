@@ -1,0 +1,8 @@
+{
+ "status": "OPTIMAL",
+ "wall": 0.447065168,
+ "variables": 6722,
+ "constraints": 21636,
+ "radius": 3,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/全供电连通循环/0020-source.json"
+}

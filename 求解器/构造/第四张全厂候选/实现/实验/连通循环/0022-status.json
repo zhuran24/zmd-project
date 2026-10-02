@@ -1,0 +1,8 @@
+{
+ "status": "FEASIBLE",
+ "wall": 20.071150037000002,
+ "variables": 13498,
+ "constraints": 41122,
+ "radius": 6,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/连通循环/0022-source.json"
+}

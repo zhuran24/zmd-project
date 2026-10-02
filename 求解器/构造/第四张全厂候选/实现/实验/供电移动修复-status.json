@@ -1,0 +1,8 @@
+{
+ "status": "FEASIBLE",
+ "wall": 120.02609702400001,
+ "variables": 35190,
+ "constraints": 110414,
+ "radius": 3,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/供电调整源.json"
+}

@@ -1,0 +1,37 @@
+{
+  "layout_sha256": "729fde6011f4eeb9b31ea58342e3c5293b1eb3ba0983877b95eb9250c349cd78",
+  "adjacent_bridge_pairs": [
+    [
+      "X8_10",
+      "X8_11"
+    ],
+    [
+      "X11_28",
+      "X11_29"
+    ],
+    [
+      "X24_33",
+      "X25_33"
+    ],
+    [
+      "X50_39",
+      "X50_40"
+    ],
+    [
+      "X50_40",
+      "X50_41"
+    ]
+  ],
+  "longest_collinear_bridge_chain": 3,
+  "product_routes": [
+    {
+      "id": "L205",
+      "source": "F4",
+      "item": "精选荞愈胶囊",
+      "length": 14
+    }
+  ],
+  "equal_length_detail": {
+    "Q6": 1
+  }
+}

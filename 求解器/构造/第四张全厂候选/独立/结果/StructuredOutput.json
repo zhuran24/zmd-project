@@ -1,0 +1,12 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立.md",
+  "layout_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/布局.json",
+  "static_pass": false,
+  "empty_rect": "6x6 @ (64,64)，未达标",
+  "summary": "未找到达标全厂；接通226/325路，L仍为0。",
+  "blockers": [
+    "缺99路；其中84路被固定机位阻断",
+    "运输格数需求下界2301超过容量上界1956",
+    "H6到F4缺失，等长条件未满足"
+  ]
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "transport_reserved": false,
+    "impossible_to_power": [],
+    "candidate_poles": 3700
+  },
+  {
+    "transport_reserved": true,
+    "impossible_to_power": [
+      "KO9",
+      "KO15"
+    ],
+    "candidate_poles": 3610
+  }
+]

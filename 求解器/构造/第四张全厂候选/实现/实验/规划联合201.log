@@ -1,0 +1,37 @@
+start 201 reserved=168
+place 201 t=25.0001 moves=598116 E=2589 ov=153 def=20 wire=2219 disconnected=0 power=0 heat=0
+initial 0 ov=81 reservedov=11 def=15 wire=2079
+place 201 t=50.0003 moves=1196751 E=5858 ov=430 def=95 wire=3840 disconnected=0 power=3 heat=0
+place 201 t=75.0006 moves=1794191 E=2378 ov=39 def=26 wire=2110 disconnected=0 power=2 heat=0
+initial 1 ov=34 reservedov=4 def=21 wire=2096
+place 201 t=100.001 moves=2390078 E=4206 ov=73 def=112 wire=3274 disconnected=0 power=5 heat=0
+place 201 t=125.003 moves=2988476 E=2532 ov=6 def=34 wire=2336 disconnected=0 power=4 heat=0
+initial 2 ov=34 reservedov=4 def=21 wire=2096
+place 201 t=150.003 moves=3496837 E=4149 ov=48 def=4 wire=2787 disconnected=171 power=6 heat=0
+place 201 t=175.004 moves=3941802 E=3670 ov=48 def=3 wire=2443 disconnected=136 power=4 heat=0
+initial 3 ov=44 reservedov=3 def=4 wire=2463
+place 201 t=200.005 moves=4390624 E=4852 ov=37 def=5 wire=2755 disconnected=151 power=6 heat=0
+initial 4 ov=35 reservedov=2 def=6 wire=2616
+place 201 t=225.005 moves=4834554 E=6398 ov=35 def=6 wire=2616 disconnected=143 power=6 heat=0
+place 201 t=250.006 moves=5283176 E=6206 ov=26 def=10 wire=2772 disconnected=143 power=6 heat=0
+initial 5 ov=25 reservedov=3 def=10 wire=2724
+place 201 t=275.006 moves=5733022 E=11654 ov=15 def=20 wire=3150 disconnected=154 power=7 heat=0
+place 201 t=300.008 moves=6188750 E=10975 ov=16 def=19 wire=2884 disconnected=131 power=6 heat=0
+initial 6 ov=16 reservedov=2 def=19 wire=2859
+place 201 t=325.009 moves=6645921 E=13137 ov=16 def=21 wire=3028 disconnected=127 power=6 heat=0
+place 201 t=350.01 moves=7103158 E=12804 ov=16 def=21 wire=2887 disconnected=121 power=6 heat=0
+initial 7 ov=16 reservedov=2 def=21 wire=2884
+place 201 t=375.011 moves=7559591 E=16315 ov=14 def=23 wire=3140 disconnected=115 power=7 heat=0
+place 201 t=400.011 moves=8016787 E=16217 ov=15 def=23 wire=3042 disconnected=115 power=7 heat=0
+initial 8 ov=15 reservedov=2 def=23 wire=3042
+place 201 t=425.011 moves=8473609 E=20162 ov=15 def=22 wire=3072 disconnected=110 power=7 heat=0
+initial 9 ov=15 reservedov=3 def=22 wire=3042
+place 201 t=450.012 moves=8930659 E=20132 ov=15 def=22 wire=3042 disconnected=110 power=7 heat=0
+place 201 t=475.013 moves=9387495 E=20089 ov=14 def=22 wire=3099 disconnected=109 power=7 heat=0
+initial 10 ov=15 reservedov=3 def=22 wire=3082
+place 201 t=500.013 moves=9845115 E=20229 ov=15 def=25 wire=3244 disconnected=108 power=8 heat=0
+place 201 t=525.014 moves=10292595 E=19910 ov=14 def=23 wire=3095 disconnected=107 power=7 heat=0
+initial 11 ov=15 reservedov=3 def=23 wire=3075
+route 201 t=540.039 it=0 paths=324 body=817 conflicts=1628 len=3028
+route 201 t=540.166 it=5 paths=324 body=973 conflicts=910 len=2732
+place 201 t=550.014 moves=10715804 E=36513 ov=15 def=23 wire=3326 disconnected=107 power=8 heat=886

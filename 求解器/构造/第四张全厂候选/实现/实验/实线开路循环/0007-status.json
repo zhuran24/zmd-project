@@ -1,0 +1,8 @@
+{
+ "status": "UNKNOWN",
+ "wall": 35.141899363,
+ "variables": 33053,
+ "constraints": 129742,
+ "radius": 8,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/实线开路循环/0007-source.json"
+}

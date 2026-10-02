@@ -1,0 +1,8 @@
+{
+ "status": "FEASIBLE",
+ "wall": 180.02658413100002,
+ "variables": 133993,
+ "constraints": 4397,
+ "radius": 7,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/改编号305.json"
+}

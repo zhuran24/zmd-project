@@ -1,0 +1,70 @@
+{
+  "mapping": {
+    "H4": "H6",
+    "F2": "F4",
+    "Q4": "Q6",
+    "B13": "B17",
+    "R13": "R17",
+    "QA4": "QA6",
+    "QB4": "QB6",
+    "QC4": "QC6",
+    "QK4": "QK6",
+    "RF25": "RF33",
+    "RF26": "RF34",
+    "KF25": "KF33",
+    "KF26": "KF34",
+    "WFE25": "WFE33",
+    "WFE26": "WFE34",
+    "H6": "H4",
+    "F4": "F2",
+    "Q6": "Q4",
+    "B17": "B13",
+    "R17": "R13",
+    "QA6": "QA4",
+    "QB6": "QB4",
+    "QC6": "QC4",
+    "QK6": "QK4",
+    "RF33": "RF25",
+    "RF34": "RF26",
+    "KF33": "KF25",
+    "KF34": "KF26",
+    "WFE33": "WFE25",
+    "WFE34": "WFE26"
+  },
+  "old_routes": 214,
+  "retained_routes": 210,
+  "deleted": [
+    {
+      "previous_route": "LF237",
+      "source_after": "S9",
+      "target_after": "B17",
+      "item": "砂叶粉末",
+      "reason": "重排后源汇不属于固定接法或超过指定重数"
+    },
+    {
+      "previous_route": "LF244",
+      "source_after": "S12",
+      "target_after": "B13",
+      "item": "砂叶粉末",
+      "reason": "重排后源汇不属于固定接法或超过指定重数"
+    },
+    {
+      "previous_route": "LF245",
+      "source_after": "S13",
+      "target_after": "Q4",
+      "item": "砂叶粉末",
+      "reason": "重排后源汇不属于固定接法或超过指定重数"
+    },
+    {
+      "previous_route": "LF253",
+      "source_after": "QK6",
+      "target_after": "Q6",
+      "item": "荞花粉末",
+      "reason": "重排后源汇不属于固定接法或超过指定重数"
+    }
+  ],
+  "equal_lengths": [
+    1,
+    1
+  ]
+}

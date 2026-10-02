@@ -1,0 +1,19 @@
+{
+  "start_utc": "2026-10-02T16:53:00+00:00",
+  "search_stopped_utc": "2026-10-02T20:49:44.631696+00:00",
+  "deadline_utc": "2026-10-02T20:53:00+00:00",
+  "elapsed_seconds_to_search_stop": 14204.632,
+  "within_four_hours": true,
+  "search_cpu_limit": 6,
+  "final_cpu_affinity": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "active_implementation_processes": [],
+  "all_implementation_search_stopped": true,
+  "scope": "只统计本席实现目录的进程；其他席位和用户进程未操作。未使用git或内核cargo测试；写入范围为第四张全厂候选。"
+}

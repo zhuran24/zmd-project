@@ -1,0 +1,78 @@
+{
+  "schema": "fixed-planning-cut-relaxation-v1",
+  "maximum_exit_relaxation": 14,
+  "required_powder_paths": 12,
+  "cut": [
+    {
+      "source": "((37, 1), 0, 'i')",
+      "target": "((37, 1), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((37, 5), 0, 'i')",
+      "target": "((37, 5), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((19, 19), 1, 'i')",
+      "target": "((19, 19), 1, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((20, 19), 1, 'i')",
+      "target": "((20, 19), 1, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((21, 19), 1, 'i')",
+      "target": "((21, 19), 1, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((22, 19), 1, 'i')",
+      "target": "((22, 19), 1, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((23, 19), 1, 'i')",
+      "target": "((23, 19), 1, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((19, 19), 0, 'i')",
+      "target": "((19, 19), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((19, 20), 0, 'i')",
+      "target": "((19, 20), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((19, 21), 0, 'i')",
+      "target": "((19, 21), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((19, 22), 0, 'i')",
+      "target": "((19, 22), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((19, 23), 0, 'i')",
+      "target": "((19, 23), 0, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((1, 37), 1, 'i')",
+      "target": "((1, 37), 1, 'o')",
+      "capacity": 1
+    },
+    {
+      "source": "((5, 37), 1, 'i')",
+      "target": "((5, 37), 1, 'o')",
+      "capacity": 1
+    }
+  ],
+  "scope": "固定四模块、取货口、供电桩和已定运输轴；未放角区及其他180台机身。忽略未用端口自动通道等限制。容量不足才可否定固定规划。"
+}

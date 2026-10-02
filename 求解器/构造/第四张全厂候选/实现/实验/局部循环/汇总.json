@@ -1,0 +1,448 @@
+[
+ {
+  "iteration": 0,
+  "elapsed": 1.4402820820032503,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "CORE",
+  "movable": [
+   "CORE",
+   "QB2",
+   "KO1",
+   "E1",
+   "QA2",
+   "KO4",
+   "QB6",
+   "H4",
+   "POWER8",
+   "QK6",
+   "POWER20",
+   "KO6"
+  ],
+  "cp": {
+   "status": "OPTIMAL",
+   "wall": 0.742836691,
+   "variables": 3734,
+   "constraints": 7627,
+   "radius": 4,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0000-source.json"
+  },
+  "result": {
+   "routes": 222,
+   "power_distance": 8,
+   "deficit": 64
+  }
+ },
+ {
+  "iteration": 1,
+  "elapsed": 25.291047760001675,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "S1",
+  "movable": [
+   "S1",
+   "SC4",
+   "QB5",
+   "SB4",
+   "QC5",
+   "RF4",
+   "POWER3",
+   "KF34",
+   "SB1",
+   "R15",
+   "RF24",
+   "SA4",
+   "QK5",
+   "RF34",
+   "O6",
+   "S4",
+   "SA9",
+   "QA5"
+  ],
+  "cp": {
+   "status": "OPTIMAL",
+   "wall": 14.996173549000002,
+   "variables": 4881,
+   "constraints": 10838,
+   "radius": 4,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0001-source.json"
+  },
+  "result": {
+   "routes": 217,
+   "power_distance": 9,
+   "deficit": 62
+  }
+ },
+ {
+  "iteration": 2,
+  "elapsed": 35.340397762003704,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "P5",
+  "movable": [
+   "P5",
+   "POWER6",
+   "KF18",
+   "B9",
+   "O7",
+   "R5",
+   "KF17",
+   "RF18",
+   "KF3",
+   "F2",
+   "S5",
+   "R6",
+   "POWER9",
+   "E3",
+   "B1",
+   "B14",
+   "R3",
+   "P3"
+  ],
+  "cp": {
+   "status": "OPTIMAL",
+   "wall": 1.4506173530000002,
+   "variables": 3216,
+   "constraints": 5509,
+   "radius": 3,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0002-source.json"
+  },
+  "result": {
+   "routes": 219,
+   "power_distance": 10,
+   "deficit": 68
+  }
+ },
+ {
+  "iteration": 3,
+  "elapsed": 64.70108913299919,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "H3",
+  "movable": [
+   "H3",
+   "KF2",
+   "B13",
+   "R13",
+   "R2",
+   "R11",
+   "KF28",
+   "POWER15",
+   "KF25",
+   "B2",
+   "RF2",
+   "KF27",
+   "B5",
+   "S9",
+   "RF22",
+   "KF26",
+   "RF27",
+   "KF4"
+  ],
+  "cp": {
+   "status": "FEASIBLE",
+   "wall": 20.007375391,
+   "variables": 6908,
+   "constraints": 17871,
+   "radius": 6,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0003-source.json"
+  },
+  "result": {
+   "routes": 219,
+   "power_distance": 9,
+   "deficit": 64
+  }
+ },
+ {
+  "iteration": 4,
+  "elapsed": 82.8438067399984,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "SA3",
+  "movable": [
+   "SA3",
+   "KO2",
+   "O1",
+   "SA4",
+   "POWER21",
+   "KF30",
+   "SB1",
+   "SC4",
+   "KF34",
+   "SA9",
+   "E1",
+   "SB4",
+   "F3",
+   "B15",
+   "SC9",
+   "RF34",
+   "O3",
+   "S1"
+  ],
+  "cp": {
+   "status": "OPTIMAL",
+   "wall": 9.400993932,
+   "variables": 4438,
+   "constraints": 9158,
+   "radius": 3,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0004-source.json"
+  },
+  "result": {
+   "routes": 219,
+   "power_distance": 10,
+   "deficit": 67
+  }
+ },
+ {
+  "iteration": 5,
+  "elapsed": 111.99193127999752,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "KF34",
+  "movable": [
+   "KF34",
+   "RF34",
+   "SC4",
+   "SA4",
+   "QB5",
+   "POWER22",
+   "F3",
+   "QK5",
+   "S1",
+   "Q5",
+   "SA3",
+   "QC5",
+   "RF4",
+   "POWER21",
+   "KO5",
+   "O3",
+   "SB1",
+   "SB3"
+  ],
+  "cp": {
+   "status": "FEASIBLE",
+   "wall": 20.005220827000002,
+   "variables": 6906,
+   "constraints": 17930,
+   "radius": 5,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0005-source.json"
+  },
+  "result": {
+   "routes": 217,
+   "power_distance": 12,
+   "deficit": 62
+  }
+ },
+ {
+  "iteration": 6,
+  "elapsed": 141.33552887700353,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "H6",
+  "movable": [
+   "H6",
+   "SC13",
+   "SA13",
+   "POWER25",
+   "R17",
+   "SC12",
+   "SC2",
+   "SB13",
+   "SA7",
+   "SA12",
+   "SB12",
+   "SA2",
+   "QC1",
+   "SC7",
+   "QB1",
+   "S12",
+   "S13",
+   "QA1",
+   "POWER23",
+   "QK1",
+   "F4",
+   "Q6",
+   "SA11",
+   "SA8"
+  ],
+  "cp": {
+   "status": "FEASIBLE",
+   "wall": 20.006749521,
+   "variables": 9192,
+   "constraints": 25547,
+   "radius": 5,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0006-source.json"
+  },
+  "result": {
+   "routes": 220,
+   "power_distance": 13,
+   "deficit": 61
+  }
+ },
+ {
+  "iteration": 7,
+  "elapsed": 152.51347740399797,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 222,
+  "center": "WFE19",
+  "movable": [
+   "QC3",
+   "QA3",
+   "QB3",
+   "R12",
+   "RF20",
+   "RF25",
+   "RF23",
+   "KO18",
+   "POWER12",
+   "KF20",
+   "B12",
+   "KF23",
+   "KO17",
+   "KF19",
+   "RF21",
+   "KF24",
+   "O9",
+   "SA6"
+  ],
+  "cp": {
+   "status": "OPTIMAL",
+   "wall": 2.30300779,
+   "variables": 5698,
+   "constraints": 14474,
+   "radius": 5,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0007-source.json"
+  },
+  "result": {
+   "routes": 222,
+   "power_distance": 8,
+   "deficit": 64
+  }
+ },
+ {
+  "iteration": 8,
+  "elapsed": 181.79356631100381,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 223,
+  "center": "S10",
+  "movable": [
+   "S10",
+   "POWER12",
+   "SA9",
+   "POWER22",
+   "SC5",
+   "SC9",
+   "SA10",
+   "H1",
+   "SB9",
+   "KF24",
+   "SB10",
+   "RF19",
+   "B7",
+   "SA5",
+   "QA4",
+   "Q4",
+   "QB4",
+   "QK4",
+   "R8",
+   "RF24",
+   "B12",
+   "KF19",
+   "SB5",
+   "R7",
+   "POWER18",
+   "KF23",
+   "SC10",
+   "H2",
+   "RF33",
+   "B8"
+  ],
+  "cp": {
+   "status": "FEASIBLE",
+   "wall": 20.038498795000002,
+   "variables": 8365,
+   "constraints": 23956,
+   "radius": 4,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0008-source.json"
+  },
+  "result": {
+   "routes": 220,
+   "power_distance": 9,
+   "deficit": 68
+  }
+ },
+ {
+  "iteration": 9,
+  "elapsed": 190.50621115099784,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 223,
+  "center": "O9",
+  "movable": [
+   "O9",
+   "KF20",
+   "KO17",
+   "KO18",
+   "B10",
+   "S6",
+   "POWER7",
+   "KF21",
+   "RF20",
+   "RF21",
+   "RF33",
+   "KF19",
+   "SB5",
+   "R10",
+   "RF15",
+   "KF15",
+   "O8",
+   "POWER18"
+  ],
+  "cp": {
+   "status": "OPTIMAL",
+   "wall": 0.152893734,
+   "variables": 2866,
+   "constraints": 4812,
+   "radius": 3,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0009-source.json"
+  },
+  "result": {
+   "routes": 223,
+   "power_distance": 9,
+   "deficit": 68
+  }
+ },
+ {
+  "iteration": 10,
+  "elapsed": 219.18082297500223,
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合503-best.json",
+  "source_routes": 223,
+  "center": "KF16",
+  "movable": [
+   "KF16",
+   "H5",
+   "R16",
+   "B16",
+   "RF32",
+   "POWER15",
+   "RF30",
+   "SC7",
+   "KF31",
+   "RF31",
+   "E2",
+   "RF29"
+  ],
+  "cp": {
+   "status": "FEASIBLE",
+   "wall": 20.006885029000003,
+   "variables": 4196,
+   "constraints": 8589,
+   "radius": 4,
+   "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/局部循环/0010-source.json"
+  },
+  "result": {
+   "routes": 220,
+   "power_distance": 15,
+   "deficit": 67
+  }
+ }
+]

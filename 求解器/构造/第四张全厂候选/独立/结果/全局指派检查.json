@@ -1,0 +1,12921 @@
+{
+  "static_pass": false,
+  "runtime_certified": false,
+  "stats": {
+    "machines": 230,
+    "machine_area": 3567,
+    "powered": 230,
+    "power_poles": 25,
+    "occupied": 4206,
+    "transport_units": 320,
+    "bridges": 14,
+    "transport_cells_used": 334,
+    "automatic_channels": 497,
+    "bridge_reverse_channels": 1,
+    "completed_routes": 162,
+    "missing_routes": 163,
+    "ore_routes": 37,
+    "product_routes": 1,
+    "fixed_geometry_obstructed": 153,
+    "transport_length_lower_bound": 6273,
+    "transport_slot_upper_bound": 1956,
+    "empty_rectangle": {
+      "area": 36,
+      "short_side": 6,
+      "rectangle": {
+        "x0": 64,
+        "y0": 64,
+        "x1": 69,
+        "y1": 69
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "基地70×70",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "格式版本",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "指定目标",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "规则快照指纹",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "充分条件和临时规则指纹",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "根和布局字段",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "通道和进路编号唯一",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "不重叠",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "不越界",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "坐标和方向类型",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "逐台230台",
+      "pass": true,
+      "detail": {
+        "actual": 230,
+        "expected": 230
+      }
+    },
+    {
+      "name": "机身尺寸和旋转",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "配方和开关",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "无禁用单位和虚拟接口",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "唯一9×9协议核心",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "核心六取货端口设源矿",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "46取货口贴左下边界",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "34蓝铁矿及12源矿边界取货口",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "两边各23取货口",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "供电桩尺寸",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "230台全部供电",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "带方向.X1_2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_8",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_11",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_14",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_20",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_29",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_32",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_35",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_38",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_42",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_47",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_50",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_53",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_56",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_59",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_62",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_65",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X1_68",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X2_25",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X2_35",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_13",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_22",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_29",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_48",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_51",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_59",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X5_67",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X6_22",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X6_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X6_24",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X6_25",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X7_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X7_40",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X7_55",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_6",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_12",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_56",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_57",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X8_62",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X9_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X9_56",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_20",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_21",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_28",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_29",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_37",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X10_67",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X11_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X11_44",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X11_48",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X12_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X12_6",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X13_12",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X13_44",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X14_46",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X14_47",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X15_19",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X15_68",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X16_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X16_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X16_32",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X16_60",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X16_67",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_12",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_19",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_56",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_61",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X17_63",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X18_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X19_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X19_38",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X20_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X20_50",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X21_7",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X21_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X21_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X21_22",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X21_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X21_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X22_7",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_7",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_8",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_34",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_35",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_36",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_59",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_60",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_61",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_62",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X23_63",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X24_8",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X25_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X25_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X25_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_11",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_41",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_47",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_48",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X26_49",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X27_6",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X27_7",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X27_46",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X28_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X29_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X29_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_19",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_20",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X30_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X31_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X31_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X31_53",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X31_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X32_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X32_37",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X32_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X32_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X33_10",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X33_43",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X33_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X33_62",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X33_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X33_68",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X35_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X36_10",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X36_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X37_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X37_22",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X37_28",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X38_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X38_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X38_22",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X38_28",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X41_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X41_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X41_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X42_39",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X42_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X42_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X43_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X43_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X44_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X44_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X44_63",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X44_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X44_66",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X44_67",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X45_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X45_63",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X45_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X45_65",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X46_7",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X46_45",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X47_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X47_26",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X47_39",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X47_51",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X48_20",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X48_25",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X48_26",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X49_20",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X49_28",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X49_29",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_20",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_34",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X50_35",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X51_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_9",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_10",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_30",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_31",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_32",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X52_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X53_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X53_57",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X53_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X53_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X54_41",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X54_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X54_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_31",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_39",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_40",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_41",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X55_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X56_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X56_9",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X56_40",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X56_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X56_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X57_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X57_40",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X57_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X57_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_9",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_40",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_41",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_42",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_43",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X58_68",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_9",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_21",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_24",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_25",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_26",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_28",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_37",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_43",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_52",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X59_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X60_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X60_21",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X60_36",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X60_37",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X60_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X61_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X61_21",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X61_37",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X61_38",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X61_64",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X62_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X62_13",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X62_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X62_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X62_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X62_21",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_21",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_22",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X63_59",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X64_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X64_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X64_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X64_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X64_48",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X65_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X65_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X65_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X65_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X65_37",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X65_48",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X66_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X66_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X66_28",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X67_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X67_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X67_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_12",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_13",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_14",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_15",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X68_33",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_6",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_7",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_8",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_16",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_17",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_18",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_23",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_24",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_25",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_26",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_27",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_43",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_58",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "带方向.X69_59",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "声明通道等于自动形成通道",
+      "pass": true,
+      "detail": {
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "name": "逐路连续且不重复单位",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "运输物品格不共用",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "全部运输单位在进路上",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "无额外通道",
+      "pass": true,
+      "detail": {
+        "unaccounted": []
+      }
+    },
+    {
+      "name": "相邻桥逆向通道声明",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "桥轴方向及空轴",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "325条指定进路齐全",
+      "pass": false,
+      "detail": {
+        "completed": 162,
+        "missing": [
+          [
+            "OB2",
+            "T2",
+            "蓝铁矿"
+          ],
+          [
+            "T3",
+            "KB3",
+            "蓝铁块"
+          ],
+          [
+            "T5",
+            "KB5",
+            "蓝铁块"
+          ],
+          [
+            "OB7",
+            "T7",
+            "蓝铁矿"
+          ],
+          [
+            "OB10",
+            "T10",
+            "蓝铁矿"
+          ],
+          [
+            "T11",
+            "KB11",
+            "蓝铁块"
+          ],
+          [
+            "OB12",
+            "T12",
+            "蓝铁矿"
+          ],
+          [
+            "T13",
+            "KB13",
+            "蓝铁块"
+          ],
+          [
+            "T16",
+            "KB16",
+            "蓝铁块"
+          ],
+          [
+            "T18",
+            "KB18",
+            "蓝铁块"
+          ],
+          [
+            "OB22",
+            "T22",
+            "蓝铁矿"
+          ],
+          [
+            "T23",
+            "KB23",
+            "蓝铁块"
+          ],
+          [
+            "T24",
+            "KB24",
+            "蓝铁块"
+          ],
+          [
+            "T25",
+            "KB25",
+            "蓝铁块"
+          ],
+          [
+            "T27",
+            "KB27",
+            "蓝铁块"
+          ],
+          [
+            "T28",
+            "KB28",
+            "蓝铁块"
+          ],
+          [
+            "OB30",
+            "T30",
+            "蓝铁矿"
+          ],
+          [
+            "OB31",
+            "T31",
+            "蓝铁矿"
+          ],
+          [
+            "T34",
+            "KB34",
+            "蓝铁块"
+          ],
+          [
+            "CORE",
+            "U1",
+            "源矿"
+          ],
+          [
+            "CORE",
+            "U4",
+            "源矿"
+          ],
+          [
+            "CORE",
+            "U5",
+            "源矿"
+          ],
+          [
+            "OO12",
+            "U12",
+            "源矿"
+          ],
+          [
+            "OO14",
+            "U14",
+            "源矿"
+          ],
+          [
+            "OO16",
+            "U16",
+            "源矿"
+          ],
+          [
+            "OO17",
+            "U17",
+            "源矿"
+          ],
+          [
+            "OO18",
+            "U18",
+            "源矿"
+          ],
+          [
+            "KB1",
+            "B1",
+            "蓝铁粉末"
+          ],
+          [
+            "S1",
+            "B1",
+            "砂叶粉末"
+          ],
+          [
+            "KB3",
+            "B2",
+            "蓝铁粉末"
+          ],
+          [
+            "S1",
+            "B2",
+            "砂叶粉末"
+          ],
+          [
+            "KB6",
+            "B3",
+            "蓝铁粉末"
+          ],
+          [
+            "S3",
+            "B3",
+            "砂叶粉末"
+          ],
+          [
+            "KB7",
+            "B4",
+            "蓝铁粉末"
+          ],
+          [
+            "S3",
+            "B4",
+            "砂叶粉末"
+          ],
+          [
+            "KB9",
+            "B5",
+            "蓝铁粉末"
+          ],
+          [
+            "S5",
+            "B5",
+            "砂叶粉末"
+          ],
+          [
+            "S5",
+            "B6",
+            "砂叶粉末"
+          ],
+          [
+            "KB13",
+            "B7",
+            "蓝铁粉末"
+          ],
+          [
+            "S7",
+            "B7",
+            "砂叶粉末"
+          ],
+          [
+            "KB15",
+            "B8",
+            "蓝铁粉末"
+          ],
+          [
+            "KB16",
+            "B8",
+            "蓝铁粉末"
+          ],
+          [
+            "S7",
+            "B8",
+            "砂叶粉末"
+          ],
+          [
+            "KB17",
+            "B9",
+            "蓝铁粉末"
+          ],
+          [
+            "S7",
+            "B9",
+            "砂叶粉末"
+          ],
+          [
+            "KB19",
+            "B10",
+            "蓝铁粉末"
+          ],
+          [
+            "S8",
+            "B10",
+            "砂叶粉末"
+          ],
+          [
+            "KB21",
+            "B11",
+            "蓝铁粉末"
+          ],
+          [
+            "KB22",
+            "B11",
+            "蓝铁粉末"
+          ],
+          [
+            "S9",
+            "B12",
+            "砂叶粉末"
+          ],
+          [
+            "S9",
+            "B13",
+            "砂叶粉末"
+          ],
+          [
+            "KB28",
+            "B14",
+            "蓝铁粉末"
+          ],
+          [
+            "S10",
+            "B14",
+            "砂叶粉末"
+          ],
+          [
+            "KB29",
+            "B15",
+            "蓝铁粉末"
+          ],
+          [
+            "S11",
+            "B15",
+            "砂叶粉末"
+          ],
+          [
+            "KB32",
+            "B16",
+            "蓝铁粉末"
+          ],
+          [
+            "KB33",
+            "B17",
+            "蓝铁粉末"
+          ],
+          [
+            "U2",
+            "O1",
+            "源石粉末"
+          ],
+          [
+            "U3",
+            "O2",
+            "源石粉末"
+          ],
+          [
+            "U4",
+            "O2",
+            "源石粉末"
+          ],
+          [
+            "U5",
+            "O3",
+            "源石粉末"
+          ],
+          [
+            "U6",
+            "O3",
+            "源石粉末"
+          ],
+          [
+            "S2",
+            "O3",
+            "砂叶粉末"
+          ],
+          [
+            "U7",
+            "O4",
+            "源石粉末"
+          ],
+          [
+            "U8",
+            "O4",
+            "源石粉末"
+          ],
+          [
+            "S3",
+            "O4",
+            "砂叶粉末"
+          ],
+          [
+            "U9",
+            "O5",
+            "源石粉末"
+          ],
+          [
+            "U10",
+            "O5",
+            "源石粉末"
+          ],
+          [
+            "U11",
+            "O6",
+            "源石粉末"
+          ],
+          [
+            "S4",
+            "O6",
+            "砂叶粉末"
+          ],
+          [
+            "U13",
+            "O7",
+            "源石粉末"
+          ],
+          [
+            "S5",
+            "O7",
+            "砂叶粉末"
+          ],
+          [
+            "U15",
+            "O8",
+            "源石粉末"
+          ],
+          [
+            "S6",
+            "O8",
+            "砂叶粉末"
+          ],
+          [
+            "S6",
+            "O9",
+            "砂叶粉末"
+          ],
+          [
+            "KQ1",
+            "Q1",
+            "荞花粉末"
+          ],
+          [
+            "S8",
+            "Q1",
+            "砂叶粉末"
+          ],
+          [
+            "S8",
+            "Q2",
+            "砂叶粉末"
+          ],
+          [
+            "KQ3",
+            "Q3",
+            "荞花粉末"
+          ],
+          [
+            "KQ3",
+            "Q3",
+            "荞花粉末"
+          ],
+          [
+            "S10",
+            "Q4",
+            "砂叶粉末"
+          ],
+          [
+            "S11",
+            "Q5",
+            "砂叶粉末"
+          ],
+          [
+            "S13",
+            "Q6",
+            "砂叶粉末"
+          ],
+          [
+            "B2",
+            "R2",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B5",
+            "R5",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B6",
+            "R6",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B8",
+            "R8",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B10",
+            "R10",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B12",
+            "R12",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B13",
+            "R13",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B14",
+            "R14",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B15",
+            "R15",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B16",
+            "R16",
+            "致密蓝铁粉末"
+          ],
+          [
+            "B17",
+            "R17",
+            "致密蓝铁粉末"
+          ],
+          [
+            "R7",
+            "H1",
+            "钢块"
+          ],
+          [
+            "R9",
+            "H2",
+            "钢块"
+          ],
+          [
+            "R10",
+            "H2",
+            "钢块"
+          ],
+          [
+            "R3",
+            "P3",
+            "钢块"
+          ],
+          [
+            "R11",
+            "H3",
+            "钢块"
+          ],
+          [
+            "R16",
+            "H5",
+            "钢块"
+          ],
+          [
+            "P1",
+            "E1",
+            "钢制零件"
+          ],
+          [
+            "P2",
+            "E1",
+            "钢制零件"
+          ],
+          [
+            "O1",
+            "E1",
+            "致密源石粉末"
+          ],
+          [
+            "O2",
+            "E1",
+            "致密源石粉末"
+          ],
+          [
+            "O3",
+            "E1",
+            "致密源石粉末"
+          ],
+          [
+            "E1",
+            "CORE",
+            "高容谷地电池"
+          ],
+          [
+            "P4",
+            "E2",
+            "钢制零件"
+          ],
+          [
+            "O4",
+            "E2",
+            "致密源石粉末"
+          ],
+          [
+            "O5",
+            "E2",
+            "致密源石粉末"
+          ],
+          [
+            "O6",
+            "E2",
+            "致密源石粉末"
+          ],
+          [
+            "E2",
+            "CORE",
+            "高容谷地电池"
+          ],
+          [
+            "P5",
+            "E3",
+            "钢制零件"
+          ],
+          [
+            "P6",
+            "E3",
+            "钢制零件"
+          ],
+          [
+            "O7",
+            "E3",
+            "致密源石粉末"
+          ],
+          [
+            "O8",
+            "E3",
+            "致密源石粉末"
+          ],
+          [
+            "O9",
+            "E3",
+            "致密源石粉末"
+          ],
+          [
+            "E3",
+            "CORE",
+            "高容谷地电池"
+          ],
+          [
+            "H1",
+            "F1",
+            "钢质瓶"
+          ],
+          [
+            "Q1",
+            "F1",
+            "细磨荞花粉末"
+          ],
+          [
+            "Q2",
+            "F1",
+            "细磨荞花粉末"
+          ],
+          [
+            "F1",
+            "CORE",
+            "精选荞愈胶囊"
+          ],
+          [
+            "Q3",
+            "F2",
+            "细磨荞花粉末"
+          ],
+          [
+            "H4",
+            "F2",
+            "钢质瓶"
+          ],
+          [
+            "F2",
+            "CORE",
+            "精选荞愈胶囊"
+          ],
+          [
+            "Q5",
+            "F3",
+            "细磨荞花粉末"
+          ],
+          [
+            "F3",
+            "CORE",
+            "精选荞愈胶囊"
+          ],
+          [
+            "H6",
+            "F4",
+            "钢质瓶"
+          ],
+          [
+            "SA1",
+            "SC1",
+            "砂叶"
+          ],
+          [
+            "SB1",
+            "S1",
+            "砂叶"
+          ],
+          [
+            "SC2",
+            "SA2",
+            "砂叶种子"
+          ],
+          [
+            "SA2",
+            "SC2",
+            "砂叶"
+          ],
+          [
+            "SB2",
+            "S2",
+            "砂叶"
+          ],
+          [
+            "SC3",
+            "SB3",
+            "砂叶种子"
+          ],
+          [
+            "SA3",
+            "SC3",
+            "砂叶"
+          ],
+          [
+            "SC4",
+            "SB4",
+            "砂叶种子"
+          ],
+          [
+            "SA4",
+            "SC4",
+            "砂叶"
+          ],
+          [
+            "SC5",
+            "SA5",
+            "砂叶种子"
+          ],
+          [
+            "SC5",
+            "SB5",
+            "砂叶种子"
+          ],
+          [
+            "SB6",
+            "S6",
+            "砂叶"
+          ],
+          [
+            "SC7",
+            "SB7",
+            "砂叶种子"
+          ],
+          [
+            "SA7",
+            "SC7",
+            "砂叶"
+          ],
+          [
+            "SC8",
+            "SB8",
+            "砂叶种子"
+          ],
+          [
+            "SA8",
+            "SC8",
+            "砂叶"
+          ],
+          [
+            "SB9",
+            "S9",
+            "砂叶"
+          ],
+          [
+            "SC10",
+            "SA10",
+            "砂叶种子"
+          ],
+          [
+            "SB10",
+            "S10",
+            "砂叶"
+          ],
+          [
+            "SC11",
+            "SA11",
+            "砂叶种子"
+          ],
+          [
+            "SB11",
+            "S11",
+            "砂叶"
+          ],
+          [
+            "SA12",
+            "SC12",
+            "砂叶"
+          ],
+          [
+            "SB12",
+            "S12",
+            "砂叶"
+          ],
+          [
+            "SC13",
+            "SA13",
+            "砂叶种子"
+          ],
+          [
+            "QC1",
+            "QB1",
+            "荞花种子"
+          ],
+          [
+            "QB1",
+            "KQ1",
+            "荞花"
+          ],
+          [
+            "QA2",
+            "QC2",
+            "荞花"
+          ],
+          [
+            "QB2",
+            "KQ2",
+            "荞花"
+          ],
+          [
+            "QC3",
+            "QB3",
+            "荞花种子"
+          ],
+          [
+            "QC4",
+            "QB4",
+            "荞花种子"
+          ],
+          [
+            "QA4",
+            "QC4",
+            "荞花"
+          ],
+          [
+            "QB4",
+            "KQ4",
+            "荞花"
+          ],
+          [
+            "QC5",
+            "QA5",
+            "荞花种子"
+          ],
+          [
+            "QC5",
+            "QB5",
+            "荞花种子"
+          ],
+          [
+            "QC6",
+            "QA6",
+            "荞花种子"
+          ],
+          [
+            "QA6",
+            "QC6",
+            "荞花"
+          ]
+        ],
+        "extra": []
+      }
+    },
+    {
+      "name": "声明进路与重建逐格一致",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "进路设计流量",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "通道物品",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "H6和Q6到F4等长",
+      "pass": false,
+      "detail": {
+        "Q6": 9
+      }
+    },
+    {
+      "name": "精确平均物料守恒",
+      "pass": false,
+      "detail": [
+        "KB1",
+        "T2",
+        "T3",
+        "KB3",
+        "T5",
+        "KB5",
+        "KB6",
+        "T7",
+        "KB7",
+        "KB9",
+        "T10",
+        "T11",
+        "KB11",
+        "T12",
+        "T13",
+        "KB13",
+        "KB15",
+        "T16",
+        "KB16",
+        "KB17",
+        "T18",
+        "KB18",
+        "KB19",
+        "KB21",
+        "T22",
+        "KB22",
+        "T23",
+        "KB23",
+        "T24",
+        "KB24",
+        "T25",
+        "KB25",
+        "T27",
+        "KB27",
+        "T28",
+        "KB28",
+        "KB29",
+        "T30",
+        "T31",
+        "KB32",
+        "KB33",
+        "T34",
+        "KB34",
+        "U1",
+        "U2",
+        "U3",
+        "U4",
+        "U5",
+        "U6",
+        "U7",
+        "U8",
+        "U9",
+        "U10",
+        "U11",
+        "U12",
+        "U13",
+        "U14",
+        "U15",
+        "U16",
+        "U17",
+        "U18",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "B12",
+        "B13",
+        "B14",
+        "B15",
+        "B16",
+        "B17",
+        "O1",
+        "O2",
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7",
+        "O8",
+        "O9",
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "Q5",
+        "Q6",
+        "R2",
+        "R3",
+        "R5",
+        "R6",
+        "R7",
+        "R8",
+        "R9",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R14",
+        "R15",
+        "R16",
+        "R17",
+        "P1",
+        "H1",
+        "P2",
+        "H2",
+        "P3",
+        "H3",
+        "P4",
+        "H4",
+        "P5",
+        "H5",
+        "P6",
+        "H6",
+        "E1",
+        "E2",
+        "E3",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "SA1",
+        "SB1",
+        "SC1",
+        "S1",
+        "SA2",
+        "SB2",
+        "SC2",
+        "S2",
+        "SA3",
+        "SB3",
+        "SC3",
+        "S3",
+        "SA4",
+        "SB4",
+        "SC4",
+        "S4",
+        "SA5",
+        "SB5",
+        "SC5",
+        "S5",
+        "SB6",
+        "S6",
+        "SA7",
+        "SB7",
+        "SC7",
+        "S7",
+        "SA8",
+        "SB8",
+        "SC8",
+        "S8",
+        "SB9",
+        "S9",
+        "SA10",
+        "SB10",
+        "SC10",
+        "S10",
+        "SA11",
+        "SB11",
+        "SC11",
+        "S11",
+        "SA12",
+        "SB12",
+        "SC12",
+        "S12",
+        "SA13",
+        "SC13",
+        "S13",
+        "QB1",
+        "QC1",
+        "KQ1",
+        "QA2",
+        "QB2",
+        "QC2",
+        "KQ2",
+        "QB3",
+        "QC3",
+        "KQ3",
+        "QA4",
+        "QB4",
+        "QC4",
+        "KQ4",
+        "QA5",
+        "QB5",
+        "QC5",
+        "QA6",
+        "QC6"
+      ]
+    },
+    {
+      "name": "两种成品设计交付率",
+      "pass": false,
+      "detail": {
+        "精选荞愈胶囊": "1/20"
+      }
+    },
+    {
+      "name": "最大空矩形",
+      "pass": true,
+      "detail": {
+        "area": 36,
+        "short_side": 6,
+        "rectangle": {
+          "x0": 64,
+          "y0": 64,
+          "x1": 69,
+          "y1": 69
+        }
+      }
+    },
+    {
+      "name": "固定机位的运输格数必要条件",
+      "pass": false,
+      "detail": {
+        "length_lower_bound": 6273,
+        "slot_upper_bound": 1956,
+        "scope": "固定非运输单位坐标及朝向，保留至少36格空矩形；这是必要条件，不是可实现证明。"
+      }
+    }
+  ],
+  "missing_routes": [
+    [
+      "OB2",
+      "T2",
+      "蓝铁矿"
+    ],
+    [
+      "T3",
+      "KB3",
+      "蓝铁块"
+    ],
+    [
+      "T5",
+      "KB5",
+      "蓝铁块"
+    ],
+    [
+      "OB7",
+      "T7",
+      "蓝铁矿"
+    ],
+    [
+      "OB10",
+      "T10",
+      "蓝铁矿"
+    ],
+    [
+      "T11",
+      "KB11",
+      "蓝铁块"
+    ],
+    [
+      "OB12",
+      "T12",
+      "蓝铁矿"
+    ],
+    [
+      "T13",
+      "KB13",
+      "蓝铁块"
+    ],
+    [
+      "T16",
+      "KB16",
+      "蓝铁块"
+    ],
+    [
+      "T18",
+      "KB18",
+      "蓝铁块"
+    ],
+    [
+      "OB22",
+      "T22",
+      "蓝铁矿"
+    ],
+    [
+      "T23",
+      "KB23",
+      "蓝铁块"
+    ],
+    [
+      "T24",
+      "KB24",
+      "蓝铁块"
+    ],
+    [
+      "T25",
+      "KB25",
+      "蓝铁块"
+    ],
+    [
+      "T27",
+      "KB27",
+      "蓝铁块"
+    ],
+    [
+      "T28",
+      "KB28",
+      "蓝铁块"
+    ],
+    [
+      "OB30",
+      "T30",
+      "蓝铁矿"
+    ],
+    [
+      "OB31",
+      "T31",
+      "蓝铁矿"
+    ],
+    [
+      "T34",
+      "KB34",
+      "蓝铁块"
+    ],
+    [
+      "CORE",
+      "U1",
+      "源矿"
+    ],
+    [
+      "CORE",
+      "U4",
+      "源矿"
+    ],
+    [
+      "CORE",
+      "U5",
+      "源矿"
+    ],
+    [
+      "OO12",
+      "U12",
+      "源矿"
+    ],
+    [
+      "OO14",
+      "U14",
+      "源矿"
+    ],
+    [
+      "OO16",
+      "U16",
+      "源矿"
+    ],
+    [
+      "OO17",
+      "U17",
+      "源矿"
+    ],
+    [
+      "OO18",
+      "U18",
+      "源矿"
+    ],
+    [
+      "KB1",
+      "B1",
+      "蓝铁粉末"
+    ],
+    [
+      "S1",
+      "B1",
+      "砂叶粉末"
+    ],
+    [
+      "KB3",
+      "B2",
+      "蓝铁粉末"
+    ],
+    [
+      "S1",
+      "B2",
+      "砂叶粉末"
+    ],
+    [
+      "KB6",
+      "B3",
+      "蓝铁粉末"
+    ],
+    [
+      "S3",
+      "B3",
+      "砂叶粉末"
+    ],
+    [
+      "KB7",
+      "B4",
+      "蓝铁粉末"
+    ],
+    [
+      "S3",
+      "B4",
+      "砂叶粉末"
+    ],
+    [
+      "KB9",
+      "B5",
+      "蓝铁粉末"
+    ],
+    [
+      "S5",
+      "B5",
+      "砂叶粉末"
+    ],
+    [
+      "S5",
+      "B6",
+      "砂叶粉末"
+    ],
+    [
+      "KB13",
+      "B7",
+      "蓝铁粉末"
+    ],
+    [
+      "S7",
+      "B7",
+      "砂叶粉末"
+    ],
+    [
+      "KB15",
+      "B8",
+      "蓝铁粉末"
+    ],
+    [
+      "KB16",
+      "B8",
+      "蓝铁粉末"
+    ],
+    [
+      "S7",
+      "B8",
+      "砂叶粉末"
+    ],
+    [
+      "KB17",
+      "B9",
+      "蓝铁粉末"
+    ],
+    [
+      "S7",
+      "B9",
+      "砂叶粉末"
+    ],
+    [
+      "KB19",
+      "B10",
+      "蓝铁粉末"
+    ],
+    [
+      "S8",
+      "B10",
+      "砂叶粉末"
+    ],
+    [
+      "KB21",
+      "B11",
+      "蓝铁粉末"
+    ],
+    [
+      "KB22",
+      "B11",
+      "蓝铁粉末"
+    ],
+    [
+      "S9",
+      "B12",
+      "砂叶粉末"
+    ],
+    [
+      "S9",
+      "B13",
+      "砂叶粉末"
+    ],
+    [
+      "KB28",
+      "B14",
+      "蓝铁粉末"
+    ],
+    [
+      "S10",
+      "B14",
+      "砂叶粉末"
+    ],
+    [
+      "KB29",
+      "B15",
+      "蓝铁粉末"
+    ],
+    [
+      "S11",
+      "B15",
+      "砂叶粉末"
+    ],
+    [
+      "KB32",
+      "B16",
+      "蓝铁粉末"
+    ],
+    [
+      "KB33",
+      "B17",
+      "蓝铁粉末"
+    ],
+    [
+      "U2",
+      "O1",
+      "源石粉末"
+    ],
+    [
+      "U3",
+      "O2",
+      "源石粉末"
+    ],
+    [
+      "U4",
+      "O2",
+      "源石粉末"
+    ],
+    [
+      "U5",
+      "O3",
+      "源石粉末"
+    ],
+    [
+      "U6",
+      "O3",
+      "源石粉末"
+    ],
+    [
+      "S2",
+      "O3",
+      "砂叶粉末"
+    ],
+    [
+      "U7",
+      "O4",
+      "源石粉末"
+    ],
+    [
+      "U8",
+      "O4",
+      "源石粉末"
+    ],
+    [
+      "S3",
+      "O4",
+      "砂叶粉末"
+    ],
+    [
+      "U9",
+      "O5",
+      "源石粉末"
+    ],
+    [
+      "U10",
+      "O5",
+      "源石粉末"
+    ],
+    [
+      "U11",
+      "O6",
+      "源石粉末"
+    ],
+    [
+      "S4",
+      "O6",
+      "砂叶粉末"
+    ],
+    [
+      "U13",
+      "O7",
+      "源石粉末"
+    ],
+    [
+      "S5",
+      "O7",
+      "砂叶粉末"
+    ],
+    [
+      "U15",
+      "O8",
+      "源石粉末"
+    ],
+    [
+      "S6",
+      "O8",
+      "砂叶粉末"
+    ],
+    [
+      "S6",
+      "O9",
+      "砂叶粉末"
+    ],
+    [
+      "KQ1",
+      "Q1",
+      "荞花粉末"
+    ],
+    [
+      "S8",
+      "Q1",
+      "砂叶粉末"
+    ],
+    [
+      "S8",
+      "Q2",
+      "砂叶粉末"
+    ],
+    [
+      "KQ3",
+      "Q3",
+      "荞花粉末"
+    ],
+    [
+      "KQ3",
+      "Q3",
+      "荞花粉末"
+    ],
+    [
+      "S10",
+      "Q4",
+      "砂叶粉末"
+    ],
+    [
+      "S11",
+      "Q5",
+      "砂叶粉末"
+    ],
+    [
+      "S13",
+      "Q6",
+      "砂叶粉末"
+    ],
+    [
+      "B2",
+      "R2",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B5",
+      "R5",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B6",
+      "R6",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B8",
+      "R8",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B10",
+      "R10",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B12",
+      "R12",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B13",
+      "R13",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B14",
+      "R14",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B15",
+      "R15",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B16",
+      "R16",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B17",
+      "R17",
+      "致密蓝铁粉末"
+    ],
+    [
+      "R7",
+      "H1",
+      "钢块"
+    ],
+    [
+      "R9",
+      "H2",
+      "钢块"
+    ],
+    [
+      "R10",
+      "H2",
+      "钢块"
+    ],
+    [
+      "R3",
+      "P3",
+      "钢块"
+    ],
+    [
+      "R11",
+      "H3",
+      "钢块"
+    ],
+    [
+      "R16",
+      "H5",
+      "钢块"
+    ],
+    [
+      "P1",
+      "E1",
+      "钢制零件"
+    ],
+    [
+      "P2",
+      "E1",
+      "钢制零件"
+    ],
+    [
+      "O1",
+      "E1",
+      "致密源石粉末"
+    ],
+    [
+      "O2",
+      "E1",
+      "致密源石粉末"
+    ],
+    [
+      "O3",
+      "E1",
+      "致密源石粉末"
+    ],
+    [
+      "E1",
+      "CORE",
+      "高容谷地电池"
+    ],
+    [
+      "P4",
+      "E2",
+      "钢制零件"
+    ],
+    [
+      "O4",
+      "E2",
+      "致密源石粉末"
+    ],
+    [
+      "O5",
+      "E2",
+      "致密源石粉末"
+    ],
+    [
+      "O6",
+      "E2",
+      "致密源石粉末"
+    ],
+    [
+      "E2",
+      "CORE",
+      "高容谷地电池"
+    ],
+    [
+      "P5",
+      "E3",
+      "钢制零件"
+    ],
+    [
+      "P6",
+      "E3",
+      "钢制零件"
+    ],
+    [
+      "O7",
+      "E3",
+      "致密源石粉末"
+    ],
+    [
+      "O8",
+      "E3",
+      "致密源石粉末"
+    ],
+    [
+      "O9",
+      "E3",
+      "致密源石粉末"
+    ],
+    [
+      "E3",
+      "CORE",
+      "高容谷地电池"
+    ],
+    [
+      "H1",
+      "F1",
+      "钢质瓶"
+    ],
+    [
+      "Q1",
+      "F1",
+      "细磨荞花粉末"
+    ],
+    [
+      "Q2",
+      "F1",
+      "细磨荞花粉末"
+    ],
+    [
+      "F1",
+      "CORE",
+      "精选荞愈胶囊"
+    ],
+    [
+      "Q3",
+      "F2",
+      "细磨荞花粉末"
+    ],
+    [
+      "H4",
+      "F2",
+      "钢质瓶"
+    ],
+    [
+      "F2",
+      "CORE",
+      "精选荞愈胶囊"
+    ],
+    [
+      "Q5",
+      "F3",
+      "细磨荞花粉末"
+    ],
+    [
+      "F3",
+      "CORE",
+      "精选荞愈胶囊"
+    ],
+    [
+      "H6",
+      "F4",
+      "钢质瓶"
+    ],
+    [
+      "SA1",
+      "SC1",
+      "砂叶"
+    ],
+    [
+      "SB1",
+      "S1",
+      "砂叶"
+    ],
+    [
+      "SC2",
+      "SA2",
+      "砂叶种子"
+    ],
+    [
+      "SA2",
+      "SC2",
+      "砂叶"
+    ],
+    [
+      "SB2",
+      "S2",
+      "砂叶"
+    ],
+    [
+      "SC3",
+      "SB3",
+      "砂叶种子"
+    ],
+    [
+      "SA3",
+      "SC3",
+      "砂叶"
+    ],
+    [
+      "SC4",
+      "SB4",
+      "砂叶种子"
+    ],
+    [
+      "SA4",
+      "SC4",
+      "砂叶"
+    ],
+    [
+      "SC5",
+      "SA5",
+      "砂叶种子"
+    ],
+    [
+      "SC5",
+      "SB5",
+      "砂叶种子"
+    ],
+    [
+      "SB6",
+      "S6",
+      "砂叶"
+    ],
+    [
+      "SC7",
+      "SB7",
+      "砂叶种子"
+    ],
+    [
+      "SA7",
+      "SC7",
+      "砂叶"
+    ],
+    [
+      "SC8",
+      "SB8",
+      "砂叶种子"
+    ],
+    [
+      "SA8",
+      "SC8",
+      "砂叶"
+    ],
+    [
+      "SB9",
+      "S9",
+      "砂叶"
+    ],
+    [
+      "SC10",
+      "SA10",
+      "砂叶种子"
+    ],
+    [
+      "SB10",
+      "S10",
+      "砂叶"
+    ],
+    [
+      "SC11",
+      "SA11",
+      "砂叶种子"
+    ],
+    [
+      "SB11",
+      "S11",
+      "砂叶"
+    ],
+    [
+      "SA12",
+      "SC12",
+      "砂叶"
+    ],
+    [
+      "SB12",
+      "S12",
+      "砂叶"
+    ],
+    [
+      "SC13",
+      "SA13",
+      "砂叶种子"
+    ],
+    [
+      "QC1",
+      "QB1",
+      "荞花种子"
+    ],
+    [
+      "QB1",
+      "KQ1",
+      "荞花"
+    ],
+    [
+      "QA2",
+      "QC2",
+      "荞花"
+    ],
+    [
+      "QB2",
+      "KQ2",
+      "荞花"
+    ],
+    [
+      "QC3",
+      "QB3",
+      "荞花种子"
+    ],
+    [
+      "QC4",
+      "QB4",
+      "荞花种子"
+    ],
+    [
+      "QA4",
+      "QC4",
+      "荞花"
+    ],
+    [
+      "QB4",
+      "KQ4",
+      "荞花"
+    ],
+    [
+      "QC5",
+      "QA5",
+      "荞花种子"
+    ],
+    [
+      "QC5",
+      "QB5",
+      "荞花种子"
+    ],
+    [
+      "QC6",
+      "QA6",
+      "荞花种子"
+    ],
+    [
+      "QA6",
+      "QC6",
+      "荞花"
+    ]
+  ],
+  "obstructed_routes": [
+    [
+      "OB2",
+      "T2",
+      "蓝铁矿"
+    ],
+    [
+      "T3",
+      "KB3",
+      "蓝铁块"
+    ],
+    [
+      "T5",
+      "KB5",
+      "蓝铁块"
+    ],
+    [
+      "OB7",
+      "T7",
+      "蓝铁矿"
+    ],
+    [
+      "OB10",
+      "T10",
+      "蓝铁矿"
+    ],
+    [
+      "T11",
+      "KB11",
+      "蓝铁块"
+    ],
+    [
+      "OB12",
+      "T12",
+      "蓝铁矿"
+    ],
+    [
+      "T13",
+      "KB13",
+      "蓝铁块"
+    ],
+    [
+      "T16",
+      "KB16",
+      "蓝铁块"
+    ],
+    [
+      "T18",
+      "KB18",
+      "蓝铁块"
+    ],
+    [
+      "OB22",
+      "T22",
+      "蓝铁矿"
+    ],
+    [
+      "T23",
+      "KB23",
+      "蓝铁块"
+    ],
+    [
+      "T24",
+      "KB24",
+      "蓝铁块"
+    ],
+    [
+      "T25",
+      "KB25",
+      "蓝铁块"
+    ],
+    [
+      "T27",
+      "KB27",
+      "蓝铁块"
+    ],
+    [
+      "T28",
+      "KB28",
+      "蓝铁块"
+    ],
+    [
+      "OB30",
+      "T30",
+      "蓝铁矿"
+    ],
+    [
+      "OB31",
+      "T31",
+      "蓝铁矿"
+    ],
+    [
+      "T34",
+      "KB34",
+      "蓝铁块"
+    ],
+    [
+      "CORE",
+      "U1",
+      "源矿"
+    ],
+    [
+      "CORE",
+      "U4",
+      "源矿"
+    ],
+    [
+      "OO12",
+      "U12",
+      "源矿"
+    ],
+    [
+      "OO14",
+      "U14",
+      "源矿"
+    ],
+    [
+      "OO16",
+      "U16",
+      "源矿"
+    ],
+    [
+      "OO17",
+      "U17",
+      "源矿"
+    ],
+    [
+      "OO18",
+      "U18",
+      "源矿"
+    ],
+    [
+      "KB1",
+      "B1",
+      "蓝铁粉末"
+    ],
+    [
+      "S1",
+      "B1",
+      "砂叶粉末"
+    ],
+    [
+      "S1",
+      "B2",
+      "砂叶粉末"
+    ],
+    [
+      "KB6",
+      "B3",
+      "蓝铁粉末"
+    ],
+    [
+      "S3",
+      "B3",
+      "砂叶粉末"
+    ],
+    [
+      "KB7",
+      "B4",
+      "蓝铁粉末"
+    ],
+    [
+      "S3",
+      "B4",
+      "砂叶粉末"
+    ],
+    [
+      "KB9",
+      "B5",
+      "蓝铁粉末"
+    ],
+    [
+      "S5",
+      "B5",
+      "砂叶粉末"
+    ],
+    [
+      "S5",
+      "B6",
+      "砂叶粉末"
+    ],
+    [
+      "KB13",
+      "B7",
+      "蓝铁粉末"
+    ],
+    [
+      "S7",
+      "B7",
+      "砂叶粉末"
+    ],
+    [
+      "KB15",
+      "B8",
+      "蓝铁粉末"
+    ],
+    [
+      "KB16",
+      "B8",
+      "蓝铁粉末"
+    ],
+    [
+      "S7",
+      "B8",
+      "砂叶粉末"
+    ],
+    [
+      "KB17",
+      "B9",
+      "蓝铁粉末"
+    ],
+    [
+      "S7",
+      "B9",
+      "砂叶粉末"
+    ],
+    [
+      "KB19",
+      "B10",
+      "蓝铁粉末"
+    ],
+    [
+      "S8",
+      "B10",
+      "砂叶粉末"
+    ],
+    [
+      "KB21",
+      "B11",
+      "蓝铁粉末"
+    ],
+    [
+      "KB22",
+      "B11",
+      "蓝铁粉末"
+    ],
+    [
+      "S9",
+      "B12",
+      "砂叶粉末"
+    ],
+    [
+      "S9",
+      "B13",
+      "砂叶粉末"
+    ],
+    [
+      "KB28",
+      "B14",
+      "蓝铁粉末"
+    ],
+    [
+      "S10",
+      "B14",
+      "砂叶粉末"
+    ],
+    [
+      "KB29",
+      "B15",
+      "蓝铁粉末"
+    ],
+    [
+      "S11",
+      "B15",
+      "砂叶粉末"
+    ],
+    [
+      "KB32",
+      "B16",
+      "蓝铁粉末"
+    ],
+    [
+      "KB33",
+      "B17",
+      "蓝铁粉末"
+    ],
+    [
+      "U2",
+      "O1",
+      "源石粉末"
+    ],
+    [
+      "U3",
+      "O2",
+      "源石粉末"
+    ],
+    [
+      "S2",
+      "O3",
+      "砂叶粉末"
+    ],
+    [
+      "U7",
+      "O4",
+      "源石粉末"
+    ],
+    [
+      "U8",
+      "O4",
+      "源石粉末"
+    ],
+    [
+      "S3",
+      "O4",
+      "砂叶粉末"
+    ],
+    [
+      "U9",
+      "O5",
+      "源石粉末"
+    ],
+    [
+      "U10",
+      "O5",
+      "源石粉末"
+    ],
+    [
+      "U11",
+      "O6",
+      "源石粉末"
+    ],
+    [
+      "S4",
+      "O6",
+      "砂叶粉末"
+    ],
+    [
+      "U13",
+      "O7",
+      "源石粉末"
+    ],
+    [
+      "S5",
+      "O7",
+      "砂叶粉末"
+    ],
+    [
+      "U15",
+      "O8",
+      "源石粉末"
+    ],
+    [
+      "S6",
+      "O8",
+      "砂叶粉末"
+    ],
+    [
+      "S8",
+      "Q1",
+      "砂叶粉末"
+    ],
+    [
+      "S8",
+      "Q2",
+      "砂叶粉末"
+    ],
+    [
+      "KQ3",
+      "Q3",
+      "荞花粉末"
+    ],
+    [
+      "KQ3",
+      "Q3",
+      "荞花粉末"
+    ],
+    [
+      "S10",
+      "Q4",
+      "砂叶粉末"
+    ],
+    [
+      "S11",
+      "Q5",
+      "砂叶粉末"
+    ],
+    [
+      "S13",
+      "Q6",
+      "砂叶粉末"
+    ],
+    [
+      "B2",
+      "R2",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B5",
+      "R5",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B6",
+      "R6",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B8",
+      "R8",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B10",
+      "R10",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B12",
+      "R12",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B13",
+      "R13",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B14",
+      "R14",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B15",
+      "R15",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B16",
+      "R16",
+      "致密蓝铁粉末"
+    ],
+    [
+      "B17",
+      "R17",
+      "致密蓝铁粉末"
+    ],
+    [
+      "R7",
+      "H1",
+      "钢块"
+    ],
+    [
+      "R9",
+      "H2",
+      "钢块"
+    ],
+    [
+      "R10",
+      "H2",
+      "钢块"
+    ],
+    [
+      "R3",
+      "P3",
+      "钢块"
+    ],
+    [
+      "R11",
+      "H3",
+      "钢块"
+    ],
+    [
+      "R16",
+      "H5",
+      "钢块"
+    ],
+    [
+      "P1",
+      "E1",
+      "钢制零件"
+    ],
+    [
+      "P2",
+      "E1",
+      "钢制零件"
+    ],
+    [
+      "O1",
+      "E1",
+      "致密源石粉末"
+    ],
+    [
+      "O2",
+      "E1",
+      "致密源石粉末"
+    ],
+    [
+      "O3",
+      "E1",
+      "致密源石粉末"
+    ],
+    [
+      "E1",
+      "CORE",
+      "高容谷地电池"
+    ],
+    [
+      "P4",
+      "E2",
+      "钢制零件"
+    ],
+    [
+      "O4",
+      "E2",
+      "致密源石粉末"
+    ],
+    [
+      "O5",
+      "E2",
+      "致密源石粉末"
+    ],
+    [
+      "O6",
+      "E2",
+      "致密源石粉末"
+    ],
+    [
+      "E2",
+      "CORE",
+      "高容谷地电池"
+    ],
+    [
+      "P6",
+      "E3",
+      "钢制零件"
+    ],
+    [
+      "O7",
+      "E3",
+      "致密源石粉末"
+    ],
+    [
+      "O8",
+      "E3",
+      "致密源石粉末"
+    ],
+    [
+      "O9",
+      "E3",
+      "致密源石粉末"
+    ],
+    [
+      "E3",
+      "CORE",
+      "高容谷地电池"
+    ],
+    [
+      "H1",
+      "F1",
+      "钢质瓶"
+    ],
+    [
+      "Q1",
+      "F1",
+      "细磨荞花粉末"
+    ],
+    [
+      "Q2",
+      "F1",
+      "细磨荞花粉末"
+    ],
+    [
+      "F1",
+      "CORE",
+      "精选荞愈胶囊"
+    ],
+    [
+      "Q3",
+      "F2",
+      "细磨荞花粉末"
+    ],
+    [
+      "H4",
+      "F2",
+      "钢质瓶"
+    ],
+    [
+      "F2",
+      "CORE",
+      "精选荞愈胶囊"
+    ],
+    [
+      "Q5",
+      "F3",
+      "细磨荞花粉末"
+    ],
+    [
+      "F3",
+      "CORE",
+      "精选荞愈胶囊"
+    ],
+    [
+      "SB1",
+      "S1",
+      "砂叶"
+    ],
+    [
+      "SC2",
+      "SA2",
+      "砂叶种子"
+    ],
+    [
+      "SA2",
+      "SC2",
+      "砂叶"
+    ],
+    [
+      "SB2",
+      "S2",
+      "砂叶"
+    ],
+    [
+      "SC3",
+      "SB3",
+      "砂叶种子"
+    ],
+    [
+      "SA3",
+      "SC3",
+      "砂叶"
+    ],
+    [
+      "SC4",
+      "SB4",
+      "砂叶种子"
+    ],
+    [
+      "SA4",
+      "SC4",
+      "砂叶"
+    ],
+    [
+      "SC5",
+      "SA5",
+      "砂叶种子"
+    ],
+    [
+      "SC5",
+      "SB5",
+      "砂叶种子"
+    ],
+    [
+      "SB6",
+      "S6",
+      "砂叶"
+    ],
+    [
+      "SC7",
+      "SB7",
+      "砂叶种子"
+    ],
+    [
+      "SA7",
+      "SC7",
+      "砂叶"
+    ],
+    [
+      "SC8",
+      "SB8",
+      "砂叶种子"
+    ],
+    [
+      "SA8",
+      "SC8",
+      "砂叶"
+    ],
+    [
+      "SB9",
+      "S9",
+      "砂叶"
+    ],
+    [
+      "SC10",
+      "SA10",
+      "砂叶种子"
+    ],
+    [
+      "SB10",
+      "S10",
+      "砂叶"
+    ],
+    [
+      "SC11",
+      "SA11",
+      "砂叶种子"
+    ],
+    [
+      "SB11",
+      "S11",
+      "砂叶"
+    ],
+    [
+      "SA12",
+      "SC12",
+      "砂叶"
+    ],
+    [
+      "SB12",
+      "S12",
+      "砂叶"
+    ],
+    [
+      "SC13",
+      "SA13",
+      "砂叶种子"
+    ],
+    [
+      "QC1",
+      "QB1",
+      "荞花种子"
+    ],
+    [
+      "QB1",
+      "KQ1",
+      "荞花"
+    ],
+    [
+      "QA2",
+      "QC2",
+      "荞花"
+    ],
+    [
+      "QB2",
+      "KQ2",
+      "荞花"
+    ],
+    [
+      "QC3",
+      "QB3",
+      "荞花种子"
+    ],
+    [
+      "QC4",
+      "QB4",
+      "荞花种子"
+    ],
+    [
+      "QA4",
+      "QC4",
+      "荞花"
+    ],
+    [
+      "QB4",
+      "KQ4",
+      "荞花"
+    ],
+    [
+      "QC5",
+      "QA5",
+      "荞花种子"
+    ],
+    [
+      "QC5",
+      "QB5",
+      "荞花种子"
+    ],
+    [
+      "QC6",
+      "QA6",
+      "荞花种子"
+    ],
+    [
+      "QA6",
+      "QC6",
+      "荞花"
+    ]
+  ],
+  "actual_routes": [
+    {
+      "source": [
+        "T1",
+        0,
+        0
+      ],
+      "target": [
+        "KB1",
+        1,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T1",
+            0,
+            0
+          ],
+          [
+            "X5_48",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_48",
+            3,
+            0
+          ],
+          [
+            "KB1",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T2",
+        2,
+        0
+      ],
+      "target": [
+        "KB2",
+        0,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T2",
+            2,
+            0
+          ],
+          [
+            "X17_12",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_12",
+            2,
+            0
+          ],
+          [
+            "KB2",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB2",
+        2,
+        0
+      ],
+      "target": [
+        "B1",
+        0,
+        2
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB2",
+            2,
+            0
+          ],
+          [
+            "X13_12",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X13_12",
+            2,
+            0
+          ],
+          [
+            "B1",
+            0,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T4",
+        1,
+        2
+      ],
+      "target": [
+        "KB4",
+        3,
+        2
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T4",
+            1,
+            2
+          ],
+          [
+            "X69_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_5",
+            1,
+            0
+          ],
+          [
+            "X69_6",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_6",
+            1,
+            0
+          ],
+          [
+            "X69_7",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_7",
+            1,
+            0
+          ],
+          [
+            "X69_8",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_8",
+            1,
+            0
+          ],
+          [
+            "KB4",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 4
+    },
+    {
+      "source": [
+        "KB4",
+        1,
+        1
+      ],
+      "target": [
+        "B2",
+        3,
+        4
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB4",
+            1,
+            1
+          ],
+          [
+            "X68_12",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_12",
+            1,
+            0
+          ],
+          [
+            "X68_13",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_13",
+            1,
+            0
+          ],
+          [
+            "X68_14",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_14",
+            1,
+            0
+          ],
+          [
+            "X68_15",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_15",
+            1,
+            0
+          ],
+          [
+            "X68_16",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_16",
+            1,
+            0
+          ],
+          [
+            "X68_17",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_17",
+            1,
+            0
+          ],
+          [
+            "X68_18",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_18",
+            1,
+            0
+          ],
+          [
+            "B2",
+            3,
+            4
+          ]
+        ]
+      ],
+      "length": 7
+    },
+    {
+      "source": [
+        "KB5",
+        3,
+        2
+      ],
+      "target": [
+        "B3",
+        2,
+        0
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB5",
+            3,
+            2
+          ],
+          [
+            "X55_31",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_31",
+            0,
+            0
+          ],
+          [
+            "B3",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T6",
+        0,
+        0
+      ],
+      "target": [
+        "KB6",
+        2,
+        2
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T6",
+            0,
+            0
+          ],
+          [
+            "X5_29",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_29",
+            0,
+            0
+          ],
+          [
+            "X6_29",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X6_29",
+            0,
+            0
+          ],
+          [
+            "KB6",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "T7",
+        1,
+        2
+      ],
+      "target": [
+        "KB7",
+        0,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T7",
+            1,
+            2
+          ],
+          [
+            "X10_67",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_67",
+            2,
+            0
+          ],
+          [
+            "KB7",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T8",
+        1,
+        1
+      ],
+      "target": [
+        "KB8",
+        3,
+        1
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T8",
+            1,
+            1
+          ],
+          [
+            "X27_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X27_5",
+            1,
+            0
+          ],
+          [
+            "X27_6",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X27_6",
+            1,
+            0
+          ],
+          [
+            "X27_7",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X27_7",
+            1,
+            0
+          ],
+          [
+            "KB8",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "KB8",
+        1,
+        0
+      ],
+      "target": [
+        "B4",
+        3,
+        2
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB8",
+            1,
+            0
+          ],
+          [
+            "X26_11",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_11",
+            1,
+            0
+          ],
+          [
+            "B4",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T9",
+        1,
+        2
+      ],
+      "target": [
+        "KB9",
+        0,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T9",
+            1,
+            2
+          ],
+          [
+            "X45_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X45_5",
+            2,
+            0
+          ],
+          [
+            "KB9",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T10",
+        2,
+        1
+      ],
+      "target": [
+        "KB10",
+        1,
+        2
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T10",
+            2,
+            1
+          ],
+          [
+            "X8_62",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_62",
+            3,
+            0
+          ],
+          [
+            "KB10",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB10",
+        3,
+        2
+      ],
+      "target": [
+        "B5",
+        3,
+        0
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB10",
+            3,
+            2
+          ],
+          [
+            "X8_58",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_58",
+            3,
+            0
+          ],
+          [
+            "X8_57",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_57",
+            3,
+            0
+          ],
+          [
+            "X8_56",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_56",
+            0,
+            0
+          ],
+          [
+            "X9_56",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X9_56",
+            1,
+            0
+          ],
+          [
+            "B5",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 4
+    },
+    {
+      "source": [
+        "KB11",
+        0,
+        0
+      ],
+      "target": [
+        "B6",
+        1,
+        3
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB11",
+            0,
+            0
+          ],
+          [
+            "X11_44",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X11_44",
+            3,
+            0
+          ],
+          [
+            "B6",
+            1,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T12",
+        0,
+        1
+      ],
+      "target": [
+        "KB12",
+        1,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T12",
+            0,
+            1
+          ],
+          [
+            "X11_48",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X11_48",
+            3,
+            0
+          ],
+          [
+            "KB12",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB12",
+        3,
+        2
+      ],
+      "target": [
+        "B6",
+        1,
+        5
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB12",
+            3,
+            2
+          ],
+          [
+            "X13_44",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X13_44",
+            3,
+            0
+          ],
+          [
+            "B6",
+            1,
+            5
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T14",
+        1,
+        1
+      ],
+      "target": [
+        "KB14",
+        3,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T14",
+            1,
+            1
+          ],
+          [
+            "X50_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_5",
+            1,
+            0
+          ],
+          [
+            "KB14",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB14",
+        1,
+        2
+      ],
+      "target": [
+        "B7",
+        3,
+        5
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB14",
+            1,
+            2
+          ],
+          [
+            "X52_9",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_9",
+            1,
+            0
+          ],
+          [
+            "X52_10",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_10",
+            1,
+            0
+          ],
+          [
+            "B7",
+            3,
+            5
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "T15",
+        1,
+        0
+      ],
+      "target": [
+        "KB15",
+        2,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T15",
+            1,
+            0
+          ],
+          [
+            "X52_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_5",
+            0,
+            0
+          ],
+          [
+            "KB15",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T17",
+        1,
+        2
+      ],
+      "target": [
+        "KB17",
+        2,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T17",
+            1,
+            2
+          ],
+          [
+            "X63_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_5",
+            0,
+            0
+          ],
+          [
+            "X64_5",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X64_5",
+            0,
+            0
+          ],
+          [
+            "KB17",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "KB18",
+        0,
+        0
+      ],
+      "target": [
+        "B9",
+        1,
+        4
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB18",
+            0,
+            0
+          ],
+          [
+            "X68_33",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_33",
+            3,
+            0
+          ],
+          [
+            "B9",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T19",
+        1,
+        0
+      ],
+      "target": [
+        "KB19",
+        2,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T19",
+            1,
+            0
+          ],
+          [
+            "X17_5",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_5",
+            0,
+            0
+          ],
+          [
+            "KB19",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T20",
+        0,
+        2
+      ],
+      "target": [
+        "KB20",
+        1,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T20",
+            0,
+            2
+          ],
+          [
+            "X5_59",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_59",
+            3,
+            0
+          ],
+          [
+            "KB20",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB20",
+        3,
+        2
+      ],
+      "target": [
+        "B10",
+        2,
+        5
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB20",
+            3,
+            2
+          ],
+          [
+            "X7_55",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X7_55",
+            0,
+            0
+          ],
+          [
+            "B10",
+            2,
+            5
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T21",
+        1,
+        0
+      ],
+      "target": [
+        "KB21",
+        2,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T21",
+            1,
+            0
+          ],
+          [
+            "X1_42",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_42",
+            0,
+            0
+          ],
+          [
+            "KB21",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T22",
+        0,
+        2
+      ],
+      "target": [
+        "KB22",
+        1,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T22",
+            0,
+            2
+          ],
+          [
+            "X7_40",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X7_40",
+            3,
+            0
+          ],
+          [
+            "KB22",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB23",
+        2,
+        2
+      ],
+      "target": [
+        "B12",
+        0,
+        0
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB23",
+            2,
+            2
+          ],
+          [
+            "X33_52",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X33_52",
+            2,
+            0
+          ],
+          [
+            "X32_52",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X32_52",
+            2,
+            0
+          ],
+          [
+            "X31_52",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X31_52",
+            2,
+            0
+          ],
+          [
+            "B12",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "KB24",
+        3,
+        0
+      ],
+      "target": [
+        "B12",
+        0,
+        1
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB24",
+            3,
+            0
+          ],
+          [
+            "X31_53",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X31_53",
+            2,
+            0
+          ],
+          [
+            "B12",
+            0,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB25",
+        1,
+        0
+      ],
+      "target": [
+        "B13",
+        3,
+        5
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB25",
+            1,
+            0
+          ],
+          [
+            "X10_28",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_28",
+            1,
+            0
+          ],
+          [
+            "X10_29",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_29",
+            1,
+            0
+          ],
+          [
+            "B13",
+            3,
+            5
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "T26",
+        0,
+        2
+      ],
+      "target": [
+        "KB26",
+        3,
+        2
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T26",
+            0,
+            2
+          ],
+          [
+            "X5_22",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_22",
+            0,
+            0
+          ],
+          [
+            "X6_22",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X6_22",
+            1,
+            0
+          ],
+          [
+            "X6_23",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X6_23",
+            1,
+            0
+          ],
+          [
+            "X6_24",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X6_24",
+            1,
+            0
+          ],
+          [
+            "X6_25",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X6_25",
+            1,
+            0
+          ],
+          [
+            "KB26",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 5
+    },
+    {
+      "source": [
+        "KB26",
+        1,
+        2
+      ],
+      "target": [
+        "B13",
+        3,
+        1
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB26",
+            1,
+            2
+          ],
+          [
+            "X6_29",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X6_29",
+            1,
+            0
+          ],
+          [
+            "B13",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB27",
+        3,
+        0
+      ],
+      "target": [
+        "B14",
+        3,
+        5
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB27",
+            3,
+            0
+          ],
+          [
+            "X55_41",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_41",
+            2,
+            0
+          ],
+          [
+            "X54_41",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X54_41",
+            1,
+            0
+          ],
+          [
+            "B14",
+            3,
+            5
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "T29",
+        0,
+        0
+      ],
+      "target": [
+        "KB29",
+        3,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T29",
+            0,
+            0
+          ],
+          [
+            "X5_51",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_51",
+            1,
+            0
+          ],
+          [
+            "KB29",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T30",
+        3,
+        2
+      ],
+      "target": [
+        "KB30",
+        2,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T30",
+            3,
+            2
+          ],
+          [
+            "X8_6",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_6",
+            0,
+            0
+          ],
+          [
+            "KB30",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB30",
+        0,
+        0
+      ],
+      "target": [
+        "B15",
+        2,
+        0
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB30",
+            0,
+            0
+          ],
+          [
+            "X12_6",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X12_6",
+            0,
+            0
+          ],
+          [
+            "B15",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T31",
+        0,
+        0
+      ],
+      "target": [
+        "KB31",
+        2,
+        2
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T31",
+            0,
+            0
+          ],
+          [
+            "X19_38",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X19_38",
+            0,
+            0
+          ],
+          [
+            "KB31",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB31",
+        0,
+        0
+      ],
+      "target": [
+        "B16",
+        1,
+        2
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB31",
+            0,
+            0
+          ],
+          [
+            "X23_36",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_36",
+            3,
+            0
+          ],
+          [
+            "X23_35",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_35",
+            3,
+            0
+          ],
+          [
+            "X23_34",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_34",
+            3,
+            0
+          ],
+          [
+            "X23_33",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_33",
+            3,
+            0
+          ],
+          [
+            "B16",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 4
+    },
+    {
+      "source": [
+        "T32",
+        0,
+        1
+      ],
+      "target": [
+        "KB32",
+        1,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T32",
+            0,
+            1
+          ],
+          [
+            "X5_67",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_67",
+            3,
+            0
+          ],
+          [
+            "KB32",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "T33",
+        0,
+        2
+      ],
+      "target": [
+        "KB33",
+        1,
+        0
+      ],
+      "item": "蓝铁块",
+      "path": [
+        [
+          [
+            "T33",
+            0,
+            2
+          ],
+          [
+            "X5_13",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X5_13",
+            3,
+            0
+          ],
+          [
+            "KB33",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KB34",
+        2,
+        2
+      ],
+      "target": [
+        "B17",
+        2,
+        0
+      ],
+      "item": "蓝铁粉末",
+      "path": [
+        [
+          [
+            "KB34",
+            2,
+            2
+          ],
+          [
+            "X21_22",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X21_22",
+            1,
+            0
+          ],
+          [
+            "X21_23",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X21_23",
+            0,
+            0
+          ],
+          [
+            "B17",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "U1",
+        2,
+        2
+      ],
+      "target": [
+        "O1",
+        0,
+        0
+      ],
+      "item": "源石粉末",
+      "path": [
+        [
+          [
+            "U1",
+            2,
+            2
+          ],
+          [
+            "X50_20",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_20",
+            2,
+            0
+          ],
+          [
+            "X49_20",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X49_20",
+            2,
+            0
+          ],
+          [
+            "X48_20",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X48_20",
+            2,
+            0
+          ],
+          [
+            "O1",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "U12",
+        1,
+        2
+      ],
+      "target": [
+        "O6",
+        2,
+        3
+      ],
+      "item": "源石粉末",
+      "path": [
+        [
+          [
+            "U12",
+            1,
+            2
+          ],
+          [
+            "X10_37",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_37",
+            0,
+            0
+          ],
+          [
+            "O6",
+            2,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "U14",
+        1,
+        0
+      ],
+      "target": [
+        "O7",
+        0,
+        4
+      ],
+      "item": "源石粉末",
+      "path": [
+        [
+          [
+            "U14",
+            1,
+            0
+          ],
+          [
+            "X44_16",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_16",
+            2,
+            0
+          ],
+          [
+            "O7",
+            0,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "U16",
+        2,
+        2
+      ],
+      "target": [
+        "O8",
+        3,
+        5
+      ],
+      "item": "源石粉末",
+      "path": [
+        [
+          [
+            "U16",
+            2,
+            2
+          ],
+          [
+            "X46_7",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X46_7",
+            1,
+            0
+          ],
+          [
+            "O8",
+            3,
+            5
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "U17",
+        3,
+        2
+      ],
+      "target": [
+        "O9",
+        3,
+        1
+      ],
+      "item": "源石粉末",
+      "path": [
+        [
+          [
+            "U17",
+            3,
+            2
+          ],
+          [
+            "X7_1",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X7_1",
+            0,
+            0
+          ],
+          [
+            "X8_1",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_1",
+            0,
+            0
+          ],
+          [
+            "X9_1",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X9_1",
+            0,
+            0
+          ],
+          [
+            "X10_1",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_1",
+            0,
+            0
+          ],
+          [
+            "X11_1",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X11_1",
+            0,
+            0
+          ],
+          [
+            "X12_1",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X12_1",
+            1,
+            0
+          ],
+          [
+            "O9",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 6
+    },
+    {
+      "source": [
+        "U18",
+        3,
+        0
+      ],
+      "target": [
+        "O9",
+        3,
+        5
+      ],
+      "item": "源石粉末",
+      "path": [
+        [
+          [
+            "U18",
+            3,
+            0
+          ],
+          [
+            "X20_1",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X20_1",
+            2,
+            0
+          ],
+          [
+            "X19_1",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X19_1",
+            2,
+            0
+          ],
+          [
+            "X18_1",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X18_1",
+            2,
+            0
+          ],
+          [
+            "X17_1",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_1",
+            2,
+            0
+          ],
+          [
+            "X16_1",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X16_1",
+            1,
+            0
+          ],
+          [
+            "O9",
+            3,
+            5
+          ]
+        ]
+      ],
+      "length": 5
+    },
+    {
+      "source": [
+        "B1",
+        2,
+        2
+      ],
+      "target": [
+        "R1",
+        3,
+        2
+      ],
+      "item": "致密蓝铁粉末",
+      "path": [
+        [
+          [
+            "B1",
+            2,
+            2
+          ],
+          [
+            "X8_12",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_12",
+            1,
+            0
+          ],
+          [
+            "R1",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R1",
+        1,
+        2
+      ],
+      "target": [
+        "P1",
+        3,
+        0
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R1",
+            1,
+            2
+          ],
+          [
+            "X8_16",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X8_16",
+            1,
+            0
+          ],
+          [
+            "P1",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R2",
+        2,
+        2
+      ],
+      "target": [
+        "P2",
+        3,
+        1
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R2",
+            2,
+            2
+          ],
+          [
+            "X2_25",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X2_25",
+            1,
+            0
+          ],
+          [
+            "P2",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "B3",
+        0,
+        5
+      ],
+      "target": [
+        "R3",
+        0,
+        0
+      ],
+      "item": "致密蓝铁粉末",
+      "path": [
+        [
+          [
+            "B3",
+            0,
+            5
+          ],
+          [
+            "X60_36",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X60_36",
+            1,
+            0
+          ],
+          [
+            "X60_37",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X60_37",
+            2,
+            0
+          ],
+          [
+            "X59_37",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_37",
+            2,
+            0
+          ],
+          [
+            "R3",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "B4",
+        1,
+        1
+      ],
+      "target": [
+        "R4",
+        0,
+        0
+      ],
+      "item": "致密蓝铁粉末",
+      "path": [
+        [
+          [
+            "B4",
+            1,
+            1
+          ],
+          [
+            "X25_16",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X25_16",
+            1,
+            0
+          ],
+          [
+            "X25_17",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X25_17",
+            2,
+            0
+          ],
+          [
+            "R4",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "R4",
+        2,
+        0
+      ],
+      "target": [
+        "P4",
+        1,
+        0
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R4",
+            2,
+            0
+          ],
+          [
+            "X21_17",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X21_17",
+            3,
+            0
+          ],
+          [
+            "X21_16",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X21_16",
+            3,
+            0
+          ],
+          [
+            "P4",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "R5",
+        3,
+        1
+      ],
+      "target": [
+        "P5",
+        2,
+        2
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R5",
+            3,
+            1
+          ],
+          [
+            "X17_23",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_23",
+            0,
+            0
+          ],
+          [
+            "P5",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R6",
+        0,
+        2
+      ],
+      "target": [
+        "P6",
+        2,
+        1
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R6",
+            0,
+            2
+          ],
+          [
+            "X17_63",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_63",
+            0,
+            0
+          ],
+          [
+            "P6",
+            2,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "B7",
+        1,
+        3
+      ],
+      "target": [
+        "R7",
+        2,
+        0
+      ],
+      "item": "致密蓝铁粉末",
+      "path": [
+        [
+          [
+            "B7",
+            1,
+            3
+          ],
+          [
+            "X50_15",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_15",
+            0,
+            0
+          ],
+          [
+            "R7",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R8",
+        3,
+        0
+      ],
+      "target": [
+        "H1",
+        1,
+        0
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R8",
+            3,
+            0
+          ],
+          [
+            "X36_18",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X36_18",
+            3,
+            0
+          ],
+          [
+            "H1",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "B9",
+        3,
+        2
+      ],
+      "target": [
+        "R9",
+        1,
+        0
+      ],
+      "item": "致密蓝铁粉末",
+      "path": [
+        [
+          [
+            "B9",
+            3,
+            2
+          ],
+          [
+            "X66_28",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X66_28",
+            3,
+            0
+          ],
+          [
+            "X66_27",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X66_27",
+            3,
+            0
+          ],
+          [
+            "R9",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "B11",
+        1,
+        0
+      ],
+      "target": [
+        "R11",
+        2,
+        0
+      ],
+      "item": "致密蓝铁粉末",
+      "path": [
+        [
+          [
+            "B11",
+            1,
+            0
+          ],
+          [
+            "X30_15",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_15",
+            1,
+            0
+          ],
+          [
+            "X30_16",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_16",
+            1,
+            0
+          ],
+          [
+            "X30_17",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_17",
+            1,
+            0
+          ],
+          [
+            "X30_18",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_18",
+            1,
+            0
+          ],
+          [
+            "X30_19",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_19",
+            1,
+            0
+          ],
+          [
+            "X30_20",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_20",
+            0,
+            0
+          ],
+          [
+            "R11",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 6
+    },
+    {
+      "source": [
+        "R12",
+        0,
+        0
+      ],
+      "target": [
+        "H3",
+        1,
+        1
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R12",
+            0,
+            0
+          ],
+          [
+            "X16_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X16_23",
+            3,
+            0
+          ],
+          [
+            "H3",
+            1,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R13",
+        0,
+        1
+      ],
+      "target": [
+        "H4",
+        1,
+        0
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R13",
+            0,
+            1
+          ],
+          [
+            "X56_9",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_9",
+            3,
+            0
+          ],
+          [
+            "H4",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R14",
+        1,
+        0
+      ],
+      "target": [
+        "H4",
+        1,
+        2
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R14",
+            1,
+            0
+          ],
+          [
+            "X59_9",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_9",
+            2,
+            0
+          ],
+          [
+            "X58_9",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_9",
+            3,
+            0
+          ],
+          [
+            "H4",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "R15",
+        0,
+        0
+      ],
+      "target": [
+        "H5",
+        2,
+        0
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R15",
+            0,
+            0
+          ],
+          [
+            "X27_5",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X27_5",
+            0,
+            0
+          ],
+          [
+            "H5",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "R17",
+        1,
+        0
+      ],
+      "target": [
+        "H6",
+        2,
+        0
+      ],
+      "item": "钢块",
+      "path": [
+        [
+          [
+            "R17",
+            1,
+            0
+          ],
+          [
+            "X47_39",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X47_39",
+            0,
+            0
+          ],
+          [
+            "H6",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "H2",
+        3,
+        0
+      ],
+      "target": [
+        "F1",
+        2,
+        5
+      ],
+      "item": "钢质瓶",
+      "path": [
+        [
+          [
+            "H2",
+            3,
+            0
+          ],
+          [
+            "X36_10",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X36_10",
+            0,
+            0
+          ],
+          [
+            "F1",
+            2,
+            5
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "P3",
+        1,
+        0
+      ],
+      "target": [
+        "E2",
+        3,
+        0
+      ],
+      "item": "钢制零件",
+      "path": [
+        [
+          [
+            "P3",
+            1,
+            0
+          ],
+          [
+            "X32_37",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X32_37",
+            1,
+            0
+          ],
+          [
+            "E2",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "H3",
+        3,
+        2
+      ],
+      "target": [
+        "F2",
+        1,
+        2
+      ],
+      "item": "钢质瓶",
+      "path": [
+        [
+          [
+            "H3",
+            3,
+            2
+          ],
+          [
+            "X17_19",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_19",
+            3,
+            0
+          ],
+          [
+            "F2",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "Q4",
+        0,
+        3
+      ],
+      "target": [
+        "F2",
+        1,
+        0
+      ],
+      "item": "细磨荞花粉末",
+      "path": [
+        [
+          [
+            "Q4",
+            0,
+            3
+          ],
+          [
+            "X15_19",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X15_19",
+            3,
+            0
+          ],
+          [
+            "F2",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "H5",
+        0,
+        0
+      ],
+      "target": [
+        "F3",
+        2,
+        3
+      ],
+      "item": "钢质瓶",
+      "path": [
+        [
+          [
+            "H5",
+            0,
+            0
+          ],
+          [
+            "X31_5",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X31_5",
+            0,
+            0
+          ],
+          [
+            "F3",
+            2,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "Q6",
+        1,
+        0
+      ],
+      "target": [
+        "F4",
+        0,
+        4
+      ],
+      "item": "细磨荞花粉末",
+      "path": [
+        [
+          [
+            "Q6",
+            1,
+            0
+          ],
+          [
+            "X59_43",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_43",
+            2,
+            0
+          ],
+          [
+            "X58_43",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_43",
+            3,
+            0
+          ],
+          [
+            "X58_42",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_42",
+            3,
+            0
+          ],
+          [
+            "X58_41",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_41",
+            3,
+            0
+          ],
+          [
+            "X58_40",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_40",
+            2,
+            0
+          ],
+          [
+            "X57_40",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X57_40",
+            2,
+            0
+          ],
+          [
+            "X56_40",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_40",
+            2,
+            0
+          ],
+          [
+            "X55_40",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_40",
+            3,
+            0
+          ],
+          [
+            "X55_39",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_39",
+            2,
+            0
+          ],
+          [
+            "F4",
+            0,
+            4
+          ]
+        ]
+      ],
+      "length": 9
+    },
+    {
+      "source": [
+        "F4",
+        2,
+        0
+      ],
+      "target": [
+        "CORE",
+        1,
+        2
+      ],
+      "item": "精选荞愈胶囊",
+      "path": [
+        [
+          [
+            "F4",
+            2,
+            0
+          ],
+          [
+            "X50_35",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_35",
+            3,
+            0
+          ],
+          [
+            "X50_34",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_34",
+            3,
+            0
+          ],
+          [
+            "X50_33",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_33",
+            0,
+            0
+          ],
+          [
+            "X51_33",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X51_33",
+            0,
+            0
+          ],
+          [
+            "X52_33",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_33",
+            3,
+            0
+          ],
+          [
+            "X52_32",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_32",
+            3,
+            0
+          ],
+          [
+            "X52_31",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_31",
+            3,
+            0
+          ],
+          [
+            "X52_30",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X52_30",
+            3,
+            0
+          ],
+          [
+            "CORE",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 8
+    },
+    {
+      "source": [
+        "SC1",
+        3,
+        1
+      ],
+      "target": [
+        "SB1",
+        1,
+        4
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC1",
+            3,
+            1
+          ],
+          [
+            "X53_58",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X53_58",
+            3,
+            0
+          ],
+          [
+            "X53_57",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X53_57",
+            3,
+            0
+          ],
+          [
+            "SB1",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "SC1",
+        3,
+        4
+      ],
+      "target": [
+        "SA1",
+        3,
+        0
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC1",
+            3,
+            4
+          ],
+          [
+            "X56_58",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_58",
+            0,
+            0
+          ],
+          [
+            "X57_58",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X57_58",
+            1,
+            0
+          ],
+          [
+            "SA1",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "S1",
+        0,
+        0
+      ],
+      "target": [
+        "O1",
+        0,
+        5
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S1",
+            0,
+            0
+          ],
+          [
+            "X47_26",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X47_26",
+            0,
+            0
+          ],
+          [
+            "X48_26",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X48_26",
+            3,
+            0
+          ],
+          [
+            "X48_25",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X48_25",
+            2,
+            0
+          ],
+          [
+            "O1",
+            0,
+            5
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "SC2",
+        2,
+        0
+      ],
+      "target": [
+        "SB2",
+        1,
+        0
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC2",
+            2,
+            0
+          ],
+          [
+            "X26_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_27",
+            3,
+            0
+          ],
+          [
+            "SB2",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "S2",
+        0,
+        2
+      ],
+      "target": [
+        "O2",
+        0,
+        1
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S2",
+            0,
+            2
+          ],
+          [
+            "X26_47",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_47",
+            1,
+            0
+          ],
+          [
+            "X26_48",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_48",
+            1,
+            0
+          ],
+          [
+            "X26_49",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_49",
+            2,
+            0
+          ],
+          [
+            "O2",
+            0,
+            1
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "SC3",
+        3,
+        0
+      ],
+      "target": [
+        "SA3",
+        0,
+        4
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC3",
+            3,
+            0
+          ],
+          [
+            "X65_48",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X65_48",
+            2,
+            0
+          ],
+          [
+            "X64_48",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X64_48",
+            2,
+            0
+          ],
+          [
+            "SA3",
+            0,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "SB3",
+        1,
+        0
+      ],
+      "target": [
+        "S3",
+        3,
+        2
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SB3",
+            1,
+            0
+          ],
+          [
+            "X14_46",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X14_46",
+            1,
+            0
+          ],
+          [
+            "X14_47",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X14_47",
+            1,
+            0
+          ],
+          [
+            "S3",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "SC4",
+        0,
+        4
+      ],
+      "target": [
+        "SA4",
+        3,
+        1
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC4",
+            0,
+            4
+          ],
+          [
+            "X16_32",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X16_32",
+            1,
+            0
+          ],
+          [
+            "SA4",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SB4",
+        1,
+        1
+      ],
+      "target": [
+        "S4",
+        3,
+        2
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SB4",
+            1,
+            1
+          ],
+          [
+            "X35_58",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X35_58",
+            1,
+            0
+          ],
+          [
+            "S4",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "S4",
+        1,
+        0
+      ],
+      "target": [
+        "O5",
+        0,
+        4
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S4",
+            1,
+            0
+          ],
+          [
+            "X33_62",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X33_62",
+            2,
+            0
+          ],
+          [
+            "O5",
+            0,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SA5",
+        0,
+        3
+      ],
+      "target": [
+        "SC5",
+        2,
+        0
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SA5",
+            0,
+            3
+          ],
+          [
+            "X36_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X36_18",
+            0,
+            0
+          ],
+          [
+            "X37_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X37_18",
+            0,
+            0
+          ],
+          [
+            "X38_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X38_18",
+            0,
+            0
+          ],
+          [
+            "SC5",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 3
+    },
+    {
+      "source": [
+        "SB5",
+        2,
+        4
+      ],
+      "target": [
+        "S5",
+        1,
+        2
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SB5",
+            2,
+            4
+          ],
+          [
+            "X26_41",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_41",
+            3,
+            0
+          ],
+          [
+            "S5",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC6",
+        3,
+        0
+      ],
+      "target": [
+        "SB6",
+        1,
+        4
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC6",
+            3,
+            0
+          ],
+          [
+            "X54_52",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X54_52",
+            3,
+            0
+          ],
+          [
+            "SB6",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC6",
+        3,
+        4
+      ],
+      "target": [
+        "SA6",
+        3,
+        0
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC6",
+            3,
+            4
+          ],
+          [
+            "X58_52",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_52",
+            0,
+            0
+          ],
+          [
+            "X59_52",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_52",
+            1,
+            0
+          ],
+          [
+            "SA6",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "SA6",
+        1,
+        0
+      ],
+      "target": [
+        "SC6",
+        1,
+        4
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SA6",
+            1,
+            0
+          ],
+          [
+            "X59_58",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_58",
+            2,
+            0
+          ],
+          [
+            "X58_58",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_58",
+            3,
+            0
+          ],
+          [
+            "SC6",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "SC7",
+        3,
+        3
+      ],
+      "target": [
+        "SA7",
+        0,
+        4
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC7",
+            3,
+            3
+          ],
+          [
+            "X20_50",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X20_50",
+            2,
+            0
+          ],
+          [
+            "SA7",
+            0,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SB7",
+        0,
+        3
+      ],
+      "target": [
+        "S7",
+        1,
+        0
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SB7",
+            0,
+            3
+          ],
+          [
+            "X58_68",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_68",
+            3,
+            0
+          ],
+          [
+            "S7",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC8",
+        0,
+        0
+      ],
+      "target": [
+        "SA8",
+        1,
+        2
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC8",
+            0,
+            0
+          ],
+          [
+            "X44_65",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_65",
+            0,
+            0
+          ],
+          [
+            "X45_65",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X45_65",
+            3,
+            0
+          ],
+          [
+            "X45_64",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X45_64",
+            3,
+            0
+          ],
+          [
+            "X45_63",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X45_63",
+            2,
+            0
+          ],
+          [
+            "X44_63",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_63",
+            3,
+            0
+          ],
+          [
+            "SA8",
+            1,
+            2
+          ]
+        ]
+      ],
+      "length": 5
+    },
+    {
+      "source": [
+        "SB8",
+        1,
+        0
+      ],
+      "target": [
+        "S8",
+        0,
+        1
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SB8",
+            1,
+            0
+          ],
+          [
+            "X42_39",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X42_39",
+            2,
+            0
+          ],
+          [
+            "S8",
+            0,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC9",
+        2,
+        0
+      ],
+      "target": [
+        "SB9",
+        1,
+        0
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC9",
+            2,
+            0
+          ],
+          [
+            "X62_13",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_13",
+            3,
+            0
+          ],
+          [
+            "SB9",
+            1,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC9",
+        2,
+        3
+      ],
+      "target": [
+        "SA9",
+        0,
+        0
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC9",
+            2,
+            3
+          ],
+          [
+            "X62_16",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_16",
+            2,
+            0
+          ],
+          [
+            "SA9",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SA9",
+        2,
+        0
+      ],
+      "target": [
+        "SC9",
+        0,
+        3
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SA9",
+            2,
+            0
+          ],
+          [
+            "X56_16",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_16",
+            2,
+            0
+          ],
+          [
+            "X55_16",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_16",
+            3,
+            0
+          ],
+          [
+            "X55_15",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_15",
+            0,
+            0
+          ],
+          [
+            "X56_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_15",
+            0,
+            0
+          ],
+          [
+            "X57_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X57_15",
+            0,
+            0
+          ],
+          [
+            "X58_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_15",
+            0,
+            0
+          ],
+          [
+            "X59_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_15",
+            0,
+            0
+          ],
+          [
+            "X60_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X60_15",
+            0,
+            0
+          ],
+          [
+            "X61_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X61_15",
+            0,
+            0
+          ],
+          [
+            "X62_15",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_15",
+            1,
+            0
+          ],
+          [
+            "X62_16",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_16",
+            1,
+            0
+          ],
+          [
+            "X62_17",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_17",
+            1,
+            0
+          ],
+          [
+            "X62_18",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_18",
+            0,
+            0
+          ],
+          [
+            "X63_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_18",
+            0,
+            0
+          ],
+          [
+            "X64_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X64_18",
+            0,
+            0
+          ],
+          [
+            "X65_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X65_18",
+            0,
+            0
+          ],
+          [
+            "X66_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X66_18",
+            0,
+            0
+          ],
+          [
+            "X67_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X67_18",
+            0,
+            0
+          ],
+          [
+            "X68_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_18",
+            0,
+            0
+          ],
+          [
+            "X69_18",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_18",
+            3,
+            0
+          ],
+          [
+            "X69_17",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_17",
+            3,
+            0
+          ],
+          [
+            "X69_16",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_16",
+            2,
+            0
+          ],
+          [
+            "X68_16",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_16",
+            2,
+            0
+          ],
+          [
+            "SC9",
+            0,
+            3
+          ]
+        ]
+      ],
+      "length": 23
+    },
+    {
+      "source": [
+        "S9",
+        0,
+        2
+      ],
+      "target": [
+        "B11",
+        3,
+        3
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S9",
+            0,
+            2
+          ],
+          [
+            "X33_10",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X33_10",
+            1,
+            0
+          ],
+          [
+            "B11",
+            3,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC10",
+        2,
+        4
+      ],
+      "target": [
+        "SB10",
+        3,
+        0
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC10",
+            2,
+            4
+          ],
+          [
+            "X27_46",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X27_46",
+            1,
+            0
+          ],
+          [
+            "SB10",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SA10",
+        3,
+        0
+      ],
+      "target": [
+        "SC10",
+        0,
+        1
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SA10",
+            3,
+            0
+          ],
+          [
+            "X33_43",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X33_43",
+            2,
+            0
+          ],
+          [
+            "SC10",
+            0,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "S10",
+        3,
+        2
+      ],
+      "target": [
+        "Q3",
+        1,
+        3
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S10",
+            3,
+            2
+          ],
+          [
+            "X56_16",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_16",
+            3,
+            0
+          ],
+          [
+            "X56_15",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_15",
+            3,
+            0
+          ],
+          [
+            "Q3",
+            1,
+            3
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "SC11",
+        1,
+        4
+      ],
+      "target": [
+        "SB11",
+        3,
+        3
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC11",
+            1,
+            4
+          ],
+          [
+            "X47_51",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X47_51",
+            1,
+            0
+          ],
+          [
+            "SB11",
+            3,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SA11",
+        1,
+        3
+      ],
+      "target": [
+        "SC11",
+        3,
+        3
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SA11",
+            1,
+            3
+          ],
+          [
+            "X46_45",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X46_45",
+            1,
+            0
+          ],
+          [
+            "SC11",
+            3,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "S11",
+        3,
+        1
+      ],
+      "target": [
+        "B16",
+        1,
+        4
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S11",
+            3,
+            1
+          ],
+          [
+            "X25_33",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X25_33",
+            3,
+            0
+          ],
+          [
+            "B16",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC12",
+        2,
+        0
+      ],
+      "target": [
+        "SA12",
+        1,
+        4
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC12",
+            2,
+            0
+          ],
+          [
+            "X33_64",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X33_64",
+            2,
+            0
+          ],
+          [
+            "X32_64",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X32_64",
+            2,
+            0
+          ],
+          [
+            "X31_64",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X31_64",
+            2,
+            0
+          ],
+          [
+            "X30_64",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X30_64",
+            2,
+            0
+          ],
+          [
+            "X29_64",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X29_64",
+            2,
+            0
+          ],
+          [
+            "X28_64",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X28_64",
+            3,
+            0
+          ],
+          [
+            "SA12",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 6
+    },
+    {
+      "source": [
+        "SC12",
+        2,
+        4
+      ],
+      "target": [
+        "SB12",
+        0,
+        3
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC12",
+            2,
+            4
+          ],
+          [
+            "X33_68",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X33_68",
+            2,
+            0
+          ],
+          [
+            "SB12",
+            0,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "S12",
+        1,
+        2
+      ],
+      "target": [
+        "B17",
+        2,
+        4
+      ],
+      "item": "砂叶粉末",
+      "path": [
+        [
+          [
+            "S12",
+            1,
+            2
+          ],
+          [
+            "X21_27",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X21_27",
+            0,
+            0
+          ],
+          [
+            "B17",
+            2,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SC13",
+        1,
+        2
+      ],
+      "target": [
+        "SB13",
+        3,
+        4
+      ],
+      "item": "砂叶种子",
+      "path": [
+        [
+          [
+            "SC13",
+            1,
+            2
+          ],
+          [
+            "X41_58",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X41_58",
+            1,
+            0
+          ],
+          [
+            "SB13",
+            3,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SA13",
+        1,
+        4
+      ],
+      "target": [
+        "SC13",
+        3,
+        3
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SA13",
+            1,
+            4
+          ],
+          [
+            "X42_52",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X42_52",
+            1,
+            0
+          ],
+          [
+            "SC13",
+            3,
+            3
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "SB13",
+        1,
+        4
+      ],
+      "target": [
+        "S13",
+        2,
+        0
+      ],
+      "item": "砂叶",
+      "path": [
+        [
+          [
+            "SB13",
+            1,
+            4
+          ],
+          [
+            "X41_64",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X41_64",
+            0,
+            0
+          ],
+          [
+            "X42_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X42_64",
+            0,
+            0
+          ],
+          [
+            "X43_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X43_64",
+            0,
+            0
+          ],
+          [
+            "X44_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_64",
+            1,
+            0
+          ],
+          [
+            "X44_65",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_65",
+            1,
+            0
+          ],
+          [
+            "X44_66",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_66",
+            1,
+            0
+          ],
+          [
+            "X44_67",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_67",
+            0,
+            0
+          ],
+          [
+            "S13",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 7
+    },
+    {
+      "source": [
+        "QC1",
+        3,
+        4
+      ],
+      "target": [
+        "QA1",
+        3,
+        0
+      ],
+      "item": "荞花种子",
+      "path": [
+        [
+          [
+            "QC1",
+            3,
+            4
+          ],
+          [
+            "X37_22",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X37_22",
+            0,
+            0
+          ],
+          [
+            "X38_22",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X38_22",
+            1,
+            0
+          ],
+          [
+            "QA1",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "QA1",
+        1,
+        0
+      ],
+      "target": [
+        "QC1",
+        1,
+        4
+      ],
+      "item": "荞花",
+      "path": [
+        [
+          [
+            "QA1",
+            1,
+            0
+          ],
+          [
+            "X38_28",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X38_28",
+            2,
+            0
+          ],
+          [
+            "X37_28",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X37_28",
+            3,
+            0
+          ],
+          [
+            "QC1",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "KQ1",
+        3,
+        1
+      ],
+      "target": [
+        "Q1",
+        3,
+        4
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ1",
+            3,
+            1
+          ],
+          [
+            "X24_8",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X24_8",
+            2,
+            0
+          ],
+          [
+            "X23_8",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_8",
+            3,
+            0
+          ],
+          [
+            "X23_7",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_7",
+            2,
+            0
+          ],
+          [
+            "X22_7",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X22_7",
+            2,
+            0
+          ],
+          [
+            "X21_7",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X21_7",
+            1,
+            0
+          ],
+          [
+            "Q1",
+            3,
+            4
+          ]
+        ]
+      ],
+      "length": 5
+    },
+    {
+      "source": [
+        "QC2",
+        1,
+        0
+      ],
+      "target": [
+        "QB2",
+        0,
+        1
+      ],
+      "item": "荞花种子",
+      "path": [
+        [
+          [
+            "QC2",
+            1,
+            0
+          ],
+          [
+            "X32_33",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X32_33",
+            2,
+            0
+          ],
+          [
+            "QB2",
+            0,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "QC2",
+        1,
+        4
+      ],
+      "target": [
+        "QA2",
+        2,
+        0
+      ],
+      "item": "荞花种子",
+      "path": [
+        [
+          [
+            "QC2",
+            1,
+            4
+          ],
+          [
+            "X36_33",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X36_33",
+            0,
+            0
+          ],
+          [
+            "QA2",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KQ2",
+        1,
+        0
+      ],
+      "target": [
+        "Q2",
+        0,
+        4
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ2",
+            1,
+            0
+          ],
+          [
+            "X15_67",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X15_67",
+            1,
+            0
+          ],
+          [
+            "X15_68",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X15_68",
+            2,
+            0
+          ],
+          [
+            "Q2",
+            0,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "KQ2",
+        1,
+        1
+      ],
+      "target": [
+        "Q2",
+        0,
+        3
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ2",
+            1,
+            1
+          ],
+          [
+            "X16_67",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X16_67",
+            2,
+            0
+          ],
+          [
+            "X15_67",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X15_67",
+            2,
+            0
+          ],
+          [
+            "Q2",
+            0,
+            3
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "QC3",
+        2,
+        0
+      ],
+      "target": [
+        "QA3",
+        2,
+        4
+      ],
+      "item": "荞花种子",
+      "path": [
+        [
+          [
+            "QC3",
+            2,
+            0
+          ],
+          [
+            "X63_59",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_59",
+            3,
+            0
+          ],
+          [
+            "X63_58",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_58",
+            0,
+            0
+          ],
+          [
+            "QA3",
+            2,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "QA3",
+        0,
+        4
+      ],
+      "target": [
+        "QC3",
+        0,
+        0
+      ],
+      "item": "荞花",
+      "path": [
+        [
+          [
+            "QA3",
+            0,
+            4
+          ],
+          [
+            "X69_58",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_58",
+            1,
+            0
+          ],
+          [
+            "X69_59",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_59",
+            2,
+            0
+          ],
+          [
+            "QC3",
+            0,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "QB3",
+        0,
+        0
+      ],
+      "target": [
+        "KQ3",
+        3,
+        0
+      ],
+      "item": "荞花",
+      "path": [
+        [
+          [
+            "QB3",
+            0,
+            0
+          ],
+          [
+            "X53_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X53_64",
+            0,
+            0
+          ],
+          [
+            "X54_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X54_64",
+            0,
+            0
+          ],
+          [
+            "X55_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X55_64",
+            0,
+            0
+          ],
+          [
+            "X56_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_64",
+            0,
+            0
+          ],
+          [
+            "X57_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X57_64",
+            0,
+            0
+          ],
+          [
+            "X58_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X58_64",
+            0,
+            0
+          ],
+          [
+            "X59_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_64",
+            0,
+            0
+          ],
+          [
+            "X60_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X60_64",
+            0,
+            0
+          ],
+          [
+            "X61_64",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X61_64",
+            1,
+            0
+          ],
+          [
+            "KQ3",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 9
+    },
+    {
+      "source": [
+        "QC4",
+        1,
+        1
+      ],
+      "target": [
+        "QA4",
+        3,
+        0
+      ],
+      "item": "荞花种子",
+      "path": [
+        [
+          [
+            "QC4",
+            1,
+            1
+          ],
+          [
+            "X23_59",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_59",
+            1,
+            0
+          ],
+          [
+            "X23_60",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_60",
+            1,
+            0
+          ],
+          [
+            "X23_61",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_61",
+            1,
+            0
+          ],
+          [
+            "X23_62",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_62",
+            1,
+            0
+          ],
+          [
+            "X23_63",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_63",
+            1,
+            0
+          ],
+          [
+            "QA4",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 5
+    },
+    {
+      "source": [
+        "KQ4",
+        0,
+        0
+      ],
+      "target": [
+        "Q4",
+        2,
+        4
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ4",
+            0,
+            0
+          ],
+          [
+            "X10_20",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_20",
+            0,
+            0
+          ],
+          [
+            "Q4",
+            2,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KQ4",
+        0,
+        1
+      ],
+      "target": [
+        "Q4",
+        2,
+        5
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ4",
+            0,
+            1
+          ],
+          [
+            "X10_21",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X10_21",
+            0,
+            0
+          ],
+          [
+            "Q4",
+            2,
+            5
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "QA5",
+        1,
+        4
+      ],
+      "target": [
+        "QC5",
+        2,
+        4
+      ],
+      "item": "荞花",
+      "path": [
+        [
+          [
+            "QA5",
+            1,
+            4
+          ],
+          [
+            "X43_33",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X43_33",
+            0,
+            0
+          ],
+          [
+            "QC5",
+            2,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "QB5",
+        0,
+        4
+      ],
+      "target": [
+        "KQ5",
+        3,
+        2
+      ],
+      "item": "荞花",
+      "path": [
+        [
+          [
+            "QB5",
+            0,
+            4
+          ],
+          [
+            "X17_56",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_56",
+            1,
+            0
+          ],
+          [
+            "KQ5",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KQ5",
+        1,
+        1
+      ],
+      "target": [
+        "Q5",
+        2,
+        4
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ5",
+            1,
+            1
+          ],
+          [
+            "X16_60",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X16_60",
+            0,
+            0
+          ],
+          [
+            "X17_60",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_60",
+            0,
+            0
+          ],
+          [
+            "Q5",
+            2,
+            4
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "KQ5",
+        1,
+        2
+      ],
+      "target": [
+        "Q5",
+        2,
+        5
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ5",
+            1,
+            2
+          ],
+          [
+            "X17_60",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_60",
+            1,
+            0
+          ],
+          [
+            "X17_61",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_61",
+            0,
+            0
+          ],
+          [
+            "Q5",
+            2,
+            5
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "QC6",
+        0,
+        0
+      ],
+      "target": [
+        "QB6",
+        1,
+        4
+      ],
+      "item": "荞花种子",
+      "path": [
+        [
+          [
+            "QC6",
+            0,
+            0
+          ],
+          [
+            "X69_43",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_43",
+            3,
+            0
+          ],
+          [
+            "QB6",
+            1,
+            4
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "QB6",
+        3,
+        0
+      ],
+      "target": [
+        "KQ6",
+        0,
+        2
+      ],
+      "item": "荞花",
+      "path": [
+        [
+          [
+            "QB6",
+            3,
+            0
+          ],
+          [
+            "X65_37",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X65_37",
+            2,
+            0
+          ],
+          [
+            "KQ6",
+            0,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "KQ6",
+        2,
+        2
+      ],
+      "target": [
+        "Q6",
+        3,
+        2
+      ],
+      "item": "荞花粉末",
+      "path": [
+        [
+          [
+            "KQ6",
+            2,
+            2
+          ],
+          [
+            "X61_37",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X61_37",
+            1,
+            0
+          ],
+          [
+            "X61_38",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X61_38",
+            1,
+            0
+          ],
+          [
+            "Q6",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "OB1",
+        0,
+        1
+      ],
+      "target": [
+        "T1",
+        2,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB1",
+            0,
+            1
+          ],
+          [
+            "X1_50",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_50",
+            0,
+            0
+          ],
+          [
+            "T1",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB3",
+        1,
+        1
+      ],
+      "target": [
+        "T3",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB3",
+            1,
+            1
+          ],
+          [
+            "X59_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_1",
+            1,
+            0
+          ],
+          [
+            "T3",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB4",
+        1,
+        1
+      ],
+      "target": [
+        "T4",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB4",
+            1,
+            1
+          ],
+          [
+            "X68_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_1",
+            1,
+            0
+          ],
+          [
+            "T4",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB5",
+        0,
+        1
+      ],
+      "target": [
+        "T5",
+        2,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB5",
+            0,
+            1
+          ],
+          [
+            "X1_65",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_65",
+            0,
+            0
+          ],
+          [
+            "T5",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB6",
+        0,
+        1
+      ],
+      "target": [
+        "T6",
+        2,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB6",
+            0,
+            1
+          ],
+          [
+            "X1_29",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_29",
+            0,
+            0
+          ],
+          [
+            "T6",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB8",
+        1,
+        1
+      ],
+      "target": [
+        "T8",
+        3,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB8",
+            1,
+            1
+          ],
+          [
+            "X26_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X26_1",
+            1,
+            0
+          ],
+          [
+            "T8",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB9",
+        1,
+        1
+      ],
+      "target": [
+        "T9",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB9",
+            1,
+            1
+          ],
+          [
+            "X44_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X44_1",
+            1,
+            0
+          ],
+          [
+            "T9",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB11",
+        0,
+        1
+      ],
+      "target": [
+        "T11",
+        2,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB11",
+            0,
+            1
+          ],
+          [
+            "X1_35",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_35",
+            0,
+            0
+          ],
+          [
+            "X2_35",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X2_35",
+            0,
+            0
+          ],
+          [
+            "T11",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "OB13",
+        0,
+        1
+      ],
+      "target": [
+        "T13",
+        2,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB13",
+            0,
+            1
+          ],
+          [
+            "X1_2",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_2",
+            0,
+            0
+          ],
+          [
+            "T13",
+            2,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB14",
+        1,
+        1
+      ],
+      "target": [
+        "T14",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB14",
+            1,
+            1
+          ],
+          [
+            "X50_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X50_1",
+            1,
+            0
+          ],
+          [
+            "T14",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB15",
+        1,
+        1
+      ],
+      "target": [
+        "T15",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB15",
+            1,
+            1
+          ],
+          [
+            "X53_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X53_1",
+            1,
+            0
+          ],
+          [
+            "T15",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB16",
+        1,
+        1
+      ],
+      "target": [
+        "T16",
+        3,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB16",
+            1,
+            1
+          ],
+          [
+            "X29_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X29_1",
+            1,
+            0
+          ],
+          [
+            "T16",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB17",
+        1,
+        1
+      ],
+      "target": [
+        "T17",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB17",
+            1,
+            1
+          ],
+          [
+            "X62_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_1",
+            1,
+            0
+          ],
+          [
+            "T17",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB18",
+        0,
+        1
+      ],
+      "target": [
+        "T18",
+        2,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB18",
+            0,
+            1
+          ],
+          [
+            "X1_56",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_56",
+            0,
+            0
+          ],
+          [
+            "T18",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB19",
+        1,
+        1
+      ],
+      "target": [
+        "T19",
+        3,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB19",
+            1,
+            1
+          ],
+          [
+            "X17_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X17_1",
+            1,
+            0
+          ],
+          [
+            "T19",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB20",
+        0,
+        1
+      ],
+      "target": [
+        "T20",
+        2,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB20",
+            0,
+            1
+          ],
+          [
+            "X1_59",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_59",
+            0,
+            0
+          ],
+          [
+            "T20",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB21",
+        0,
+        1
+      ],
+      "target": [
+        "T21",
+        3,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB21",
+            0,
+            1
+          ],
+          [
+            "X1_38",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_38",
+            1,
+            0
+          ],
+          [
+            "T21",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB23",
+        1,
+        1
+      ],
+      "target": [
+        "T23",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB23",
+            1,
+            1
+          ],
+          [
+            "X47_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X47_1",
+            1,
+            0
+          ],
+          [
+            "T23",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB24",
+        1,
+        1
+      ],
+      "target": [
+        "T24",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB24",
+            1,
+            1
+          ],
+          [
+            "X65_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X65_1",
+            1,
+            0
+          ],
+          [
+            "T24",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB25",
+        1,
+        1
+      ],
+      "target": [
+        "T25",
+        3,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB25",
+            1,
+            1
+          ],
+          [
+            "X38_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X38_1",
+            1,
+            0
+          ],
+          [
+            "T25",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB26",
+        0,
+        1
+      ],
+      "target": [
+        "T26",
+        2,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB26",
+            0,
+            1
+          ],
+          [
+            "X1_20",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_20",
+            0,
+            0
+          ],
+          [
+            "T26",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB27",
+        1,
+        1
+      ],
+      "target": [
+        "T27",
+        3,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB27",
+            1,
+            1
+          ],
+          [
+            "X56_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X56_1",
+            1,
+            0
+          ],
+          [
+            "T27",
+            3,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB28",
+        1,
+        1
+      ],
+      "target": [
+        "T28",
+        3,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB28",
+            1,
+            1
+          ],
+          [
+            "X23_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X23_1",
+            1,
+            0
+          ],
+          [
+            "T28",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB29",
+        0,
+        1
+      ],
+      "target": [
+        "T29",
+        2,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB29",
+            0,
+            1
+          ],
+          [
+            "X1_53",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_53",
+            0,
+            0
+          ],
+          [
+            "T29",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB32",
+        0,
+        1
+      ],
+      "target": [
+        "T32",
+        2,
+        2
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB32",
+            0,
+            1
+          ],
+          [
+            "X1_68",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_68",
+            0,
+            0
+          ],
+          [
+            "T32",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB33",
+        0,
+        1
+      ],
+      "target": [
+        "T33",
+        2,
+        0
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB33",
+            0,
+            1
+          ],
+          [
+            "X1_11",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_11",
+            0,
+            0
+          ],
+          [
+            "T33",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OB34",
+        0,
+        1
+      ],
+      "target": [
+        "T34",
+        2,
+        1
+      ],
+      "item": "蓝铁矿",
+      "path": [
+        [
+          [
+            "OB34",
+            0,
+            1
+          ],
+          [
+            "X1_8",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_8",
+            0,
+            0
+          ],
+          [
+            "T34",
+            2,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO7",
+        0,
+        1
+      ],
+      "target": [
+        "U7",
+        2,
+        0
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO7",
+            0,
+            1
+          ],
+          [
+            "X1_32",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_32",
+            0,
+            0
+          ],
+          [
+            "U7",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO8",
+        1,
+        1
+      ],
+      "target": [
+        "U8",
+        3,
+        2
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO8",
+            1,
+            1
+          ],
+          [
+            "X41_1",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X41_1",
+            1,
+            0
+          ],
+          [
+            "U8",
+            3,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO9",
+        0,
+        1
+      ],
+      "target": [
+        "U9",
+        2,
+        0
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO9",
+            0,
+            1
+          ],
+          [
+            "X1_17",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_17",
+            0,
+            0
+          ],
+          [
+            "U9",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO10",
+        0,
+        1
+      ],
+      "target": [
+        "U10",
+        2,
+        0
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO10",
+            0,
+            1
+          ],
+          [
+            "X1_14",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_14",
+            0,
+            0
+          ],
+          [
+            "U10",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO11",
+        0,
+        1
+      ],
+      "target": [
+        "U11",
+        2,
+        2
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO11",
+            0,
+            1
+          ],
+          [
+            "X1_47",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_47",
+            0,
+            0
+          ],
+          [
+            "U11",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO13",
+        0,
+        1
+      ],
+      "target": [
+        "U13",
+        2,
+        2
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO13",
+            0,
+            1
+          ],
+          [
+            "X1_62",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_62",
+            0,
+            0
+          ],
+          [
+            "U13",
+            2,
+            2
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "OO15",
+        0,
+        1
+      ],
+      "target": [
+        "U15",
+        2,
+        1
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "OO15",
+            0,
+            1
+          ],
+          [
+            "X1_5",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X1_5",
+            0,
+            0
+          ],
+          [
+            "U15",
+            2,
+            1
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "CORE",
+        2,
+        7
+      ],
+      "target": [
+        "U2",
+        3,
+        0
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "CORE",
+            2,
+            7
+          ],
+          [
+            "X49_28",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X49_28",
+            1,
+            0
+          ],
+          [
+            "X49_29",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X49_29",
+            1,
+            0
+          ],
+          [
+            "U2",
+            3,
+            0
+          ]
+        ]
+      ],
+      "length": 2
+    },
+    {
+      "source": [
+        "CORE",
+        0,
+        1
+      ],
+      "target": [
+        "U3",
+        2,
+        0
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "CORE",
+            0,
+            1
+          ],
+          [
+            "X59_22",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_22",
+            0,
+            0
+          ],
+          [
+            "U3",
+            2,
+            0
+          ]
+        ]
+      ],
+      "length": 1
+    },
+    {
+      "source": [
+        "CORE",
+        0,
+        7
+      ],
+      "target": [
+        "U6",
+        0,
+        2
+      ],
+      "item": "源矿",
+      "path": [
+        [
+          [
+            "CORE",
+            0,
+            7
+          ],
+          [
+            "X59_28",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_28",
+            3,
+            0
+          ],
+          [
+            "X59_27",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_27",
+            3,
+            0
+          ],
+          [
+            "X59_26",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_26",
+            3,
+            0
+          ],
+          [
+            "X59_25",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_25",
+            3,
+            0
+          ],
+          [
+            "X59_24",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_24",
+            3,
+            0
+          ],
+          [
+            "X59_23",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_23",
+            3,
+            0
+          ],
+          [
+            "X59_22",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_22",
+            3,
+            0
+          ],
+          [
+            "X59_21",
+            1,
+            0
+          ]
+        ],
+        [
+          [
+            "X59_21",
+            0,
+            0
+          ],
+          [
+            "X60_21",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X60_21",
+            0,
+            0
+          ],
+          [
+            "X61_21",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X61_21",
+            0,
+            0
+          ],
+          [
+            "X62_21",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X62_21",
+            0,
+            0
+          ],
+          [
+            "X63_21",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_21",
+            1,
+            0
+          ],
+          [
+            "X63_22",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_22",
+            1,
+            0
+          ],
+          [
+            "X63_23",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_23",
+            0,
+            0
+          ],
+          [
+            "X64_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X64_23",
+            0,
+            0
+          ],
+          [
+            "X65_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X65_23",
+            0,
+            0
+          ],
+          [
+            "X66_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X66_23",
+            0,
+            0
+          ],
+          [
+            "X67_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X67_23",
+            0,
+            0
+          ],
+          [
+            "X68_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_23",
+            0,
+            0
+          ],
+          [
+            "X69_23",
+            2,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_23",
+            1,
+            0
+          ],
+          [
+            "X69_24",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_24",
+            1,
+            0
+          ],
+          [
+            "X69_25",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_25",
+            1,
+            0
+          ],
+          [
+            "X69_26",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_26",
+            1,
+            0
+          ],
+          [
+            "X69_27",
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            "X69_27",
+            2,
+            0
+          ],
+          [
+            "X68_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X68_27",
+            2,
+            0
+          ],
+          [
+            "X67_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X67_27",
+            2,
+            0
+          ],
+          [
+            "X66_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X66_27",
+            2,
+            0
+          ],
+          [
+            "X65_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X65_27",
+            2,
+            0
+          ],
+          [
+            "X64_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X64_27",
+            2,
+            0
+          ],
+          [
+            "X63_27",
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            "X63_27",
+            2,
+            0
+          ],
+          [
+            "U6",
+            0,
+            2
+          ]
+        ]
+      ],
+      "length": 30
+    }
+  ],
+  "layout_sha256": "6d96067cac2bbda35ef8fc36cfe7a17bda6f4808e9aa097f1267c1e7a76cd014",
+  "checker_sha256": "17707ed60ca746a7d821cd18a37905bd9489df90599f2f75acdcad0b69636768"
+}

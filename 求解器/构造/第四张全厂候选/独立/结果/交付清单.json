@@ -1,0 +1,416 @@
+{
+  "generated_utc": "2026-10-02T20:27:49.656423+00:00",
+  "files": [
+    {
+      "path": "独立.md",
+      "size": 6509,
+      "sha256": "696aff875861a95339ca103b8bc0453ce627c3ab6b37540078e20d11d6fdc8f4"
+    },
+    {
+      "path": "独立/布局.json",
+      "size": 497593,
+      "sha256": "729fde6011f4eeb9b31ea58342e3c5293b1eb3ba0983877b95eb9250c349cd78"
+    },
+    {
+      "path": "独立/静态检查结果.json",
+      "size": 258924,
+      "sha256": "7fb60f5528bf18eb589485c6342abcb2476692ea3c5bd3ac8fbdf06e99542704"
+    },
+    {
+      "path": "独立/布局图.png",
+      "size": 161564,
+      "sha256": "0e2b14cac9ac8987cc8ee6f3558cd18e66d7ac4df41af22d7eddcac2c5d1eca1"
+    },
+    {
+      "path": "独立/布局图.svg",
+      "size": 353310,
+      "sha256": "e7d56dca83155630318d4b64aba76bb054d810c99c7f113063d7d290e4ae4c0f"
+    },
+    {
+      "path": "独立/逐台核查.tsv",
+      "size": 13590,
+      "sha256": "440edbfe8699c3180c3b85906d6ed1a7648b4eda24e1574a820bd86ad083d5d8"
+    },
+    {
+      "path": "独立/逐路核查.tsv",
+      "size": 19064,
+      "sha256": "22e76bcbb643beba4b65abf0d322f5df82041ce2240acbeb6831a2f759b7cf53"
+    },
+    {
+      "path": "独立/迭代索引.tsv",
+      "size": 1144726,
+      "sha256": "d40df0e2acf5d92c4e5b99bd11f997e1f1adcec6cea517f92c874346fae21d7d"
+    },
+    {
+      "path": "独立/迭代记录.md",
+      "size": 1762,
+      "sha256": "14e8a77a8abc1bf789ce4c61b1fcae763c5a4f4f0778c46099d2d38e2b47a708"
+    },
+    {
+      "path": "独立/格式说明.md",
+      "size": 2400,
+      "sha256": "a07689b239767a4f040b22910b826c90472db5d13cf8663e676b4fdf9157e2a8"
+    },
+    {
+      "path": "独立/执行状态.json",
+      "size": 695,
+      "sha256": "07a85bb555db04bdcdb2b8b22eb65939508116f88a0c60560b29f22fd9137651"
+    },
+    {
+      "path": "独立/复核.sh",
+      "size": 341,
+      "sha256": "ab7b8eb9075015b44e6321306db0f5d5761c08df5ba280e3fa206aecd0de908c"
+    },
+    {
+      "path": "独立/代码/assign_slots.py",
+      "size": 8072,
+      "sha256": "61b18c399689ad1eda25fb123a67188f3bd606b83d9de9bf2d053321e16607fe"
+    },
+    {
+      "path": "独立/代码/carve_connectivity.py",
+      "size": 7996,
+      "sha256": "c95e5e61ef4f2ab81d62383c8ffbec91f8cb123f820755c8e7024ea463a734c9"
+    },
+    {
+      "path": "独立/代码/carve_search.py",
+      "size": 7952,
+      "sha256": "943552534eddf3c7884293128338d9692afac5cccba9da60c8088cf8459d8222"
+    },
+    {
+      "path": "独立/代码/check_metrics.py",
+      "size": 2237,
+      "sha256": "5e1630eda6c559da2b162100f60feb7f2117e3161c111d088198ff48ee454486"
+    },
+    {
+      "path": "独立/代码/check_mutations.py",
+      "size": 2728,
+      "sha256": "96afcf5aa203eafeb546289c5ae89ff207a625bbfedcd60c6baf655f29bb02b0"
+    },
+    {
+      "path": "独立/代码/check_static.py",
+      "size": 19816,
+      "sha256": "17707ed60ca746a7d821cd18a37905bd9489df90599f2f75acdcad0b69636768"
+    },
+    {
+      "path": "独立/代码/check_static_v1.py",
+      "size": 16564,
+      "sha256": "051ffe6a6108fca7e4d448cd5b177b7621c79781506f6ec03f256037e9c45fd7"
+    },
+    {
+      "path": "独立/代码/check_static_v2.py",
+      "size": 18611,
+      "sha256": "d08cceddccd6f570a969eda735c1021c8958d6b1defdb99fe186df3fcbc97b8f"
+    },
+    {
+      "path": "独立/代码/draw.py",
+      "size": 4860,
+      "sha256": "01869574ea45d1c41cd33dbe4e1ceef7e6465a002ea8836efab7ba92890f66dc"
+    },
+    {
+      "path": "独立/代码/export_layout.py",
+      "size": 6667,
+      "sha256": "4f07a79e3d950ca647afdc2aa0db7f8bc08938ab137dc7de46dd83133c30f8e2"
+    },
+    {
+      "path": "独立/代码/export_layout_v1.py",
+      "size": 5770,
+      "sha256": "001bb5894ab17e02868c08806434bad9f7603abdab99ea923d632506b8a7084a"
+    },
+    {
+      "path": "独立/代码/finalize.py",
+      "size": 11643,
+      "sha256": "8f2660cff27de89b030cd9ec0c9cf28a48a95951b52b24675131c4298c0df073"
+    },
+    {
+      "path": "独立/代码/freeze_state.py",
+      "size": 638,
+      "sha256": "2db69b917c07f575ab94a3103ceec46e0902dc5d8ac6edae1caf145c989920d2"
+    },
+    {
+      "path": "独立/代码/pack_small.py",
+      "size": 5320,
+      "sha256": "4d5ad21f3c37e2e3d3a5b71962f4e476afaf503c4fd70eef22a2c1d22e91a8bf"
+    },
+    {
+      "path": "独立/代码/port_pack.py",
+      "size": 6300,
+      "sha256": "410a522df61db6fe9db4cb8a88fdffc0b3d51f32911b7d56ca6760dafea1b275"
+    },
+    {
+      "path": "独立/代码/port_pack_distance.py",
+      "size": 9048,
+      "sha256": "fb03597ef834cf25bb7b2500a8b6026be8078fb050f7a149ef26e2b87a9eeac6"
+    },
+    {
+      "path": "独立/代码/port_pack_final_hard.py",
+      "size": 8411,
+      "sha256": "b6f477678cb33b61caa5c2c39a316b1b45d67fdcb6b52312f5c1239550d7bd18"
+    },
+    {
+      "path": "独立/代码/port_pack_orient.py",
+      "size": 8346,
+      "sha256": "99af609ac9a976f8f52e4f1107f0312f1bdb4658c637ef5e266b1c37dafcb873"
+    },
+    {
+      "path": "独立/代码/port_pack_power_flex.py",
+      "size": 7742,
+      "sha256": "18a101cf13d04dac6ef155f2fe1adb8372bdeb31948601226f6669ef47d7f180"
+    },
+    {
+      "path": "独立/代码/port_pack_soft.py",
+      "size": 6640,
+      "sha256": "2981e296fc21f11efa900d1b7cac94784e75958d66e2a158e98b21b52e3b8a0e"
+    },
+    {
+      "path": "独立/代码/prepare.py",
+      "size": 4093,
+      "sha256": "ca533efaa483052b9c5fdae833bbe31ae584f0810863aff69a75757af2f75f27"
+    },
+    {
+      "path": "独立/代码/repair_packing.py",
+      "size": 2590,
+      "sha256": "4b7532c9a5f653b269ff8d1592127aee9da4717a9c16dc3f4014b5069d205e94"
+    },
+    {
+      "path": "独立/代码/select_delivery.py",
+      "size": 2419,
+      "sha256": "5ca7468ac9eaa0c1b3a35b0bd85c042fb02dd1c9bcf357d39f8f2404e88b0d9e"
+    },
+    {
+      "path": "独立/代码/make_corridors.cpp",
+      "size": 19243,
+      "sha256": "92b81a589ee7e7689402c8b4c2a466ceaea81228a3760d2a980fb70da6bac4f8"
+    },
+    {
+      "path": "独立/代码/make_disconnected_corridors.cpp",
+      "size": 19342,
+      "sha256": "af974ab5253cedfb0b61f45cec1d2c366e306c4225a9f1a2c91212eda560c670"
+    },
+    {
+      "path": "独立/代码/route_assigned.cpp",
+      "size": 18906,
+      "sha256": "7846acdad2b23bfd7646358a33204c0b84946b7f6d69db0c892f56c917d4105c"
+    },
+    {
+      "path": "独立/代码/search.cpp",
+      "size": 11520,
+      "sha256": "bfeea88f492a91ef1b57bdda0f7b8e4122d58789c85c725f3013b33f5eaf8985"
+    },
+    {
+      "path": "独立/代码/search_connected.cpp",
+      "size": 12262,
+      "sha256": "e911164a5fcd2e125f3c47a879cce915893c1615b81ee6f92914717cdc3ffcdc"
+    },
+    {
+      "path": "独立/代码/search_core_priority.cpp",
+      "size": 20404,
+      "sha256": "9576f37579de65580b4165989411d9ec18af358764e492088243e5cbd22f62fa"
+    },
+    {
+      "path": "独立/代码/search_direct.cpp",
+      "size": 16924,
+      "sha256": "ba6f40e1a8037534784dddc01bb56bb1a447cff31e740e0c49e4adc43cf5c1c1"
+    },
+    {
+      "path": "独立/代码/search_direct_cold.cpp",
+      "size": 17068,
+      "sha256": "89ab3cf33287fc7493e77d6343dc9d5f63aaeb446be8b40424e1183c27a07c77"
+    },
+    {
+      "path": "独立/代码/search_direct_v2.cpp",
+      "size": 17068,
+      "sha256": "82fe66fda5af55ac467ad9323994af93514809a375b6397e157347eb09c3621a"
+    },
+    {
+      "path": "独立/代码/search_fixed_power.cpp",
+      "size": 13472,
+      "sha256": "0eee06494cb97d9a3da4f2abcc40267c48022f7273889ae4217057ba93965a46"
+    },
+    {
+      "path": "独立/代码/search_incremental.cpp",
+      "size": 19109,
+      "sha256": "c04e4e97e42a6036920f852159567aed7c728d466e5897cab7e4871e86136eae"
+    },
+    {
+      "path": "独立/代码/search_incremental_covered.cpp",
+      "size": 19234,
+      "sha256": "64c1cf5e2b0a4026a647d503ee5db850633e369c43330ce3f1e3df3c16b8ae9e"
+    },
+    {
+      "path": "独立/代码/search_incremental_locked.cpp",
+      "size": 19475,
+      "sha256": "9e7333fe81f0ca84da75e371dfce6fda2c1bd06b757de19a0130035fcfe1abe0"
+    },
+    {
+      "path": "独立/代码/search_macro.cpp",
+      "size": 21509,
+      "sha256": "5dd2ad301bad1d8c6c3d1186daf3e228c7c8bee9f79cbd585b8de94e55e76570"
+    },
+    {
+      "path": "独立/代码/search_macro_core.cpp",
+      "size": 21604,
+      "sha256": "496a5062ae49f601ca9a392fa339b55455ce99b4511b0311ab62f65ed53f6f26"
+    },
+    {
+      "path": "独立/代码/search_macro_guard.cpp",
+      "size": 21750,
+      "sha256": "31382e1cbb64d32ef377a7c19a89d44eb2268e33f0fe770fb3768f0077fbd904"
+    },
+    {
+      "path": "独立/代码/search_mining.cpp",
+      "size": 13703,
+      "sha256": "70ef0de5cc366b0675f77e40a618482fae22521b6cb45f4c76f63bba0ff80c66"
+    },
+    {
+      "path": "独立/代码/search_negotiated.cpp",
+      "size": 13228,
+      "sha256": "f9b69b31aeecc570e65f3068d874839b80585f035993a669da17cfc29976a701"
+    },
+    {
+      "path": "独立/代码/search_pressure.cpp",
+      "size": 19893,
+      "sha256": "3a91b44668e6d3f1797b2306a0915df645f2ba1ae495d77b7fa1449ca09f3253"
+    },
+    {
+      "path": "独立/代码/search_push.cpp",
+      "size": 13379,
+      "sha256": "5fee5892e0f4ca615a0036c2b59d02e76015b46bd8a052f9605fecd9b7d3cace"
+    },
+    {
+      "path": "独立/代码/search_rich_guard.cpp",
+      "size": 23565,
+      "sha256": "f6b021d5f90d6691c3b65c243a1f2278f5bc0ff54976b82e2cb072590ceb4871"
+    },
+    {
+      "path": "独立/代码/search_softstart.cpp",
+      "size": 11532,
+      "sha256": "28c1254c96f49f2416671963ccfc3f98b7028d8219c01b734f56a7bacc387e41"
+    },
+    {
+      "path": "独立/结果/严格格式复查.json",
+      "size": 257842,
+      "sha256": "1bb04436d2b4c5e97798c4835ed5d4566a85124071e0bbbfe137849d5d9aa5a8"
+    },
+    {
+      "path": "独立/结果/交付候选选择.json",
+      "size": 45668,
+      "sha256": "95adbc1df74012b081c34173a21e01f4e066dbc9ef2437c769ebc86cf9a817fa"
+    },
+    {
+      "path": "独立/结果/全供电候选.json",
+      "size": 421807,
+      "sha256": "b4fb96bad5ce9a1413d8b97db393c50c449e22846847b5536fc758d9d9cf0672"
+    },
+    {
+      "path": "独立/结果/全供电检查.json",
+      "size": 225977,
+      "sha256": "273e1f4806d619c2dde3b8b042a8623282ba951743fda4785d68da9f93090252"
+    },
+    {
+      "path": "独立/结果/全局指派候选.json",
+      "size": 337799,
+      "sha256": "6d96067cac2bbda35ef8fc36cfe7a17bda6f4808e9aa097f1267c1e7a76cd014"
+    },
+    {
+      "path": "独立/结果/全局指派检查.json",
+      "size": 185823,
+      "sha256": "7dcdd21df0d07e999d7d98366e2586b91663f4fc8b43da86b2439fa9c362fd8d"
+    },
+    {
+      "path": "独立/结果/初轮候选.json",
+      "size": 271264,
+      "sha256": "3bcc5e3539d0a1cf3dc3dca173a10720413679587f8e94bc880938d4ecff368a"
+    },
+    {
+      "path": "独立/结果/初轮检查.json",
+      "size": 155558,
+      "sha256": "a5b2dd2c63aaeb50bcc5ad8e18b396aa557592e5afcb68388aee8e78715d3ce9"
+    },
+    {
+      "path": "独立/结果/增量候选.json",
+      "size": 488006,
+      "sha256": "3e2f1edbf099f09e671c9d38045b97f3cb32d2fb05bbcdac05cf036b02c7fcc2"
+    },
+    {
+      "path": "独立/结果/增量检查.json",
+      "size": 256210,
+      "sha256": "abfe0c90725b0328bafa3ec502ebc0a57a7aa4d66a71584150bdc1775013b374"
+    },
+    {
+      "path": "独立/结果/宏块候选.json",
+      "size": 489090,
+      "sha256": "874ac1d670aaca2b6bf4ddf064a7fee334c9a03be0329e6f1413c4a953786735"
+    },
+    {
+      "path": "独立/结果/宏块检查.json",
+      "size": 255640,
+      "sha256": "148e78c58b21a07b3247b4c098370a1f17b1c647de23aed406f666f08b191e5b"
+    },
+    {
+      "path": "独立/结果/整数模型结果索引.json",
+      "size": 276773,
+      "sha256": "0367fc5b58701ed779f240d7c32e0cfdfc930b002303fa5d896ed9fc91b1f31f"
+    },
+    {
+      "path": "独立/结果/检查器拒绝性检验.json",
+      "size": 2188,
+      "sha256": "e7c9484c554ce70ce959d0efa8177cdb1b7adaa6c7ccf03e5d532ec914fde826"
+    },
+    {
+      "path": "独立/结果/独立几何数字复算.json",
+      "size": 642,
+      "sha256": "da44bbd1b471ec6a3da567106326f7d9a6047e16d96b222a8ad1a02ffbdf667d"
+    },
+    {
+      "path": "独立/结果/矿链增量候选.json",
+      "size": 493393,
+      "sha256": "9adb7c1c43652b3ff59f8a200dae5b6b59971921a900ec3cb88d7b3ee54fe5c4"
+    },
+    {
+      "path": "独立/结果/矿链增量检查.json",
+      "size": 257205,
+      "sha256": "fc4342a57b5434b5937b41df5123768888942eeb791b30a418f0385fe9177601"
+    },
+    {
+      "path": "独立/结果/粗区块.json",
+      "size": 4763,
+      "sha256": "47c2af2944aff2c60435f76d7d05ab821718d3a4b6da380f0fd3a143d72965f5"
+    },
+    {
+      "path": "独立/结果/补充统计.json",
+      "size": 560,
+      "sha256": "2f093f090502bfa4b5540c1c97b1ddaab4788e158e27ed6f982d0fc3abe52c1e"
+    },
+    {
+      "path": "独立/结果/读者自审.json",
+      "size": 646,
+      "sha256": "84562b71e694363383b63c5b51b2d1b3ef111bfa4f8c34fdf929cb4d3cba5d3a"
+    },
+    {
+      "path": "独立/结果/输入未改动核验.json",
+      "size": 2800,
+      "sha256": "b73a7867ddf272c57a0a8b5ace0861a96f7e0d9f0393500c0eec2592b0518dd4"
+    },
+    {
+      "path": "独立/结果/连通修正候选.json",
+      "size": 391813,
+      "sha256": "14b4cf7af4b6a69bd5ba6e9075b418d95b06d2be157ca00501e655640fbff7ee"
+    },
+    {
+      "path": "独立/结果/连通修正检查.json",
+      "size": 209171,
+      "sha256": "dd2a999e123e021404bc9fb984b71810e89e7584807fa956d898ea9ffe182e09"
+    },
+    {
+      "path": "独立/结果/迭代汇总.json",
+      "size": 458,
+      "sha256": "c8207dd64d79f8009a0e987df3ef01a7129e201941a9d6c4a600f3e81c6c1357"
+    },
+    {
+      "path": "独立/结果/逻辑接法互核.json",
+      "size": 102,
+      "sha256": "62c99e39a7498561ad122bb6ff58ffd699ff4748b1049d0f0d44133fbf33efdf"
+    }
+  ],
+  "raw_state_hashes": "迭代索引.tsv"
+}

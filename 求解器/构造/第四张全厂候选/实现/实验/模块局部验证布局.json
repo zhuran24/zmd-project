@@ -1,0 +1,7472 @@
+{
+ "schema": "full-factory-static-s2-bridges-v2",
+ "candidate_id": "s2-third-A",
+ "source_fingerprints": {
+  "rules": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+  "task": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+  "constraints": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+ },
+ "targets": {
+  "高容谷地电池": "3/5",
+  "精选荞愈胶囊": "11/20"
+ },
+ "layout": {
+  "W": 70,
+  "H": 70,
+  "machines": [
+   {
+    "x0": 43,
+    "y0": 2,
+    "x1": 45,
+    "y1": 4,
+    "id": "RF1",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 46,
+    "y0": 2,
+    "x1": 48,
+    "y1": 4,
+    "id": "RF3",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 19,
+    "y0": 2,
+    "x1": 21,
+    "y1": 4,
+    "id": "RF5",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 19,
+    "y0": 6,
+    "x1": 21,
+    "y1": 8,
+    "id": "KF5",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 22,
+    "y0": 2,
+    "x1": 24,
+    "y1": 4,
+    "id": "RF6",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 22,
+    "y0": 6,
+    "x1": 24,
+    "y1": 8,
+    "id": "KF6",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 31,
+    "y0": 2,
+    "x1": 33,
+    "y1": 4,
+    "id": "RF7",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 31,
+    "y0": 6,
+    "x1": 33,
+    "y1": 8,
+    "id": "KF7",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 34,
+    "y0": 2,
+    "x1": 36,
+    "y1": 4,
+    "id": "RF8",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 34,
+    "y0": 6,
+    "x1": 36,
+    "y1": 8,
+    "id": "KF8",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 19,
+    "x1": 4,
+    "y1": 21,
+    "id": "RF9",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 6,
+    "y0": 19,
+    "x1": 8,
+    "y1": 21,
+    "id": "KF9",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 22,
+    "x1": 4,
+    "y1": 24,
+    "id": "RF10",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 6,
+    "y0": 22,
+    "x1": 8,
+    "y1": 24,
+    "id": "KF10",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 31,
+    "x1": 4,
+    "y1": 33,
+    "id": "RF11",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 6,
+    "y0": 31,
+    "x1": 8,
+    "y1": 33,
+    "id": "KF11",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 34,
+    "x1": 4,
+    "y1": 36,
+    "id": "RF12",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 6,
+    "y0": 34,
+    "x1": 8,
+    "y1": 36,
+    "id": "KF12",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-蓝铁块"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 43,
+    "x1": 4,
+    "y1": 45,
+    "id": "RF15",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 46,
+    "x1": 4,
+    "y1": 48,
+    "id": "RF21",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-蓝铁矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 25,
+    "y0": 2,
+    "x1": 27,
+    "y1": 4,
+    "id": "KO7",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 28,
+    "y0": 2,
+    "x1": 30,
+    "y1": 4,
+    "id": "KO8",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 37,
+    "y0": 2,
+    "x1": 39,
+    "y1": 4,
+    "id": "KO9",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 40,
+    "y0": 2,
+    "x1": 42,
+    "y1": 4,
+    "id": "KO10",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 49,
+    "y0": 2,
+    "x1": 51,
+    "y1": 4,
+    "id": "KO11",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 52,
+    "y0": 2,
+    "x1": 54,
+    "y1": 4,
+    "id": "KO12",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 25,
+    "x1": 4,
+    "y1": 27,
+    "id": "KO13",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 28,
+    "x1": 4,
+    "y1": 30,
+    "id": "KO14",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 37,
+    "x1": 4,
+    "y1": 39,
+    "id": "KO15",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 40,
+    "x1": 4,
+    "y1": 42,
+    "id": "KO16",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 49,
+    "x1": 4,
+    "y1": 51,
+    "id": "KO17",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 2,
+    "y0": 52,
+    "x1": 4,
+    "y1": 54,
+    "id": "KO18",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "粉碎-源矿"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 19,
+    "y0": 10,
+    "x1": 24,
+    "y1": 13,
+    "id": "B3",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 3,
+    "recipe_ids": [
+     "研磨-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 31,
+    "y0": 10,
+    "x1": 36,
+    "y1": 13,
+    "id": "B4",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 3,
+    "recipe_ids": [
+     "研磨-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 10,
+    "y0": 19,
+    "x1": 13,
+    "y1": 24,
+    "id": "B5",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 2,
+    "recipe_ids": [
+     "研磨-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 10,
+    "y0": 31,
+    "x1": 13,
+    "y1": 36,
+    "id": "B6",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 2,
+    "recipe_ids": [
+     "研磨-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 25,
+    "y0": 15,
+    "x1": 30,
+    "y1": 18,
+    "id": "O4",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 3,
+    "recipe_ids": [
+     "研磨-致密源石"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 37,
+    "y0": 7,
+    "x1": 42,
+    "y1": 10,
+    "id": "O5",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 3,
+    "recipe_ids": [
+     "研磨-致密源石"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 49,
+    "y0": 6,
+    "x1": 54,
+    "y1": 9,
+    "id": "O6",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 3,
+    "recipe_ids": [
+     "研磨-致密源石"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 15,
+    "y0": 25,
+    "x1": 18,
+    "y1": 30,
+    "id": "O7",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 2,
+    "recipe_ids": [
+     "研磨-致密源石"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 7,
+    "y0": 37,
+    "x1": 10,
+    "y1": 42,
+    "id": "O8",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 2,
+    "recipe_ids": [
+     "研磨-致密源石"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 6,
+    "y0": 49,
+    "x1": 9,
+    "y1": 54,
+    "id": "O9",
+    "model": "研磨机",
+    "kind": "大",
+    "Din": 2,
+    "recipe_ids": [
+     "研磨-致密源石"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 27,
+    "y0": 10,
+    "x1": 29,
+    "y1": 12,
+    "id": "S3",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 1,
+    "recipe_ids": [
+     "粉碎-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 44,
+    "y0": 6,
+    "x1": 46,
+    "y1": 8,
+    "id": "S4",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 1,
+    "recipe_ids": [
+     "粉碎-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 10,
+    "y0": 27,
+    "x1": 12,
+    "y1": 29,
+    "id": "S5",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 0,
+    "recipe_ids": [
+     "粉碎-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 6,
+    "y0": 44,
+    "x1": 8,
+    "y1": 46,
+    "id": "S6",
+    "model": "粉碎机",
+    "kind": "小",
+    "Din": 0,
+    "recipe_ids": [
+     "粉碎-砂叶"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 23,
+    "y0": 20,
+    "x1": 25,
+    "y1": 22,
+    "id": "R3",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 34,
+    "y0": 15,
+    "x1": 36,
+    "y1": 17,
+    "id": "R4",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 3,
+    "recipe_ids": [
+     "精炼-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 20,
+    "y0": 23,
+    "x1": 22,
+    "y1": 25,
+    "id": "R5",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   },
+   {
+    "x0": 15,
+    "y0": 34,
+    "x1": 17,
+    "y1": 36,
+    "id": "R6",
+    "model": "精炼炉",
+    "kind": "小",
+    "Din": 2,
+    "recipe_ids": [
+     "精炼-致密蓝铁"
+    ],
+    "settings": {
+     "manufacture_on": true
+    }
+   }
+  ],
+  "warehouse_outlets": [
+   {
+    "x0": 43,
+    "y0": 0,
+    "x1": 45,
+    "y1": 0,
+    "id": "WFE1",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 1,
+    "y0": 0,
+    "x1": 3,
+    "y1": 0,
+    "id": "WFE2",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 46,
+    "y0": 0,
+    "x1": 48,
+    "y1": 0,
+    "id": "WFE3",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 4,
+    "y0": 0,
+    "x1": 6,
+    "y1": 0,
+    "id": "WFE4",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 19,
+    "y0": 0,
+    "x1": 21,
+    "y1": 0,
+    "id": "WFE5",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 22,
+    "y0": 0,
+    "x1": 24,
+    "y1": 0,
+    "id": "WFE6",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 31,
+    "y0": 0,
+    "x1": 33,
+    "y1": 0,
+    "id": "WFE7",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 34,
+    "y0": 0,
+    "x1": 36,
+    "y1": 0,
+    "id": "WFE8",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 19,
+    "x1": 0,
+    "y1": 21,
+    "id": "WFE9",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 22,
+    "x1": 0,
+    "y1": 24,
+    "id": "WFE10",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 31,
+    "x1": 0,
+    "y1": 33,
+    "id": "WFE11",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 34,
+    "x1": 0,
+    "y1": 36,
+    "id": "WFE12",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 7,
+    "y0": 0,
+    "x1": 9,
+    "y1": 0,
+    "id": "WFE13",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 10,
+    "y0": 0,
+    "x1": 12,
+    "y1": 0,
+    "id": "WFE14",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 43,
+    "x1": 0,
+    "y1": 45,
+    "id": "WFE15",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 13,
+    "y0": 0,
+    "x1": 15,
+    "y1": 0,
+    "id": "WFE16",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 16,
+    "y0": 0,
+    "x1": 18,
+    "y1": 0,
+    "id": "WFE17",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 1,
+    "x1": 0,
+    "y1": 3,
+    "id": "WFE18",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 55,
+    "x1": 0,
+    "y1": 57,
+    "id": "WFE19",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 58,
+    "x1": 0,
+    "y1": 60,
+    "id": "WFE20",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 46,
+    "x1": 0,
+    "y1": 48,
+    "id": "WFE21",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 4,
+    "x1": 0,
+    "y1": 6,
+    "id": "WFE22",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 61,
+    "x1": 0,
+    "y1": 63,
+    "id": "WFE23",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 64,
+    "x1": 0,
+    "y1": 66,
+    "id": "WFE24",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 7,
+    "x1": 0,
+    "y1": 9,
+    "id": "WFE25",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 10,
+    "x1": 0,
+    "y1": 12,
+    "id": "WFE26",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 13,
+    "x1": 0,
+    "y1": 15,
+    "id": "WFE27",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 16,
+    "x1": 0,
+    "y1": 18,
+    "id": "WFE28",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 55,
+    "y0": 0,
+    "x1": 57,
+    "y1": 0,
+    "id": "WFE29",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 58,
+    "y0": 0,
+    "x1": 60,
+    "y1": 0,
+    "id": "WFE30",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 61,
+    "y0": 0,
+    "x1": 63,
+    "y1": 0,
+    "id": "WFE31",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 64,
+    "y0": 0,
+    "x1": 66,
+    "y1": 0,
+    "id": "WFE32",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 67,
+    "y0": 0,
+    "x1": 69,
+    "y1": 0,
+    "id": "WFE33",
+    "Dout": 1,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 0,
+    "y0": 67,
+    "x1": 0,
+    "y1": 69,
+    "id": "WFE34",
+    "Dout": 0,
+    "item": "蓝铁矿"
+   },
+   {
+    "x0": 25,
+    "y0": 0,
+    "x1": 27,
+    "y1": 0,
+    "id": "WO7",
+    "Dout": 1,
+    "item": "源矿"
+   },
+   {
+    "x0": 28,
+    "y0": 0,
+    "x1": 30,
+    "y1": 0,
+    "id": "WO8",
+    "Dout": 1,
+    "item": "源矿"
+   },
+   {
+    "x0": 37,
+    "y0": 0,
+    "x1": 39,
+    "y1": 0,
+    "id": "WO9",
+    "Dout": 1,
+    "item": "源矿"
+   },
+   {
+    "x0": 40,
+    "y0": 0,
+    "x1": 42,
+    "y1": 0,
+    "id": "WO10",
+    "Dout": 1,
+    "item": "源矿"
+   },
+   {
+    "x0": 49,
+    "y0": 0,
+    "x1": 51,
+    "y1": 0,
+    "id": "WO11",
+    "Dout": 1,
+    "item": "源矿"
+   },
+   {
+    "x0": 52,
+    "y0": 0,
+    "x1": 54,
+    "y1": 0,
+    "id": "WO12",
+    "Dout": 1,
+    "item": "源矿"
+   },
+   {
+    "x0": 0,
+    "y0": 25,
+    "x1": 0,
+    "y1": 27,
+    "id": "WO13",
+    "Dout": 0,
+    "item": "源矿"
+   },
+   {
+    "x0": 0,
+    "y0": 28,
+    "x1": 0,
+    "y1": 30,
+    "id": "WO14",
+    "Dout": 0,
+    "item": "源矿"
+   },
+   {
+    "x0": 0,
+    "y0": 37,
+    "x1": 0,
+    "y1": 39,
+    "id": "WO15",
+    "Dout": 0,
+    "item": "源矿"
+   },
+   {
+    "x0": 0,
+    "y0": 40,
+    "x1": 0,
+    "y1": 42,
+    "id": "WO16",
+    "Dout": 0,
+    "item": "源矿"
+   },
+   {
+    "x0": 0,
+    "y0": 49,
+    "x1": 0,
+    "y1": 51,
+    "id": "WO17",
+    "Dout": 0,
+    "item": "源矿"
+   },
+   {
+    "x0": 0,
+    "y0": 52,
+    "x1": 0,
+    "y1": 54,
+    "id": "WO18",
+    "Dout": 0,
+    "item": "源矿"
+   }
+  ],
+  "core": null,
+  "power_poles": [
+   {
+    "x0": 26,
+    "y0": 6,
+    "x1": 27,
+    "y1": 7,
+    "id": "POWER0",
+    "orientation": 0
+   },
+   {
+    "x0": 28,
+    "y0": 6,
+    "x1": 29,
+    "y1": 7,
+    "id": "POWER1",
+    "orientation": 0
+   },
+   {
+    "x0": 26,
+    "y0": 19,
+    "x1": 27,
+    "y1": 20,
+    "id": "POWER2",
+    "orientation": 0
+   },
+   {
+    "x0": 46,
+    "y0": 9,
+    "x1": 47,
+    "y1": 10,
+    "id": "POWER3",
+    "orientation": 0
+   },
+   {
+    "x0": 6,
+    "y0": 26,
+    "x1": 7,
+    "y1": 27,
+    "id": "POWER4",
+    "orientation": 0
+   },
+   {
+    "x0": 6,
+    "y0": 28,
+    "x1": 7,
+    "y1": 29,
+    "id": "POWER5",
+    "orientation": 0
+   },
+   {
+    "x0": 19,
+    "y0": 26,
+    "x1": 20,
+    "y1": 27,
+    "id": "POWER6",
+    "orientation": 0
+   },
+   {
+    "x0": 9,
+    "y0": 46,
+    "x1": 10,
+    "y1": 47,
+    "id": "POWER7",
+    "orientation": 0
+   },
+   {
+    "x0": 37,
+    "y0": 5,
+    "x1": 38,
+    "y1": 6,
+    "id": "POWER26",
+    "orientation": 0
+   },
+   {
+    "x0": 5,
+    "y0": 37,
+    "x1": 6,
+    "y1": 38,
+    "id": "POWER27",
+    "orientation": 0
+   }
+  ],
+  "storage_boxes": [],
+  "transport": [
+   {
+    "id": "T1_20",
+    "x": 1,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_23",
+    "x": 1,
+    "y": 23,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_26",
+    "x": 1,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_29",
+    "x": 1,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_32",
+    "x": 1,
+    "y": 32,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_35",
+    "x": 1,
+    "y": 35,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_38",
+    "x": 1,
+    "y": 38,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_41",
+    "x": 1,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_44",
+    "x": 1,
+    "y": 44,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_47",
+    "x": 1,
+    "y": 47,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_50",
+    "x": 1,
+    "y": 50,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T1_53",
+    "x": 1,
+    "y": 53,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_20",
+    "x": 5,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_23",
+    "x": 5,
+    "y": 23,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_25",
+    "x": 5,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_30",
+    "x": 5,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_32",
+    "x": 5,
+    "y": 32,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_35",
+    "x": 5,
+    "y": 35,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_39",
+    "x": 5,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_41",
+    "x": 5,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_42",
+    "x": 5,
+    "y": 42,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "id": "T5_43",
+    "x": 5,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "id": "T5_44",
+    "x": 5,
+    "y": 44,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "id": "T5_46",
+    "x": 5,
+    "y": 46,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "id": "T5_47",
+    "x": 5,
+    "y": 47,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T5_48",
+    "x": 5,
+    "y": 48,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T5_49",
+    "x": 5,
+    "y": 49,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "id": "T5_50",
+    "x": 5,
+    "y": 50,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T5_53",
+    "x": 5,
+    "y": 53,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_25",
+    "x": 6,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_30",
+    "x": 6,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_39",
+    "x": 6,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_41",
+    "x": 6,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T6_42",
+    "x": 6,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T7_25",
+    "x": 7,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T7_30",
+    "x": 7,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T8_25",
+    "x": 8,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T8_26",
+    "x": 8,
+    "y": 26,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "id": "T8_27",
+    "x": 8,
+    "y": 27,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "id": "T8_28",
+    "x": 8,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "id": "T8_30",
+    "x": 8,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_20",
+    "x": 9,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_23",
+    "x": 9,
+    "y": 23,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_24",
+    "x": 9,
+    "y": 24,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "id": "T9_25",
+    "x": 9,
+    "y": 25,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "id": "T9_26",
+    "x": 9,
+    "y": 26,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "id": "T9_27",
+    "x": 9,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "id": "T9_28",
+    "x": 9,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "id": "T9_29",
+    "x": 9,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "id": "T9_30",
+    "x": 9,
+    "y": 30,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "id": "T9_31",
+    "x": 9,
+    "y": 31,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "id": "T9_32",
+    "x": 9,
+    "y": 32,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T9_35",
+    "x": 9,
+    "y": 35,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T10_25",
+    "x": 10,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T10_26",
+    "x": 10,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T10_30",
+    "x": 10,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T11_25",
+    "x": 11,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T11_26",
+    "x": 11,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T11_30",
+    "x": 11,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T12_25",
+    "x": 12,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T12_26",
+    "x": 12,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T12_30",
+    "x": 12,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T13_25",
+    "x": 13,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T13_26",
+    "x": 13,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T13_30",
+    "x": 13,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T14_24",
+    "x": 14,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T14_25",
+    "x": 14,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T14_26",
+    "x": 14,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T14_30",
+    "x": 14,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T14_35",
+    "x": 14,
+    "y": 35,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T15_24",
+    "x": 15,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T16_24",
+    "x": 16,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T17_24",
+    "x": 17,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T18_24",
+    "x": 18,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T19_24",
+    "x": 19,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T20_1",
+    "x": 20,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T20_5",
+    "x": 20,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T20_9",
+    "x": 20,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T23_1",
+    "x": 23,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T23_5",
+    "x": 23,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T23_9",
+    "x": 23,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T24_9",
+    "x": 24,
+    "y": 9,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "id": "T24_14",
+    "x": 24,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T24_15",
+    "x": 24,
+    "y": 15,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T24_16",
+    "x": 24,
+    "y": 16,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T24_17",
+    "x": 24,
+    "y": 17,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T24_18",
+    "x": 24,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T24_19",
+    "x": 24,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_5",
+    "x": 25,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_6",
+    "x": 25,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_7",
+    "x": 25,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_8",
+    "x": 25,
+    "y": 8,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_9",
+    "x": 25,
+    "y": 9,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "id": "T25_10",
+    "x": 25,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_11",
+    "x": 25,
+    "y": 11,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_12",
+    "x": 25,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_13",
+    "x": 25,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T25_14",
+    "x": 25,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T26_1",
+    "x": 26,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T26_8",
+    "x": 26,
+    "y": 8,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "id": "T26_9",
+    "x": 26,
+    "y": 9,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "id": "T26_10",
+    "x": 26,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T26_11",
+    "x": 26,
+    "y": 11,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T26_12",
+    "x": 26,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T26_13",
+    "x": 26,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T26_14",
+    "x": 26,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T27_8",
+    "x": 27,
+    "y": 8,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "id": "T27_9",
+    "x": 27,
+    "y": 9,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "id": "T28_8",
+    "x": 28,
+    "y": 8,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "id": "T28_9",
+    "x": 28,
+    "y": 9,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "id": "T29_1",
+    "x": 29,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T29_9",
+    "x": 29,
+    "y": 9,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "id": "T30_5",
+    "x": 30,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_6",
+    "x": 30,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_7",
+    "x": 30,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_8",
+    "x": 30,
+    "y": 8,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_9",
+    "x": 30,
+    "y": 9,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "id": "T30_10",
+    "x": 30,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_11",
+    "x": 30,
+    "y": 11,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_12",
+    "x": 30,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_13",
+    "x": 30,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T30_14",
+    "x": 30,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T31_9",
+    "x": 31,
+    "y": 9,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "id": "T32_1",
+    "x": 32,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T32_5",
+    "x": 32,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T32_9",
+    "x": 32,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T35_1",
+    "x": 35,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T35_5",
+    "x": 35,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T35_9",
+    "x": 35,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T35_14",
+    "x": 35,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T38_1",
+    "x": 38,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T39_5",
+    "x": 39,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T39_6",
+    "x": 39,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T41_1",
+    "x": 41,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T41_5",
+    "x": 41,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T41_6",
+    "x": 41,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T42_5",
+    "x": 42,
+    "y": 5,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "id": "T42_6",
+    "x": 42,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T43_5",
+    "x": 43,
+    "y": 5,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "id": "T44_1",
+    "x": 44,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T44_5",
+    "x": 44,
+    "y": 5,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "id": "T46_5",
+    "x": 46,
+    "y": 5,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "id": "T47_1",
+    "x": 47,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T47_5",
+    "x": 47,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T48_5",
+    "x": 48,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "id": "T49_5",
+    "x": 49,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "id": "T50_1",
+    "x": 50,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T50_5",
+    "x": 50,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T53_1",
+    "x": 53,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "id": "T53_5",
+    "x": 53,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   }
+  ],
+  "vin": [],
+  "vout": []
+ },
+ "empty_rectangle": {
+  "x0": 23,
+  "y0": 23,
+  "x1": 69,
+  "y1": 69
+ },
+ "design": {
+  "class": "s2_isolated_paths",
+  "physical_channels": [
+   {
+    "id": "PC00000",
+    "from": {
+     "unit": "WFE5",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T20_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00001",
+    "from": {
+     "unit": "T20_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF5",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00002",
+    "from": {
+     "unit": "WFE6",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T23_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00003",
+    "from": {
+     "unit": "T23_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF6",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00004",
+    "from": {
+     "unit": "WO7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T26_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00005",
+    "from": {
+     "unit": "T26_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO7",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00006",
+    "from": {
+     "unit": "WO8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T29_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00007",
+    "from": {
+     "unit": "T29_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO8",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00008",
+    "from": {
+     "unit": "WFE7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T32_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00009",
+    "from": {
+     "unit": "T32_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF7",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00010",
+    "from": {
+     "unit": "WFE8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T35_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00011",
+    "from": {
+     "unit": "T35_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF8",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00012",
+    "from": {
+     "unit": "RF5",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T20_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00013",
+    "from": {
+     "unit": "T20_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF5",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00014",
+    "from": {
+     "unit": "RF6",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T23_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00015",
+    "from": {
+     "unit": "T23_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF6",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00016",
+    "from": {
+     "unit": "RF7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T32_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00017",
+    "from": {
+     "unit": "T32_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF7",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00018",
+    "from": {
+     "unit": "RF8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T35_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00019",
+    "from": {
+     "unit": "T35_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF8",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00020",
+    "from": {
+     "unit": "KF5",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T20_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00021",
+    "from": {
+     "unit": "T20_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B3",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00022",
+    "from": {
+     "unit": "KF6",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T23_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00023",
+    "from": {
+     "unit": "T23_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B3",
+     "side": 3,
+     "offset": 4
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00024",
+    "from": {
+     "unit": "KF7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T32_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00025",
+    "from": {
+     "unit": "T32_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B4",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00026",
+    "from": {
+     "unit": "KF8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T35_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00027",
+    "from": {
+     "unit": "T35_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B4",
+     "side": 3,
+     "offset": 4
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00028",
+    "from": {
+     "unit": "KO7",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00029",
+    "from": {
+     "unit": "T25_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00030",
+    "from": {
+     "unit": "T25_6",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_7",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00031",
+    "from": {
+     "unit": "T25_7",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_8",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00032",
+    "from": {
+     "unit": "T25_8",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00033",
+    "from": {
+     "unit": "T25_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_10",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00034",
+    "from": {
+     "unit": "T25_10",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_11",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00035",
+    "from": {
+     "unit": "T25_11",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_12",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00036",
+    "from": {
+     "unit": "T25_12",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_13",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00037",
+    "from": {
+     "unit": "T25_13",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_14",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00038",
+    "from": {
+     "unit": "T25_14",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O4",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00039",
+    "from": {
+     "unit": "KO8",
+     "side": 1,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T30_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00040",
+    "from": {
+     "unit": "T30_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00041",
+    "from": {
+     "unit": "T30_6",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_7",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00042",
+    "from": {
+     "unit": "T30_7",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_8",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00043",
+    "from": {
+     "unit": "T30_8",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00044",
+    "from": {
+     "unit": "T30_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_10",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00045",
+    "from": {
+     "unit": "T30_10",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_11",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00046",
+    "from": {
+     "unit": "T30_11",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_12",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00047",
+    "from": {
+     "unit": "T30_12",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_13",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00048",
+    "from": {
+     "unit": "T30_13",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_14",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00049",
+    "from": {
+     "unit": "T30_14",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O4",
+     "side": 3,
+     "offset": 5
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00050",
+    "from": {
+     "unit": "S3",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T27_9",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00051",
+    "from": {
+     "unit": "T27_9",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_9",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00052",
+    "from": {
+     "unit": "T26_9",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T25_9",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00053",
+    "from": {
+     "unit": "T25_9",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T24_9",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00054",
+    "from": {
+     "unit": "T24_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B3",
+     "side": 3,
+     "offset": 5
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00055",
+    "from": {
+     "unit": "S3",
+     "side": 3,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T29_9",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00056",
+    "from": {
+     "unit": "T29_9",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T30_9",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00057",
+    "from": {
+     "unit": "T30_9",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T31_9",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00058",
+    "from": {
+     "unit": "T31_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B4",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00059",
+    "from": {
+     "unit": "S3",
+     "side": 3,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T28_9",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00060",
+    "from": {
+     "unit": "T28_9",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T28_8",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00061",
+    "from": {
+     "unit": "T28_8",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T27_8",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00062",
+    "from": {
+     "unit": "T27_8",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_8",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00063",
+    "from": {
+     "unit": "T26_8",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_9",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00064",
+    "from": {
+     "unit": "T26_9",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_10",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00065",
+    "from": {
+     "unit": "T26_10",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_11",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00066",
+    "from": {
+     "unit": "T26_11",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_12",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00067",
+    "from": {
+     "unit": "T26_12",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_13",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00068",
+    "from": {
+     "unit": "T26_13",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_14",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00069",
+    "from": {
+     "unit": "T26_14",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O4",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00070",
+    "from": {
+     "unit": "B3",
+     "side": 1,
+     "offset": 5
+    },
+    "to": {
+     "unit": "T24_14",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00071",
+    "from": {
+     "unit": "T24_14",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T24_15",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00072",
+    "from": {
+     "unit": "T24_15",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T24_16",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00073",
+    "from": {
+     "unit": "T24_16",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T24_17",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00074",
+    "from": {
+     "unit": "T24_17",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T24_18",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00075",
+    "from": {
+     "unit": "T24_18",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T24_19",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00076",
+    "from": {
+     "unit": "T24_19",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "R3",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00077",
+    "from": {
+     "unit": "B4",
+     "side": 1,
+     "offset": 4
+    },
+    "to": {
+     "unit": "T35_14",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00078",
+    "from": {
+     "unit": "T35_14",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "R4",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00079",
+    "from": {
+     "unit": "WO9",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T38_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00080",
+    "from": {
+     "unit": "T38_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO9",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00081",
+    "from": {
+     "unit": "WO10",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T41_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00082",
+    "from": {
+     "unit": "T41_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO10",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00083",
+    "from": {
+     "unit": "WFE1",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T44_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00084",
+    "from": {
+     "unit": "T44_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF1",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00085",
+    "from": {
+     "unit": "WFE3",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T47_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00086",
+    "from": {
+     "unit": "T47_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF3",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00087",
+    "from": {
+     "unit": "WO11",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T50_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00088",
+    "from": {
+     "unit": "T50_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO11",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00089",
+    "from": {
+     "unit": "WO12",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T53_1",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00090",
+    "from": {
+     "unit": "T53_1",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO12",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00091",
+    "from": {
+     "unit": "KO9",
+     "side": 1,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T39_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00092",
+    "from": {
+     "unit": "T39_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T39_6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00093",
+    "from": {
+     "unit": "T39_6",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O5",
+     "side": 3,
+     "offset": 2
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00094",
+    "from": {
+     "unit": "KO10",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T41_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00095",
+    "from": {
+     "unit": "T41_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T41_6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00096",
+    "from": {
+     "unit": "T41_6",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O5",
+     "side": 3,
+     "offset": 4
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00097",
+    "from": {
+     "unit": "KO11",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T50_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00098",
+    "from": {
+     "unit": "T50_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O6",
+     "side": 3,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00099",
+    "from": {
+     "unit": "KO12",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T53_5",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00100",
+    "from": {
+     "unit": "T53_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O6",
+     "side": 3,
+     "offset": 4
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00101",
+    "from": {
+     "unit": "S4",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T44_5",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00102",
+    "from": {
+     "unit": "T44_5",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T43_5",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00103",
+    "from": {
+     "unit": "T43_5",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T42_5",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00104",
+    "from": {
+     "unit": "T42_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T42_6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00105",
+    "from": {
+     "unit": "T42_6",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O5",
+     "side": 3,
+     "offset": 5
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00106",
+    "from": {
+     "unit": "S4",
+     "side": 3,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T46_5",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00107",
+    "from": {
+     "unit": "T46_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T47_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00108",
+    "from": {
+     "unit": "T47_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T48_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00109",
+    "from": {
+     "unit": "T48_5",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T49_5",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00110",
+    "from": {
+     "unit": "T49_5",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O6",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00111",
+    "from": {
+     "unit": "WFE9",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_20",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00112",
+    "from": {
+     "unit": "T1_20",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF9",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00113",
+    "from": {
+     "unit": "WFE10",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_23",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00114",
+    "from": {
+     "unit": "T1_23",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF10",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00115",
+    "from": {
+     "unit": "WO13",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00116",
+    "from": {
+     "unit": "T1_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO13",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00117",
+    "from": {
+     "unit": "WO14",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_29",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00118",
+    "from": {
+     "unit": "T1_29",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO14",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00119",
+    "from": {
+     "unit": "WFE11",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_32",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00120",
+    "from": {
+     "unit": "T1_32",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF11",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00121",
+    "from": {
+     "unit": "WFE12",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_35",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00122",
+    "from": {
+     "unit": "T1_35",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF12",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00123",
+    "from": {
+     "unit": "RF9",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_20",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00124",
+    "from": {
+     "unit": "T5_20",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF9",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00125",
+    "from": {
+     "unit": "RF10",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_23",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00126",
+    "from": {
+     "unit": "T5_23",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF10",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00127",
+    "from": {
+     "unit": "RF11",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_32",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00128",
+    "from": {
+     "unit": "T5_32",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF11",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00129",
+    "from": {
+     "unit": "RF12",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_35",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00130",
+    "from": {
+     "unit": "T5_35",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KF12",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁块"
+    ]
+   },
+   {
+    "id": "PC00131",
+    "from": {
+     "unit": "KF9",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T9_20",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00132",
+    "from": {
+     "unit": "T9_20",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B5",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00133",
+    "from": {
+     "unit": "KF10",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T9_23",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00134",
+    "from": {
+     "unit": "T9_23",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B5",
+     "side": 2,
+     "offset": 4
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00135",
+    "from": {
+     "unit": "KF11",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T9_32",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00136",
+    "from": {
+     "unit": "T9_32",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B6",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00137",
+    "from": {
+     "unit": "KF12",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T9_35",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00138",
+    "from": {
+     "unit": "T9_35",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B6",
+     "side": 2,
+     "offset": 4
+    },
+    "allowed_items": [
+     "蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00139",
+    "from": {
+     "unit": "KO13",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00140",
+    "from": {
+     "unit": "T5_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00141",
+    "from": {
+     "unit": "T6_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T7_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00142",
+    "from": {
+     "unit": "T7_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00143",
+    "from": {
+     "unit": "T8_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00144",
+    "from": {
+     "unit": "T9_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T10_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00145",
+    "from": {
+     "unit": "T10_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T11_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00146",
+    "from": {
+     "unit": "T11_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T12_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00147",
+    "from": {
+     "unit": "T12_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T13_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00148",
+    "from": {
+     "unit": "T13_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T14_25",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00149",
+    "from": {
+     "unit": "T14_25",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O7",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00150",
+    "from": {
+     "unit": "KO14",
+     "side": 0,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T5_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00151",
+    "from": {
+     "unit": "T5_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00152",
+    "from": {
+     "unit": "T6_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T7_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00153",
+    "from": {
+     "unit": "T7_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00154",
+    "from": {
+     "unit": "T8_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00155",
+    "from": {
+     "unit": "T9_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T10_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00156",
+    "from": {
+     "unit": "T10_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T11_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00157",
+    "from": {
+     "unit": "T11_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T12_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00158",
+    "from": {
+     "unit": "T12_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T13_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00159",
+    "from": {
+     "unit": "T13_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T14_30",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00160",
+    "from": {
+     "unit": "T14_30",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O7",
+     "side": 2,
+     "offset": 5
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00161",
+    "from": {
+     "unit": "S5",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_27",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00162",
+    "from": {
+     "unit": "T9_27",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_26",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00163",
+    "from": {
+     "unit": "T9_26",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_25",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00164",
+    "from": {
+     "unit": "T9_25",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_24",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00165",
+    "from": {
+     "unit": "T9_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B5",
+     "side": 2,
+     "offset": 5
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00166",
+    "from": {
+     "unit": "S5",
+     "side": 2,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T9_29",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00167",
+    "from": {
+     "unit": "T9_29",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_30",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00168",
+    "from": {
+     "unit": "T9_30",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_31",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00169",
+    "from": {
+     "unit": "T9_31",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B6",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00170",
+    "from": {
+     "unit": "S5",
+     "side": 2,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T9_28",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00171",
+    "from": {
+     "unit": "T9_28",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_28",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00172",
+    "from": {
+     "unit": "T8_28",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_27",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00173",
+    "from": {
+     "unit": "T8_27",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T8_26",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00174",
+    "from": {
+     "unit": "T8_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00175",
+    "from": {
+     "unit": "T9_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T10_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00176",
+    "from": {
+     "unit": "T10_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T11_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00177",
+    "from": {
+     "unit": "T11_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T12_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00178",
+    "from": {
+     "unit": "T12_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T13_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00179",
+    "from": {
+     "unit": "T13_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T14_26",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00180",
+    "from": {
+     "unit": "T14_26",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O7",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00181",
+    "from": {
+     "unit": "B5",
+     "side": 0,
+     "offset": 5
+    },
+    "to": {
+     "unit": "T14_24",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00182",
+    "from": {
+     "unit": "T14_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T15_24",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00183",
+    "from": {
+     "unit": "T15_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T16_24",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00184",
+    "from": {
+     "unit": "T16_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T17_24",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00185",
+    "from": {
+     "unit": "T17_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T18_24",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00186",
+    "from": {
+     "unit": "T18_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T19_24",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00187",
+    "from": {
+     "unit": "T19_24",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "R5",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00188",
+    "from": {
+     "unit": "B6",
+     "side": 0,
+     "offset": 4
+    },
+    "to": {
+     "unit": "T14_35",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00189",
+    "from": {
+     "unit": "T14_35",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "R6",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "致密蓝铁粉末"
+    ]
+   },
+   {
+    "id": "PC00190",
+    "from": {
+     "unit": "WO15",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_38",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00191",
+    "from": {
+     "unit": "T1_38",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO15",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00192",
+    "from": {
+     "unit": "WO16",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_41",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00193",
+    "from": {
+     "unit": "T1_41",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO16",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00194",
+    "from": {
+     "unit": "WFE15",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_44",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00195",
+    "from": {
+     "unit": "T1_44",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF15",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00196",
+    "from": {
+     "unit": "WFE21",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_47",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00197",
+    "from": {
+     "unit": "T1_47",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "RF21",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "蓝铁矿"
+    ]
+   },
+   {
+    "id": "PC00198",
+    "from": {
+     "unit": "WO17",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_50",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00199",
+    "from": {
+     "unit": "T1_50",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO17",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00200",
+    "from": {
+     "unit": "WO18",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T1_53",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00201",
+    "from": {
+     "unit": "T1_53",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "KO18",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源矿"
+    ]
+   },
+   {
+    "id": "PC00202",
+    "from": {
+     "unit": "KO15",
+     "side": 0,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T5_39",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00203",
+    "from": {
+     "unit": "T5_39",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_39",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00204",
+    "from": {
+     "unit": "T6_39",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O8",
+     "side": 2,
+     "offset": 2
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00205",
+    "from": {
+     "unit": "KO16",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_41",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00206",
+    "from": {
+     "unit": "T5_41",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_41",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00207",
+    "from": {
+     "unit": "T6_41",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O8",
+     "side": 2,
+     "offset": 4
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00208",
+    "from": {
+     "unit": "KO17",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_50",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00209",
+    "from": {
+     "unit": "T5_50",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O9",
+     "side": 2,
+     "offset": 1
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00210",
+    "from": {
+     "unit": "KO18",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "T5_53",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00211",
+    "from": {
+     "unit": "T5_53",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O9",
+     "side": 2,
+     "offset": 4
+    },
+    "allowed_items": [
+     "源石粉末"
+    ]
+   },
+   {
+    "id": "PC00212",
+    "from": {
+     "unit": "S6",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_44",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00213",
+    "from": {
+     "unit": "T5_44",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_43",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00214",
+    "from": {
+     "unit": "T5_43",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_42",
+     "side": 1,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00215",
+    "from": {
+     "unit": "T5_42",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T6_42",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00216",
+    "from": {
+     "unit": "T6_42",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O8",
+     "side": 2,
+     "offset": 5
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00217",
+    "from": {
+     "unit": "S6",
+     "side": 2,
+     "offset": 2
+    },
+    "to": {
+     "unit": "T5_46",
+     "side": 0,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00218",
+    "from": {
+     "unit": "T5_46",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_47",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00219",
+    "from": {
+     "unit": "T5_47",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_48",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00220",
+    "from": {
+     "unit": "T5_48",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T5_49",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00221",
+    "from": {
+     "unit": "T5_49",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O9",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00222",
+    "from": {
+     "unit": "T25_9",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T26_9",
+     "side": 2,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   },
+   {
+    "id": "PC00223",
+    "from": {
+     "unit": "T9_25",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "T9_26",
+     "side": 3,
+     "offset": 0
+    },
+    "allowed_items": [
+     "砂叶粉末"
+    ]
+   }
+  ],
+  "logical_feeds": [
+   {
+    "id": "LF008",
+    "from": {
+     "unit": "WFE5",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF5",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00000",
+     "PC00001"
+    ]
+   },
+   {
+    "id": "LF010",
+    "from": {
+     "unit": "WFE6",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF6",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00002",
+     "PC00003"
+    ]
+   },
+   {
+    "id": "LF074",
+    "from": {
+     "unit": "WO7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO7",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00004",
+     "PC00005"
+    ]
+   },
+   {
+    "id": "LF075",
+    "from": {
+     "unit": "WO8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO8",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00006",
+     "PC00007"
+    ]
+   },
+   {
+    "id": "LF012",
+    "from": {
+     "unit": "WFE7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF7",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00008",
+     "PC00009"
+    ]
+   },
+   {
+    "id": "LF014",
+    "from": {
+     "unit": "WFE8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF8",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00010",
+     "PC00011"
+    ]
+   },
+   {
+    "id": "LF009",
+    "from": {
+     "unit": "RF5",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF5",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00012",
+     "PC00013"
+    ]
+   },
+   {
+    "id": "LF011",
+    "from": {
+     "unit": "RF6",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF6",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00014",
+     "PC00015"
+    ]
+   },
+   {
+    "id": "LF013",
+    "from": {
+     "unit": "RF7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF7",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00016",
+     "PC00017"
+    ]
+   },
+   {
+    "id": "LF015",
+    "from": {
+     "unit": "RF8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF8",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00018",
+     "PC00019"
+    ]
+   },
+   {
+    "id": "LF090",
+    "from": {
+     "unit": "KF5",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B3",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00020",
+     "PC00021"
+    ]
+   },
+   {
+    "id": "LF091",
+    "from": {
+     "unit": "KF6",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B3",
+     "side": 3,
+     "offset": 4
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00022",
+     "PC00023"
+    ]
+   },
+   {
+    "id": "LF092",
+    "from": {
+     "unit": "KF7",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B4",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00024",
+     "PC00025"
+    ]
+   },
+   {
+    "id": "LF093",
+    "from": {
+     "unit": "KF8",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B4",
+     "side": 3,
+     "offset": 4
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00026",
+     "PC00027"
+    ]
+   },
+   {
+    "id": "LF126",
+    "from": {
+     "unit": "KO7",
+     "side": 1,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O4",
+     "side": 3,
+     "offset": 0
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00028",
+     "PC00029",
+     "PC00030",
+     "PC00031",
+     "PC00032",
+     "PC00033",
+     "PC00034",
+     "PC00035",
+     "PC00036",
+     "PC00037",
+     "PC00038"
+    ]
+   },
+   {
+    "id": "LF127",
+    "from": {
+     "unit": "KO8",
+     "side": 1,
+     "offset": 2
+    },
+    "to": {
+     "unit": "O4",
+     "side": 3,
+     "offset": 5
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00039",
+     "PC00040",
+     "PC00041",
+     "PC00042",
+     "PC00043",
+     "PC00044",
+     "PC00045",
+     "PC00046",
+     "PC00047",
+     "PC00048",
+     "PC00049"
+    ]
+   },
+   {
+    "id": "LF219",
+    "from": {
+     "unit": "S3",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B3",
+     "side": 3,
+     "offset": 5
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00050",
+     "PC00051",
+     "PC00052",
+     "PC00053",
+     "PC00054"
+    ]
+   },
+   {
+    "id": "LF220",
+    "from": {
+     "unit": "S3",
+     "side": 3,
+     "offset": 2
+    },
+    "to": {
+     "unit": "B4",
+     "side": 3,
+     "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00055",
+     "PC00056",
+     "PC00057",
+     "PC00058"
+    ]
+   },
+   {
+    "id": "LF221",
+    "from": {
+     "unit": "S3",
+     "side": 3,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O4",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00059",
+     "PC00060",
+     "PC00061",
+     "PC00062",
+     "PC00063",
+     "PC00064",
+     "PC00065",
+     "PC00066",
+     "PC00067",
+     "PC00068",
+     "PC00069"
+    ]
+   },
+   {
+    "id": "LF259",
+    "from": {
+     "unit": "B3",
+     "side": 1,
+     "offset": 5
+    },
+    "to": {
+     "unit": "R3",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00070",
+     "PC00071",
+     "PC00072",
+     "PC00073",
+     "PC00074",
+     "PC00075",
+     "PC00076"
+    ]
+   },
+   {
+    "id": "LF260",
+    "from": {
+     "unit": "B4",
+     "side": 1,
+     "offset": 4
+    },
+    "to": {
+     "unit": "R4",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00077",
+     "PC00078"
+    ]
+   },
+   {
+    "id": "LF076",
+    "from": {
+     "unit": "WO9",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO9",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00079",
+     "PC00080"
+    ]
+   },
+   {
+    "id": "LF077",
+    "from": {
+     "unit": "WO10",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO10",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00081",
+     "PC00082"
+    ]
+   },
+   {
+    "id": "LF000",
+    "from": {
+     "unit": "WFE1",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF1",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00083",
+     "PC00084"
+    ]
+   },
+   {
+    "id": "LF004",
+    "from": {
+     "unit": "WFE3",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF3",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00085",
+     "PC00086"
+    ]
+   },
+   {
+    "id": "LF078",
+    "from": {
+     "unit": "WO11",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO11",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00087",
+     "PC00088"
+    ]
+   },
+   {
+    "id": "LF079",
+    "from": {
+     "unit": "WO12",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO12",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00089",
+     "PC00090"
+    ]
+   },
+   {
+    "id": "LF128",
+    "from": {
+     "unit": "KO9",
+     "side": 1,
+     "offset": 2
+    },
+    "to": {
+     "unit": "O5",
+     "side": 3,
+     "offset": 2
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00091",
+     "PC00092",
+     "PC00093"
+    ]
+   },
+   {
+    "id": "LF129",
+    "from": {
+     "unit": "KO10",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O5",
+     "side": 3,
+     "offset": 4
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00094",
+     "PC00095",
+     "PC00096"
+    ]
+   },
+   {
+    "id": "LF130",
+    "from": {
+     "unit": "KO11",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O6",
+     "side": 3,
+     "offset": 1
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00097",
+     "PC00098"
+    ]
+   },
+   {
+    "id": "LF131",
+    "from": {
+     "unit": "KO12",
+     "side": 1,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O6",
+     "side": 3,
+     "offset": 4
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00099",
+     "PC00100"
+    ]
+   },
+   {
+    "id": "LF222",
+    "from": {
+     "unit": "S4",
+     "side": 3,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O5",
+     "side": 3,
+     "offset": 5
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00101",
+     "PC00102",
+     "PC00103",
+     "PC00104",
+     "PC00105"
+    ]
+   },
+   {
+    "id": "LF223",
+    "from": {
+     "unit": "S4",
+     "side": 3,
+     "offset": 2
+    },
+    "to": {
+     "unit": "O6",
+     "side": 3,
+     "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00106",
+     "PC00107",
+     "PC00108",
+     "PC00109",
+     "PC00110"
+    ]
+   },
+   {
+    "id": "LF016",
+    "from": {
+     "unit": "WFE9",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF9",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00111",
+     "PC00112"
+    ]
+   },
+   {
+    "id": "LF018",
+    "from": {
+     "unit": "WFE10",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF10",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00113",
+     "PC00114"
+    ]
+   },
+   {
+    "id": "LF080",
+    "from": {
+     "unit": "WO13",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO13",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00115",
+     "PC00116"
+    ]
+   },
+   {
+    "id": "LF081",
+    "from": {
+     "unit": "WO14",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO14",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00117",
+     "PC00118"
+    ]
+   },
+   {
+    "id": "LF020",
+    "from": {
+     "unit": "WFE11",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF11",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00119",
+     "PC00120"
+    ]
+   },
+   {
+    "id": "LF022",
+    "from": {
+     "unit": "WFE12",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF12",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00121",
+     "PC00122"
+    ]
+   },
+   {
+    "id": "LF017",
+    "from": {
+     "unit": "RF9",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF9",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00123",
+     "PC00124"
+    ]
+   },
+   {
+    "id": "LF019",
+    "from": {
+     "unit": "RF10",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF10",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00125",
+     "PC00126"
+    ]
+   },
+   {
+    "id": "LF021",
+    "from": {
+     "unit": "RF11",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF11",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00127",
+     "PC00128"
+    ]
+   },
+   {
+    "id": "LF023",
+    "from": {
+     "unit": "RF12",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KF12",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+     "PC00129",
+     "PC00130"
+    ]
+   },
+   {
+    "id": "LF094",
+    "from": {
+     "unit": "KF9",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B5",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00131",
+     "PC00132"
+    ]
+   },
+   {
+    "id": "LF095",
+    "from": {
+     "unit": "KF10",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B5",
+     "side": 2,
+     "offset": 4
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00133",
+     "PC00134"
+    ]
+   },
+   {
+    "id": "LF096",
+    "from": {
+     "unit": "KF11",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B6",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00135",
+     "PC00136"
+    ]
+   },
+   {
+    "id": "LF097",
+    "from": {
+     "unit": "KF12",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "B6",
+     "side": 2,
+     "offset": 4
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00137",
+     "PC00138"
+    ]
+   },
+   {
+    "id": "LF132",
+    "from": {
+     "unit": "KO13",
+     "side": 0,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O7",
+     "side": 2,
+     "offset": 0
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00139",
+     "PC00140",
+     "PC00141",
+     "PC00142",
+     "PC00143",
+     "PC00144",
+     "PC00145",
+     "PC00146",
+     "PC00147",
+     "PC00148",
+     "PC00149"
+    ]
+   },
+   {
+    "id": "LF133",
+    "from": {
+     "unit": "KO14",
+     "side": 0,
+     "offset": 2
+    },
+    "to": {
+     "unit": "O7",
+     "side": 2,
+     "offset": 5
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00150",
+     "PC00151",
+     "PC00152",
+     "PC00153",
+     "PC00154",
+     "PC00155",
+     "PC00156",
+     "PC00157",
+     "PC00158",
+     "PC00159",
+     "PC00160"
+    ]
+   },
+   {
+    "id": "LF224",
+    "from": {
+     "unit": "S5",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "B5",
+     "side": 2,
+     "offset": 5
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00161",
+     "PC00162",
+     "PC00163",
+     "PC00164",
+     "PC00165"
+    ]
+   },
+   {
+    "id": "LF225",
+    "from": {
+     "unit": "S5",
+     "side": 2,
+     "offset": 2
+    },
+    "to": {
+     "unit": "B6",
+     "side": 2,
+     "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00166",
+     "PC00167",
+     "PC00168",
+     "PC00169"
+    ]
+   },
+   {
+    "id": "LF226",
+    "from": {
+     "unit": "S5",
+     "side": 2,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O7",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00170",
+     "PC00171",
+     "PC00172",
+     "PC00173",
+     "PC00174",
+     "PC00175",
+     "PC00176",
+     "PC00177",
+     "PC00178",
+     "PC00179",
+     "PC00180"
+    ]
+   },
+   {
+    "id": "LF261",
+    "from": {
+     "unit": "B5",
+     "side": 0,
+     "offset": 5
+    },
+    "to": {
+     "unit": "R5",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00181",
+     "PC00182",
+     "PC00183",
+     "PC00184",
+     "PC00185",
+     "PC00186",
+     "PC00187"
+    ]
+   },
+   {
+    "id": "LF262",
+    "from": {
+     "unit": "B6",
+     "side": 0,
+     "offset": 4
+    },
+    "to": {
+     "unit": "R6",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+     "PC00188",
+     "PC00189"
+    ]
+   },
+   {
+    "id": "LF082",
+    "from": {
+     "unit": "WO15",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO15",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00190",
+     "PC00191"
+    ]
+   },
+   {
+    "id": "LF083",
+    "from": {
+     "unit": "WO16",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO16",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00192",
+     "PC00193"
+    ]
+   },
+   {
+    "id": "LF028",
+    "from": {
+     "unit": "WFE15",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF15",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00194",
+     "PC00195"
+    ]
+   },
+   {
+    "id": "LF040",
+    "from": {
+     "unit": "WFE21",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "RF21",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+     "PC00196",
+     "PC00197"
+    ]
+   },
+   {
+    "id": "LF084",
+    "from": {
+     "unit": "WO17",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO17",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00198",
+     "PC00199"
+    ]
+   },
+   {
+    "id": "LF085",
+    "from": {
+     "unit": "WO18",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "KO18",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+     "PC00200",
+     "PC00201"
+    ]
+   },
+   {
+    "id": "LF134",
+    "from": {
+     "unit": "KO15",
+     "side": 0,
+     "offset": 2
+    },
+    "to": {
+     "unit": "O8",
+     "side": 2,
+     "offset": 2
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00202",
+     "PC00203",
+     "PC00204"
+    ]
+   },
+   {
+    "id": "LF135",
+    "from": {
+     "unit": "KO16",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O8",
+     "side": 2,
+     "offset": 4
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00205",
+     "PC00206",
+     "PC00207"
+    ]
+   },
+   {
+    "id": "LF136",
+    "from": {
+     "unit": "KO17",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O9",
+     "side": 2,
+     "offset": 1
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00208",
+     "PC00209"
+    ]
+   },
+   {
+    "id": "LF137",
+    "from": {
+     "unit": "KO18",
+     "side": 0,
+     "offset": 1
+    },
+    "to": {
+     "unit": "O9",
+     "side": 2,
+     "offset": 4
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+     "PC00210",
+     "PC00211"
+    ]
+   },
+   {
+    "id": "LF227",
+    "from": {
+     "unit": "S6",
+     "side": 2,
+     "offset": 0
+    },
+    "to": {
+     "unit": "O8",
+     "side": 2,
+     "offset": 5
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00212",
+     "PC00213",
+     "PC00214",
+     "PC00215",
+     "PC00216"
+    ]
+   },
+   {
+    "id": "LF228",
+    "from": {
+     "unit": "S6",
+     "side": 2,
+     "offset": 2
+    },
+    "to": {
+     "unit": "O9",
+     "side": 2,
+     "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+     "PC00217",
+     "PC00218",
+     "PC00219",
+     "PC00220",
+     "PC00221"
+    ]
+   }
+  ],
+  "restrictions": [],
+  "bridge_reverse_channels": [
+   "PC00222",
+   "PC00223"
+  ]
+ },
+ "flow_witness": null,
+ "temporary_rules_sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d",
+ "diagnostic_only": true
+}

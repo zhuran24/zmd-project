@@ -1,0 +1,124 @@
+{
+  "time_utc": "2026-10-02T20:36:12.747714+00:00",
+  "search_cpu_union": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "within_six_cores": true,
+  "processes": [
+    {
+      "pid": 1038783,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/代码/全条件远位交换",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/改规划6初值.txt",
+        "967",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合967",
+        "1100",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/末轮种子963.pos",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/保护进路5.txt",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/末轮种子963.routes"
+      ],
+      "threads": [
+        {
+          "tid": 1038783,
+          "affinity": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "pid": 1038784,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/代码/全供电联合旋转",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/改规划6初值.txt",
+        "969",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合969",
+        "1100",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/末轮种子961.pos",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/保护进路5.txt",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/末轮种子961.routes"
+      ],
+      "threads": [
+        {
+          "tid": 1038784,
+          "affinity": [
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "pid": 1038785,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/代码/远位连通交换",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/改规划6初值.txt",
+        "971",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合971",
+        "1100",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/末轮种子963.pos",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/保护进路5.txt",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/末轮种子963.routes"
+      ],
+      "threads": [
+        {
+          "tid": 1038785,
+          "affinity": [
+            11
+          ]
+        }
+      ]
+    },
+    {
+      "pid": 1050754,
+      "argv": [
+        "python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/代码/完整联合尝试.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/逐路联合963-best.json",
+        "3",
+        "480",
+        "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/完整联合-放开模板-邻域3.json"
+      ],
+      "threads": [
+        {
+          "tid": 1050754,
+          "affinity": [
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "tid": 1052451,
+          "affinity": [
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "tid": 1052452,
+          "affinity": [
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "tid": 1052453,
+          "affinity": [
+            6,
+            7,
+            8
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "运行中搜索进程的线程亲和性快照；检查与制图使用CPU6。"
+}

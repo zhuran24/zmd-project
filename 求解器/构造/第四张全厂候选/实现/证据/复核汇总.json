@@ -1,0 +1,64 @@
+{
+  "candidate_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+  "static_pass": false,
+  "numeric_agreement": true,
+  "counts": {
+    "occupied": [
+      4456,
+      4456,
+      4456,
+      4456,
+      4456
+    ],
+    "channels": [
+      850,
+      850,
+      850,
+      850,
+      850
+    ],
+    "routes": [
+      227,
+      227,
+      227
+    ],
+    "powered": [
+      230,
+      230,
+      230,
+      230,
+      230
+    ]
+  },
+  "jobs": [
+    {
+      "name": "自写静态检查",
+      "exit_code": 1
+    },
+    {
+      "name": "逐路与端口",
+      "exit_code": 0
+    },
+    {
+      "name": "独立主",
+      "exit_code": 0
+    },
+    {
+      "name": "独立副",
+      "exit_code": 0
+    },
+    {
+      "name": "旧A几何",
+      "exit_code": 0
+    },
+    {
+      "name": "旧B几何",
+      "exit_code": 0
+    },
+    {
+      "name": "拒绝性核验",
+      "exit_code": 0
+    }
+  ],
+  "scope": "旧A/B仅复查几何模块；动态运行不在本回放范围。"
+}

@@ -1,0 +1,4487 @@
+{
+ "candidate_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+ "machines": 230,
+ "powered": 230,
+ "rows": [
+  {
+   "id": "RF1",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      43,
+      4,
+      45,
+      4
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      43,
+      2,
+      43,
+      4
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF1",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      27,
+      34,
+      27,
+      36
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER12",
+     "intersection": [
+      28,
+      34,
+      29,
+      36
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF2",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      61,
+      2,
+      63,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF2",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      67,
+      4,
+      68,
+      6
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF3",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      46,
+      4,
+      48,
+      4
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF3",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      47,
+      15,
+      49,
+      15
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "RF4",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      61,
+      56,
+      63,
+      58
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF4",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      60,
+      61,
+      62,
+      63
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF5",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      21,
+      2,
+      21,
+      4
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      19,
+      2,
+      21,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF5",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      21,
+      6,
+      21,
+      8
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      19,
+      6,
+      21,
+      8
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF6",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      22,
+      2,
+      24,
+      4
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      22,
+      2,
+      23,
+      4
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF6",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      22,
+      6,
+      24,
+      8
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      22,
+      6,
+      23,
+      8
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF7",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      31,
+      2,
+      32,
+      4
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      32,
+      2,
+      33,
+      4
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF7",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      31,
+      6,
+      32,
+      8
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      32,
+      6,
+      33,
+      8
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF8",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER26",
+     "intersection": [
+      34,
+      2,
+      36,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF8",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER26",
+     "intersection": [
+      34,
+      6,
+      36,
+      8
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF9",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      2,
+      21,
+      4,
+      21
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF9",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      6,
+      21,
+      8,
+      21
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "RF10",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      2,
+      22,
+      4,
+      24
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF10",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      6,
+      22,
+      8,
+      24
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF11",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      2,
+      31,
+      4,
+      32
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      2,
+      32,
+      4,
+      33
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF11",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      6,
+      31,
+      8,
+      32
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      6,
+      32,
+      8,
+      33
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF12",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER27",
+     "intersection": [
+      2,
+      34,
+      4,
+      36
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF12",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER27",
+     "intersection": [
+      6,
+      34,
+      8,
+      36
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF13",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER21",
+     "intersection": [
+      2,
+      3,
+      4,
+      5
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF13",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      4,
+      7,
+      6,
+      9
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER21",
+     "intersection": [
+      4,
+      7,
+      6,
+      7
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "RF14",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      32,
+      38,
+      34,
+      40
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF14",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      30,
+      35,
+      32,
+      37
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF15",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      4,
+      43,
+      4,
+      45
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      2,
+      43,
+      4,
+      43
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF15",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      14,
+      48,
+      15,
+      50
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF16",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      39,
+      60,
+      41,
+      62
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF16",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER20",
+     "intersection": [
+      21,
+      51,
+      22,
+      53
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF17",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER18",
+     "intersection": [
+      16,
+      2,
+      18,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF17",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      23,
+      23,
+      25,
+      25
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER6",
+     "intersection": [
+      23,
+      23,
+      25,
+      25
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF18",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      3,
+      7,
+      3,
+      9
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER21",
+     "intersection": [
+      1,
+      7,
+      3,
+      7
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF18",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      28,
+      24,
+      30,
+      25
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF19",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      5,
+      56,
+      5,
+      58
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF19",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      7,
+      58,
+      9,
+      60
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF20",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      11,
+      6,
+      13,
+      8
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      12,
+      6,
+      13,
+      8
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF20",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      6,
+      55,
+      8,
+      57
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF21",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      4,
+      46,
+      4,
+      48
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF21",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      11,
+      48,
+      13,
+      50
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF22",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER18",
+     "intersection": [
+      12,
+      2,
+      14,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF22",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      8,
+      6,
+      10,
+      7
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER21",
+     "intersection": [
+      8,
+      5,
+      9,
+      7
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF23",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      12,
+      66,
+      14,
+      66
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF23",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      15,
+      66,
+      16,
+      66
+     ],
+     "overlap_cells": 2
+    }
+   ]
+  },
+  {
+   "id": "RF24",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER21",
+     "intersection": [
+      8,
+      2,
+      9,
+      4
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF24",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      16,
+      60,
+      16,
+      62
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "RF25",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      59,
+      5,
+      61,
+      7
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF25",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      52,
+      38,
+      54,
+      40
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF26",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      53,
+      21,
+      55,
+      23
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF26",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      51,
+      20,
+      52,
+      22
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF27",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      3,
+      13,
+      4,
+      15
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF27",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      5,
+      11,
+      7,
+      13
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF28",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      3,
+      16,
+      4,
+      17
+     ],
+     "overlap_cells": 4
+    }
+   ]
+  },
+  {
+   "id": "KF28",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      5,
+      15,
+      7,
+      17
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF29",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      58,
+      2,
+      60,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF29",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      57,
+      2,
+      57,
+      4
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "RF30",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER18",
+     "intersection": [
+      16,
+      12,
+      18,
+      12
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KF30",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      21,
+      14,
+      22,
+      16
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF31",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      64,
+      2,
+      66,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF31",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      64,
+      6,
+      66,
+      8
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF32",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      67,
+      1,
+      68,
+      3
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF32",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      67,
+      7,
+      68,
+      9
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "RF33",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER21",
+     "intersection": [
+      5,
+      3,
+      7,
+      5
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KF33",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      14,
+      6,
+      14,
+      7
+     ],
+     "overlap_cells": 2
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      14,
+      5,
+      16,
+      7
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "RF34",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      3,
+      10,
+      4,
+      12
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KF34",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      7,
+      8,
+      9,
+      10
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO1",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      35,
+      40,
+      37,
+      41
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "KO2",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      48,
+      35,
+      50,
+      37
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO3",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      35,
+      37,
+      37,
+      39
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO4",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      52,
+      33,
+      54,
+      33
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KO5",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      39,
+      35,
+      39,
+      37
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KO6",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      52,
+      35,
+      54,
+      37
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO7",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      25,
+      2,
+      27,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO8",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      28,
+      2,
+      30,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO9",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER26",
+     "intersection": [
+      37,
+      2,
+      39,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO10",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      41,
+      4,
+      42,
+      4
+     ],
+     "overlap_cells": 2
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      40,
+      2,
+      42,
+      4
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO11",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      49,
+      4,
+      51,
+      4
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KO12",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      52,
+      4,
+      52,
+      4
+     ],
+     "overlap_cells": 1
+    }
+   ]
+  },
+  {
+   "id": "KO13",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      2,
+      25,
+      4,
+      27
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO14",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      2,
+      28,
+      4,
+      30
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO15",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER27",
+     "intersection": [
+      2,
+      37,
+      4,
+      39
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO16",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      4,
+      41,
+      4,
+      42
+     ],
+     "overlap_cells": 2
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      2,
+      40,
+      4,
+      42
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "KO17",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      4,
+      49,
+      4,
+      51
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "KO18",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      4,
+      52,
+      4,
+      52
+     ],
+     "overlap_cells": 1
+    }
+   ]
+  },
+  {
+   "id": "B1",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      23,
+      31,
+      25,
+      32
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER9",
+     "intersection": [
+      23,
+      34,
+      26,
+      36
+     ],
+     "overlap_cells": 12
+    }
+   ]
+  },
+  {
+   "id": "B2",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      11,
+      41,
+      14,
+      43
+     ],
+     "overlap_cells": 12
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      11,
+      38,
+      11,
+      43
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "B3",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      21,
+      10,
+      24,
+      12
+     ],
+     "overlap_cells": 12
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      19,
+      10,
+      23,
+      12
+     ],
+     "overlap_cells": 15
+    }
+   ]
+  },
+  {
+   "id": "B4",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      31,
+      10,
+      32,
+      12
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      32,
+      10,
+      36,
+      11
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "B5",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      10,
+      21,
+      12,
+      24
+     ],
+     "overlap_cells": 12
+    }
+   ]
+  },
+  {
+   "id": "B6",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      10,
+      31,
+      12,
+      32
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      10,
+      32,
+      11,
+      36
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "B7",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      16,
+      37,
+      20,
+      40
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "B8",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER20",
+     "intersection": [
+      21,
+      50,
+      22,
+      50
+     ],
+     "overlap_cells": 2
+    }
+   ]
+  },
+  {
+   "id": "B9",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      25,
+      27,
+      25,
+      30
+     ],
+     "overlap_cells": 4
+    },
+    {
+     "pole": "POWER12",
+     "intersection": [
+      28,
+      30,
+      30,
+      30
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "B10",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      10,
+      51,
+      13,
+      52
+     ],
+     "overlap_cells": 8
+    },
+    {
+     "pole": "POWER15",
+     "intersection": [
+      10,
+      55,
+      13,
+      56
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  },
+  {
+   "id": "B11",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      14,
+      16,
+      14,
+      17
+     ],
+     "overlap_cells": 2
+    }
+   ]
+  },
+  {
+   "id": "B12",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      12,
+      60,
+      15,
+      65
+     ],
+     "overlap_cells": 24
+    }
+   ]
+  },
+  {
+   "id": "B13",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      54,
+      41,
+      55,
+      44
+     ],
+     "overlap_cells": 8
+    },
+    {
+     "pole": "POWER19",
+     "intersection": [
+      56,
+      41,
+      59,
+      44
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "B14",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      19,
+      30,
+      22,
+      32
+     ],
+     "overlap_cells": 12
+    },
+    {
+     "pole": "POWER9",
+     "intersection": [
+      19,
+      34,
+      22,
+      35
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  },
+  {
+   "id": "B15",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      35,
+      19,
+      39,
+      22
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "B16",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      64,
+      10,
+      68,
+      12
+     ],
+     "overlap_cells": 15
+    }
+   ]
+  },
+  {
+   "id": "B17",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      10,
+      9,
+      14,
+      12
+     ],
+     "overlap_cells": 20
+    },
+    {
+     "pole": "POWER18",
+     "intersection": [
+      12,
+      9,
+      15,
+      12
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "O1",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      41,
+      28,
+      46,
+      28
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "O2",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      48,
+      33,
+      51,
+      34
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  },
+  {
+   "id": "O3",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      55,
+      33,
+      55,
+      33
+     ],
+     "overlap_cells": 1
+    }
+   ]
+  },
+  {
+   "id": "O4",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      25,
+      15,
+      30,
+      18
+     ],
+     "overlap_cells": 24
+    }
+   ]
+  },
+  {
+   "id": "O5",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      41,
+      7,
+      42,
+      10
+     ],
+     "overlap_cells": 8
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      37,
+      7,
+      42,
+      10
+     ],
+     "overlap_cells": 24
+    }
+   ]
+  },
+  {
+   "id": "O6",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      49,
+      6,
+      52,
+      9
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "O7",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      15,
+      25,
+      18,
+      30
+     ],
+     "overlap_cells": 24
+    }
+   ]
+  },
+  {
+   "id": "O8",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      7,
+      41,
+      10,
+      42
+     ],
+     "overlap_cells": 8
+    },
+    {
+     "pole": "POWER27",
+     "intersection": [
+      7,
+      37,
+      10,
+      42
+     ],
+     "overlap_cells": 24
+    }
+   ]
+  },
+  {
+   "id": "O9",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      6,
+      49,
+      9,
+      52
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "Q1",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      43,
+      56,
+      46,
+      56
+     ],
+     "overlap_cells": 4
+    },
+    {
+     "pole": "POWER25",
+     "intersection": [
+      43,
+      57,
+      46,
+      61
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "Q2",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      41,
+      53,
+      42,
+      56
+     ],
+     "overlap_cells": 8
+    },
+    {
+     "pole": "POWER11",
+     "intersection": [
+      39,
+      53,
+      39,
+      54
+     ],
+     "overlap_cells": 2
+    },
+    {
+     "pole": "POWER25",
+     "intersection": [
+      39,
+      57,
+      42,
+      58
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  },
+  {
+   "id": "Q3",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      31,
+      30,
+      34,
+      34
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "Q4",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      49,
+      60,
+      49,
+      63
+     ],
+     "overlap_cells": 4
+    }
+   ]
+  },
+  {
+   "id": "Q5",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      58,
+      20,
+      62,
+      23
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "Q6",
+   "model": "研磨机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      28,
+      48,
+      31,
+      53
+     ],
+     "overlap_cells": 24
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      28,
+      50,
+      31,
+      53
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "SC1",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      51,
+      24,
+      52,
+      27
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  },
+  {
+   "id": "SA1",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER22",
+     "intersection": [
+      64,
+      24,
+      68,
+      24
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "SB1",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      43,
+      23,
+      46,
+      27
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "S1",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      40,
+      24,
+      42,
+      26
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC2",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      64,
+      35,
+      67,
+      39
+     ],
+     "overlap_cells": 20
+    },
+    {
+     "pole": "POWER22",
+     "intersection": [
+      64,
+      35,
+      68,
+      35
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "SA2",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      64,
+      40,
+      67,
+      44
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "SB2",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      58,
+      35,
+      62,
+      39
+     ],
+     "overlap_cells": 25
+    },
+    {
+     "pole": "POWER22",
+     "intersection": [
+      62,
+      35,
+      62,
+      35
+     ],
+     "overlap_cells": 1
+    }
+   ]
+  },
+  {
+   "id": "S2",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      55,
+      36,
+      55,
+      38
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER19",
+     "intersection": [
+      56,
+      36,
+      57,
+      38
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "SC3",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      57,
+      25,
+      61,
+      27
+     ],
+     "overlap_cells": 15
+    }
+   ]
+  },
+  {
+   "id": "SA3",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER22",
+     "intersection": [
+      62,
+      30,
+      66,
+      34
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SB3",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      62,
+      25,
+      62,
+      27
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER22",
+     "intersection": [
+      62,
+      25,
+      66,
+      29
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "S3",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER0",
+     "intersection": [
+      27,
+      10,
+      29,
+      12
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC4",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      45,
+      18,
+      46,
+      22
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "SA4",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      40,
+      17,
+      44,
+      21
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SB4",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      42,
+      12,
+      46,
+      15
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "S4",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      44,
+      6,
+      46,
+      8
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC5",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      39,
+      64,
+      43,
+      68
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SA5",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      38,
+      57,
+      38,
+      59
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "SB5",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      38,
+      60,
+      38,
+      64
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "S5",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER4",
+     "intersection": [
+      10,
+      27,
+      12,
+      29
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC6",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      58,
+      16,
+      62,
+      17
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "SA6",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      59,
+      8,
+      63,
+      12
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SB6",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      15,
+      41,
+      15,
+      45
+     ],
+     "overlap_cells": 5
+    },
+    {
+     "pole": "POWER9",
+     "intersection": [
+      16,
+      41,
+      19,
+      45
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "S6",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      6,
+      44,
+      8,
+      46
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC7",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      31,
+      24,
+      32,
+      25
+     ],
+     "overlap_cells": 4
+    },
+    {
+     "pole": "POWER24",
+     "intersection": [
+      35,
+      24,
+      35,
+      28
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "SA7",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      36,
+      30,
+      39,
+      31
+     ],
+     "overlap_cells": 8
+    },
+    {
+     "pole": "POWER24",
+     "intersection": [
+      36,
+      27,
+      40,
+      28
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "SB7",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      29,
+      19,
+      32,
+      23
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "S7",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      26,
+      21,
+      28,
+      23
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC8",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      5,
+      64,
+      6,
+      66
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "SA8",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      5,
+      59,
+      6,
+      63
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "SB8",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      7,
+      65,
+      11,
+      66
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "S8",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      47,
+      57,
+      49,
+      59
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC9",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      59,
+      54,
+      63,
+      55
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "SA9",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      56,
+      56,
+      60,
+      60
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SB9",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      60,
+      46,
+      64,
+      46
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "S9",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      60,
+      42,
+      62,
+      44
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC10",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      38,
+      65,
+      38,
+      68
+     ],
+     "overlap_cells": 4
+    }
+   ]
+  },
+  {
+   "id": "SA10",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      23,
+      65,
+      27,
+      69
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SB10",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      28,
+      64,
+      31,
+      68
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "S10",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      25,
+      60,
+      27,
+      62
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      25,
+      60,
+      27,
+      61
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "SC11",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      64,
+      55,
+      67,
+      59
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "SA11",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      64,
+      60,
+      67,
+      64
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "SB11",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      65,
+      54,
+      67,
+      54
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "S11",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      37,
+      24,
+      39,
+      26
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC12",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      20,
+      59,
+      23,
+      63
+     ],
+     "overlap_cells": 20
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      21,
+      59,
+      23,
+      61
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SA12",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      20,
+      64,
+      22,
+      68
+     ],
+     "overlap_cells": 15
+    }
+   ]
+  },
+  {
+   "id": "SB12",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      15,
+      52,
+      15,
+      52
+     ],
+     "overlap_cells": 1
+    },
+    {
+     "pole": "POWER15",
+     "intersection": [
+      15,
+      55,
+      16,
+      56
+     ],
+     "overlap_cells": 4
+    }
+   ]
+  },
+  {
+   "id": "S12",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER18",
+     "intersection": [
+      16,
+      8,
+      18,
+      10
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "SC13",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      28,
+      54,
+      32,
+      54
+     ],
+     "overlap_cells": 5
+    },
+    {
+     "pole": "POWER14",
+     "intersection": [
+      28,
+      58,
+      31,
+      58
+     ],
+     "overlap_cells": 4
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      28,
+      54,
+      32,
+      58
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "SA13",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      28,
+      59,
+      31,
+      63
+     ],
+     "overlap_cells": 20
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      28,
+      59,
+      32,
+      61
+     ],
+     "overlap_cells": 15
+    }
+   ]
+  },
+  {
+   "id": "SB13",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER14",
+     "intersection": [
+      20,
+      58,
+      24,
+      58
+     ],
+     "overlap_cells": 5
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      21,
+      54,
+      24,
+      58
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "S13",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      15,
+      57,
+      16,
+      59
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "QC1",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      49,
+      46,
+      52,
+      50
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "QA1",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      49,
+      45,
+      52,
+      45
+     ],
+     "overlap_cells": 4
+    },
+    {
+     "pole": "POWER16",
+     "intersection": [
+      49,
+      41,
+      53,
+      44
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "QB1",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      41,
+      47,
+      45,
+      51
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "QK1",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      46,
+      62,
+      48,
+      64
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "QC2",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      56,
+      54,
+      58,
+      54
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "QA2",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      56,
+      45,
+      59,
+      46
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  },
+  {
+   "id": "QB2",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      51,
+      55,
+      52,
+      56
+     ],
+     "overlap_cells": 4
+    }
+   ]
+  },
+  {
+   "id": "QK2",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      44,
+      53,
+      46,
+      55
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "QC3",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      49,
+      64,
+      49,
+      68
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "QA3",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      56,
+      65,
+      58,
+      65
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "QB3",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER25",
+     "intersection": [
+      44,
+      65,
+      48,
+      68
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "QK3",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      36,
+      34,
+      38,
+      36
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "QC4",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      65,
+      65,
+      67,
+      65
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "QA4",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER19",
+     "intersection": [
+      65,
+      45,
+      67,
+      46
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "QB4",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      59,
+      64,
+      63,
+      65
+     ],
+     "overlap_cells": 10
+    }
+   ]
+  },
+  {
+   "id": "QK4",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER23",
+     "intersection": [
+      56,
+      61,
+      58,
+      63
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "QC5",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      49,
+      10,
+      52,
+      14
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "QA5",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      41,
+      11,
+      41,
+      15
+     ],
+     "overlap_cells": 5
+    },
+    {
+     "pole": "POWER26",
+     "intersection": [
+      37,
+      11,
+      41,
+      11
+     ],
+     "overlap_cells": 5
+    }
+   ]
+  },
+  {
+   "id": "QB5",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER3",
+     "intersection": [
+      50,
+      15,
+      52,
+      15
+     ],
+     "overlap_cells": 3
+    },
+    {
+     "pole": "POWER10",
+     "intersection": [
+      51,
+      16,
+      54,
+      19
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "QK5",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      55,
+      18,
+      57,
+      20
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "QC6",
+   "model": "采种机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      27,
+      38,
+      27,
+      42
+     ],
+     "overlap_cells": 5
+    },
+    {
+     "pole": "POWER12",
+     "intersection": [
+      28,
+      38,
+      31,
+      41
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "QA6",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      33,
+      43,
+      37,
+      47
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "QB6",
+   "model": "种植机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      28,
+      43,
+      32,
+      47
+     ],
+     "overlap_cells": 25
+    }
+   ]
+  },
+  {
+   "id": "QK6",
+   "model": "粉碎机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      32,
+      50,
+      34,
+      52
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER20",
+     "intersection": [
+      32,
+      50,
+      32,
+      52
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "R1",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      23,
+      38,
+      25,
+      40
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R2",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER7",
+     "intersection": [
+      12,
+      44,
+      14,
+      46
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R3",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      23,
+      20,
+      25,
+      22
+     ],
+     "overlap_cells": 9
+    },
+    {
+     "pole": "POWER6",
+     "intersection": [
+      23,
+      21,
+      25,
+      22
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "R4",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      35,
+      17,
+      36,
+      17
+     ],
+     "overlap_cells": 2
+    }
+   ]
+  },
+  {
+   "id": "R5",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      21,
+      23,
+      22,
+      25
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER6",
+     "intersection": [
+      20,
+      23,
+      22,
+      25
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R6",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      16,
+      34,
+      17,
+      36
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "R7",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      21,
+      41,
+      23,
+      43
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R8",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      20,
+      44,
+      22,
+      45
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "R9",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      28,
+      31,
+      30,
+      33
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R10",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      11,
+      57,
+      13,
+      59
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R11",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      13,
+      13,
+      14,
+      15
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "R12",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER15",
+     "intersection": [
+      8,
+      62,
+      10,
+      64
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R13",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      21,
+      20,
+      22,
+      22
+     ],
+     "overlap_cells": 6
+    },
+    {
+     "pole": "POWER6",
+     "intersection": [
+      20,
+      21,
+      22,
+      22
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "R14",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      21,
+      26,
+      23,
+      28
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R15",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      31,
+      16,
+      32,
+      18
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "R16",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER22",
+     "intersection": [
+      67,
+      25,
+      69,
+      27
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "R17",
+   "model": "精炼炉",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      8,
+      13,
+      10,
+      15
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "P1",
+   "model": "配件机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER12",
+     "intersection": [
+      39,
+      32,
+      39,
+      34
+     ],
+     "overlap_cells": 3
+    }
+   ]
+  },
+  {
+   "id": "H1",
+   "model": "塑形机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER9",
+     "intersection": [
+      25,
+      43,
+      27,
+      45
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "P2",
+   "model": "配件机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      55,
+      16,
+      57,
+      17
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "H2",
+   "model": "塑形机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      35,
+      52,
+      37,
+      54
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "P3",
+   "model": "配件机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      57,
+      12,
+      57,
+      12
+     ],
+     "overlap_cells": 1
+    }
+   ]
+  },
+  {
+   "id": "H3",
+   "model": "塑形机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      11,
+      16,
+      13,
+      17
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "P4",
+   "model": "配件机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER24",
+     "intersection": [
+      37,
+      17,
+      39,
+      18
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "H4",
+   "model": "塑形机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER2",
+     "intersection": [
+      21,
+      17,
+      23,
+      19
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "P5",
+   "model": "配件机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER17",
+     "intersection": [
+      8,
+      16,
+      10,
+      17
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "H5",
+   "model": "塑形机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER22",
+     "intersection": [
+      67,
+      32,
+      69,
+      34
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "P6",
+   "model": "配件机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      16,
+      31,
+      18,
+      32
+     ],
+     "overlap_cells": 6
+    }
+   ]
+  },
+  {
+   "id": "H6",
+   "model": "塑形机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER20",
+     "intersection": [
+      25,
+      52,
+      27,
+      54
+     ],
+     "overlap_cells": 9
+    }
+   ]
+  },
+  {
+   "id": "E1",
+   "model": "封装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER16",
+     "intersection": [
+      44,
+      33,
+      47,
+      36
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "E2",
+   "model": "封装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER13",
+     "intersection": [
+      57,
+      6,
+      58,
+      11
+     ],
+     "overlap_cells": 12
+    }
+   ]
+  },
+  {
+   "id": "E3",
+   "model": "封装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER6",
+     "intersection": [
+      14,
+      21,
+      19,
+      23
+     ],
+     "overlap_cells": 18
+    }
+   ]
+  },
+  {
+   "id": "F1",
+   "model": "灌装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER11",
+     "intersection": [
+      35,
+      48,
+      39,
+      51
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "F2",
+   "model": "灌装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER8",
+     "intersection": [
+      48,
+      51,
+      52,
+      54
+     ],
+     "overlap_cells": 20
+    }
+   ]
+  },
+  {
+   "id": "F3",
+   "model": "灌装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER10",
+     "intersection": [
+      53,
+      24,
+      56,
+      27
+     ],
+     "overlap_cells": 16
+    }
+   ]
+  },
+  {
+   "id": "F4",
+   "model": "灌装机",
+   "covered": true,
+   "covers": [
+    {
+     "pole": "POWER20",
+     "intersection": [
+      23,
+      50,
+      26,
+      51
+     ],
+     "overlap_cells": 8
+    }
+   ]
+  }
+ ]
+}

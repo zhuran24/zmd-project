@@ -1,0 +1,52 @@
+start 301 reserved=178
+place 301 t=25.0001 moves=591496 E=2393 ov=150 def=18 wire=2037 disconnected=0 power=0 heat=0
+initial 0 ov=95 reservedov=6 def=12 wire=1948
+place 301 t=50.001 moves=1184969 E=5864 ov=392 def=115 wire=3910 disconnected=0 power=3 heat=0
+place 301 t=75.0021 moves=1776753 E=2520 ov=49 def=31 wire=2246 disconnected=0 power=0 heat=0
+initial 1 ov=95 reservedov=6 def=12 wire=1948
+place 301 t=100.003 moves=2378778 E=4292 ov=76 def=127 wire=3338 disconnected=0 power=3 heat=0
+place 301 t=125.005 moves=2982229 E=2625 ov=14 def=43 wire=2411 disconnected=0 power=0 heat=0
+initial 2 ov=13 reservedov=2 def=44 wire=2404
+place 301 t=150.005 moves=3502323 E=4095 ov=46 def=2 wire=2873 disconnected=182 power=2 heat=0
+place 301 t=175.005 moves=3961832 E=3627 ov=35 def=2 wire=2563 disconnected=157 power=3 heat=0
+initial 3 ov=35 reservedov=5 def=2 wire=2562
+place 301 t=200.006 moves=4422532 E=4595 ov=27 def=2 wire=2777 disconnected=162 power=8 heat=0
+initial 4 ov=25 reservedov=3 def=2 wire=2672
+place 301 t=225.006 moves=4877662 E=5862 ov=25 def=2 wire=2672 disconnected=146 power=9 heat=0
+place 301 t=250.006 moves=5329528 E=5974 ov=20 def=4 wire=3018 disconnected=143 power=12 heat=0
+initial 5 ov=20 reservedov=3 def=4 wire=2930
+place 301 t=275.007 moves=5783028 E=10729 ov=9 def=22 wire=3715 disconnected=159 power=16 heat=0
+place 301 t=300.008 moves=6242350 E=9409 ov=7 def=20 wire=3289 disconnected=135 power=23 heat=0
+initial 6 ov=7 reservedov=3 def=20 wire=3268
+place 301 t=325.008 moves=6702194 E=11301 ov=6 def=21 wire=3320 disconnected=128 power=33 heat=0
+place 301 t=350.009 moves=7157194 E=10170 ov=4 def=18 wire=3236 disconnected=127 power=31 heat=0
+initial 7 ov=4 reservedov=2 def=18 wire=3233
+place 301 t=375.009 moves=7612295 E=14007 ov=4 def=21 wire=3318 disconnected=121 power=31 heat=0
+place 301 t=400.009 moves=8070035 E=13853 ov=4 def=22 wire=3283 disconnected=120 power=27 heat=0
+initial 8 ov=4 reservedov=2 def=22 wire=3283
+place 301 t=425.01 moves=8526382 E=18017 ov=4 def=22 wire=3327 disconnected=118 power=27 heat=0
+initial 9 ov=4 reservedov=2 def=22 wire=3271
+place 301 t=450.011 moves=8983424 E=17941 ov=4 def=22 wire=3271 disconnected=118 power=26 heat=0
+place 301 t=475.012 moves=9441662 E=17797 ov=4 def=25 wire=3292 disconnected=115 power=29 heat=0
+initial 10 ov=4 reservedov=2 def=24 wire=3255
+place 301 t=500.013 moves=9899416 E=17850 ov=4 def=27 wire=3395 disconnected=114 power=29 heat=0
+place 301 t=525.014 moves=10354384 E=17744 ov=4 def=26 wire=3314 disconnected=114 power=29 heat=0
+initial 11 ov=4 reservedov=2 def=24 wire=3255
+place 301 t=550.015 moves=10811297 E=17849 ov=4 def=24 wire=3369 disconnected=115 power=29 heat=0
+place 301 t=575.015 moves=11268565 E=17745 ov=4 def=24 wire=3265 disconnected=115 power=29 heat=0
+initial 12 ov=4 reservedov=2 def=24 wire=3255
+place 301 t=600.017 moves=11722534 E=17690 ov=4 def=26 wire=3380 disconnected=113 power=28 heat=0
+place 301 t=625.018 moves=12172474 E=17657 ov=4 def=26 wire=3347 disconnected=113 power=28 heat=0
+initial 13 ov=4 reservedov=2 def=26 wire=3347
+route 301 t=630.044 it=0 paths=325 body=972 conflicts=1812 len=3337
+route 301 t=630.201 it=5 paths=325 body=1147 conflicts=1017 len=3039
+place 301 t=650.018 moves=12566745 E=28796 ov=4 def=26 wire=3522 disconnected=113 power=27 heat=1037
+place 301 t=675.019 moves=12954064 E=28787 ov=4 def=26 wire=3513 disconnected=113 power=27 heat=1037
+route 301 t=675.238 it=0 paths=325 body=910 conflicts=2158 len=3469
+route 301 t=675.575 it=10 paths=325 body=1094 conflicts=1205 len=3099
+route 301 t=675.733 it=15 paths=325 body=1171 conflicts=984 len=3047
+route 301 t=675.736 it=0 paths=170 body=0 conflicts=0 len=452
+route 301 t=675.75 it=7 paths=170 body=0 conflicts=0 len=452
+LEGAL 0=170 ov=4 reservedov=2
+route 301 t=675.786 it=0 paths=325 body=974 conflicts=1760 len=3279
+route 301 t=675.938 it=5 paths=325 body=1163 conflicts=1008 len=3038

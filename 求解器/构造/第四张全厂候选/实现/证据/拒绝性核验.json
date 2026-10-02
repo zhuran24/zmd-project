@@ -1,0 +1,382 @@
+{
+  "candidate_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+  "all_expected_rejections": true,
+  "cases": [
+    {
+      "case": "传送带存取边相同",
+      "expected_failed_check": "belt_ports",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 514,
+        "failures": [
+          "T1_5"
+        ]
+      }
+    },
+    {
+      "case": "桥接器水平方向声明反转",
+      "expected_failed_check": "bridge_direction",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 104,
+        "failures": [
+          [
+            "T1_14",
+            "H_in"
+          ]
+        ]
+      }
+    },
+    {
+      "case": "漏报真实桥间逆向通道",
+      "expected_failed_check": "all_automatic_channels",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 1,
+        "failures": [
+          {
+            "unlisted": [
+              [
+                [
+                  "T14_24",
+                  1,
+                  0
+                ],
+                [
+                  "T14_25",
+                  3,
+                  0
+                ]
+              ]
+            ],
+            "absent": []
+          }
+        ]
+      }
+    },
+    {
+      "case": "供电桩压在机身上",
+      "expected_failed_check": "overlap",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 4456,
+        "failures": [
+          [
+            "POWER0",
+            [
+              43,
+              2
+            ],
+            "RF1"
+          ],
+          [
+            "POWER0",
+            [
+              43,
+              3
+            ],
+            "RF1"
+          ],
+          [
+            "POWER0",
+            [
+              44,
+              2
+            ],
+            "RF1"
+          ],
+          [
+            "POWER0",
+            [
+              44,
+              3
+            ],
+            "RF1"
+          ]
+        ]
+      }
+    },
+    {
+      "case": "删除全部供电桩",
+      "expected_failed_check": "power",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 230,
+        "failures": [
+          "RF1",
+          "KF1",
+          "RF2",
+          "KF2",
+          "RF3",
+          "KF3",
+          "RF4",
+          "KF4",
+          "RF5",
+          "KF5",
+          "RF6",
+          "KF6",
+          "RF7",
+          "KF7",
+          "RF8",
+          "KF8",
+          "RF9",
+          "KF9",
+          "RF10",
+          "KF10",
+          "RF11",
+          "KF11",
+          "RF12",
+          "KF12",
+          "RF13",
+          "KF13",
+          "RF14",
+          "KF14",
+          "RF15",
+          "KF15",
+          "RF16",
+          "KF16",
+          "RF17",
+          "KF17",
+          "RF18",
+          "KF18",
+          "RF19",
+          "KF19",
+          "RF20",
+          "KF20",
+          "RF21",
+          "KF21",
+          "RF22",
+          "KF22",
+          "RF23",
+          "KF23",
+          "RF24",
+          "KF24",
+          "RF25",
+          "KF25",
+          "RF26",
+          "KF26",
+          "RF27",
+          "KF27",
+          "RF28",
+          "KF28",
+          "RF29",
+          "KF29",
+          "RF30",
+          "KF30",
+          "RF31",
+          "KF31",
+          "RF32",
+          "KF32",
+          "RF33",
+          "KF33",
+          "RF34",
+          "KF34",
+          "KO1",
+          "KO2",
+          "KO3",
+          "KO4",
+          "KO5",
+          "KO6",
+          "KO7",
+          "KO8",
+          "KO9",
+          "KO10",
+          "KO11",
+          "KO12",
+          "KO13",
+          "KO14",
+          "KO15",
+          "KO16",
+          "KO17",
+          "KO18",
+          "B1",
+          "B2",
+          "B3",
+          "B4",
+          "B5",
+          "B6",
+          "B7",
+          "B8",
+          "B9",
+          "B10",
+          "B11",
+          "B12",
+          "B13",
+          "B14",
+          "B15",
+          "B16",
+          "B17",
+          "O1",
+          "O2",
+          "O3",
+          "O4",
+          "O5",
+          "O6",
+          "O7",
+          "O8",
+          "O9",
+          "Q1",
+          "Q2",
+          "Q3",
+          "Q4",
+          "Q5",
+          "Q6",
+          "SC1",
+          "SA1",
+          "SB1",
+          "S1",
+          "SC2",
+          "SA2",
+          "SB2",
+          "S2",
+          "SC3",
+          "SA3",
+          "SB3",
+          "S3",
+          "SC4",
+          "SA4",
+          "SB4",
+          "S4",
+          "SC5",
+          "SA5",
+          "SB5",
+          "S5",
+          "SC6",
+          "SA6",
+          "SB6",
+          "S6",
+          "SC7",
+          "SA7",
+          "SB7",
+          "S7",
+          "SC8",
+          "SA8",
+          "SB8",
+          "S8",
+          "SC9",
+          "SA9",
+          "SB9",
+          "S9",
+          "SC10",
+          "SA10",
+          "SB10",
+          "S10",
+          "SC11",
+          "SA11",
+          "SB11",
+          "S11",
+          "SC12",
+          "SA12",
+          "SB12",
+          "S12",
+          "SC13",
+          "SA13",
+          "SB13",
+          "S13",
+          "QC1",
+          "QA1",
+          "QB1",
+          "QK1",
+          "QC2",
+          "QA2",
+          "QB2",
+          "QK2",
+          "QC3",
+          "QA3",
+          "QB3",
+          "QK3",
+          "QC4",
+          "QA4",
+          "QB4",
+          "QK4",
+          "QC5",
+          "QA5",
+          "QB5",
+          "QK5",
+          "QC6",
+          "QA6",
+          "QB6",
+          "QK6",
+          "R1",
+          "R2",
+          "R3",
+          "R4",
+          "R5",
+          "R6",
+          "R7",
+          "R8",
+          "R9",
+          "R10",
+          "R11",
+          "R12",
+          "R13",
+          "R14",
+          "R15",
+          "R16",
+          "R17",
+          "P1",
+          "H1",
+          "P2",
+          "H2",
+          "P3",
+          "H3",
+          "P4",
+          "H4",
+          "P5",
+          "H5",
+          "P6",
+          "H6",
+          "E1",
+          "E2",
+          "E3",
+          "F1",
+          "F2",
+          "F3",
+          "F4"
+        ]
+      }
+    },
+    {
+      "case": "占用声明空矩形",
+      "expected_failed_check": "maximum_empty_rectangle",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 1,
+        "failures": [
+          {
+            "claimed": {
+              "x0": 63,
+              "y0": 14,
+              "x1": 68,
+              "y1": 19
+            },
+            "computed": null
+          }
+        ]
+      }
+    },
+    {
+      "case": "删掉H6末端进路，不能按空列表等长通过",
+      "expected_failed_check": "H6_Q6_equal_length",
+      "rejected": true,
+      "observed": {
+        "status": "FAIL",
+        "instances": 1,
+        "failures": [
+          [
+            [],
+            [
+              1
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

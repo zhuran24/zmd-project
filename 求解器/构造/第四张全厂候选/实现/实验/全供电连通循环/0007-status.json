@@ -1,0 +1,8 @@
+{
+ "status": "FEASIBLE",
+ "wall": 20.034851515,
+ "variables": 12923,
+ "constraints": 47087,
+ "radius": 5,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/全供电连通循环/0007-source.json"
+}

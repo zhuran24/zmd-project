@@ -1,0 +1,8 @@
+{
+ "status": "OPTIMAL",
+ "wall": 5.194439876000001,
+ "variables": 4505,
+ "constraints": 9556,
+ "radius": 6,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/端口循环/0029-source.json"
+}

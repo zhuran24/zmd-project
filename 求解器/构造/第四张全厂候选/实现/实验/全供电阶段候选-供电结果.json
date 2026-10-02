@@ -1,0 +1,11 @@
+{
+  "status": "INFEASIBLE",
+  "wall": 0.0006112,
+  "no_possible_pole": [
+    "RF33",
+    "SA9",
+    "QA1"
+  ],
+  "input_sha256": "b0ce4608b38b268218037f10595d64c177ede8dd3f3fb8c1f58f9003c35d978f",
+  "scope": "固定机身和空矩形；供电桩可重排，必要时删除冲突进路。"
+}

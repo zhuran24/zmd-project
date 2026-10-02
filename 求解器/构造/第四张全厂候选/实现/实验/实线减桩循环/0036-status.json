@@ -1,0 +1,8 @@
+{
+ "status": "FEASIBLE",
+ "wall": 35.029145832000005,
+ "variables": 17498,
+ "constraints": 66763,
+ "radius": 6,
+ "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/实验/实线减桩循环/0036-source.json"
+}

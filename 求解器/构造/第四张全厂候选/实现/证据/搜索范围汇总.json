@@ -1,0 +1,111 @@
+{
+  "updated_utc": "2026-10-02T20:49:45.425354+00:00",
+  "runs": [
+    {
+      "file": "实验/植物2单元-13x16.json",
+      "sha256": "824a32ac810cd0dd45d681b24343da009e22f565b3c86febe574291eabf23940",
+      "status": "UNKNOWN",
+      "seconds": 240.0,
+      "scope": "两套植物单元置于13×16局部框；不是完整植物带。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/植物2单元-14x16.json",
+      "sha256": "3dd5aebd99e6cfcaedbb9ee6eb04a85db2c3edb7dee4a45a2d345d4960b0dae8",
+      "status": "UNKNOWN",
+      "seconds": 240.0,
+      "scope": "两套植物单元置于14×16局部框；不是完整植物带。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/角区18x18.json",
+      "sha256": "c2858c961a46a4df2ee39b36a0d6c9955dbcab1f2ac04a54d9b4abc7cb42334d",
+      "status": "INFEASIBLE",
+      "seconds": 0.5,
+      "scope": "18×18局部角区，固定出口位置的受限模型。",
+      "conclusion": "仅排除该模型的固定范围与额外限制；不排除整个S2B接法。"
+    },
+    {
+      "file": "实验/角区18x18-自由出口.json",
+      "sha256": "f3d40a1fb51e7df7394735be28614dd88d3f2b3d892d06113362931f8cac5cd1",
+      "status": "UNKNOWN",
+      "seconds": 239.7,
+      "scope": "18×18局部角区，允许模型中的出口位置变化。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/全机供电修复-status.json",
+      "sha256": "e41798eadf33551e9084d577029c8571c4c43c8dd0398a8811683f2c3b53257f",
+      "status": "FEASIBLE",
+      "seconds": 180.01177262800002,
+      "scope": "半径4的机位与供电修复；不是325路联合布通。",
+      "conclusion": "仅对该子问题有效；实际整厂资格以布局静态检查为准。"
+    },
+    {
+      "file": "实验/全厂端口修复-status.json",
+      "sha256": "0788ef47cf341eb75a2a2b364a332b3705a8e7b8ca93cf9cc85dd277bb5294f3",
+      "status": "UNKNOWN",
+      "seconds": 600.0585865190001,
+      "scope": "半径6内要求端口净空及供电；必要条件模型，不含完整运输。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/实线联合正例-status.json",
+      "sha256": "4eb0f5ef4f438aa843f3df1b1072db055c06db5d8c06b95ef48cfc49cee0d109",
+      "status": "OPTIMAL",
+      "seconds": 0.117688358,
+      "scope": "固定机位下单条已知可行进路回放；只验证局部求解器能恢复正例。",
+      "conclusion": "仅对该子问题有效；实际整厂资格以布局静态检查为准。"
+    },
+    {
+      "file": "实验/完整联合-邻域2.json",
+      "sha256": "33c47b139e3e9bb56bb3848373ec44422822169a3d270356180a4ba067bf2957",
+      "status": "MEMORY_LIMIT",
+      "seconds": 61.09343565299787,
+      "scope": "全230台、325路，固定模板机器和桩位，其余锚点邻域半径2；旧版端点索引域。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/完整联合-索引收紧.json",
+      "sha256": "ac0dd200ef2d967c889c2f9439205fb39895e5dcaee3c287396f8e75f5af8d5d",
+      "status": "INFEASIBLE",
+      "seconds": 23.022667473000183,
+      "scope": "同一半径2局部范围，端点索引剔除不可能值。实际代码允许相邻桥；原结果bridge_restriction文字未同步，不能按该文字解读。",
+      "conclusion": "仅排除该模型的固定范围与额外限制；不排除整个S2B接法。"
+    },
+    {
+      "file": "实验/完整联合-邻域5.json",
+      "sha256": "a2115d01b1a38cf353f08eef068fac22d4a6b8a8332d95334e7faf37ace48273",
+      "status": "ABORT_MEMORY_LIMIT",
+      "seconds": null,
+      "scope": "锚点邻域半径5，6线程、10GiB地址空间上限。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/完整联合-邻域5-三核可行性.json",
+      "sha256": "24b2dc00ac742d0ad62416c6262983a3de4afa704de5fb1144c74b37ecb9c3ba",
+      "status": "UNKNOWN",
+      "seconds": 600.3718669859954,
+      "scope": "锚点邻域半径5，3线程、16GiB地址空间上限，仅求可行解。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/完整联合-放开模板-邻域3.json",
+      "sha256": "c8dcabb9acc0efa66072ec03dd011b8a84e478ff93b54a9042c03173ebe594c6",
+      "status": "UNKNOWN",
+      "seconds": 480.2578439390054,
+      "scope": "放开模板机器及全部仓库取货口身份，仅固定当前供电桩和H6、Q6、F4；锚点邻域半径3，3线程，仅求可行解。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    },
+    {
+      "file": "实验/完整联合-放开模板-227提示.json",
+      "sha256": "3ebce250e92b0c03bcbf5164c9e5e48e698d93890c867513d7f8480238cc5279",
+      "status": "UNKNOWN",
+      "seconds": 540.4176699740055,
+      "scope": "同放开模板模型，以227路候选提示；锚点邻域半径3，随机种子2227，3线程，时限540秒。",
+      "conclusion": "未决；没有得到可行布局，也没有不可行结论。"
+    }
+  ],
+  "joint_model_limitations": "联合格点模型只生成候选；固定单位依各次范围文件而定，桥接器要求两轴在用。即使得到解，也必须经实际自动通道重建和完整静态检查。",
+  "scope": "这是执行记录索引，正式结果为布局.json及其哈希绑定的静态检查。"
+}

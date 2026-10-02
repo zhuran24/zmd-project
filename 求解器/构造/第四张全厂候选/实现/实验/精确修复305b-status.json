@@ -1,0 +1,8 @@
+{
+ "status": "UNKNOWN",
+ "wall": 240.33633932,
+ "variables": 79973,
+ "constraints": 139391,
+ "radius": 5,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/改规划联合305-initial-5.json"
+}

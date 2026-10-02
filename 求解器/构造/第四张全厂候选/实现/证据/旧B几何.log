@@ -1,0 +1,1 @@
+{"occupied_cells": 4456, "channels": 850, "maximum_empty_rectangle": {"area": 36, "short_side": 6, "rectangles": [{"x0": 63, "y0": 14, "x1": 68, "y1": 19}]}, "powered_machines": 230, "candidate_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe", "channels_equal": true, "scope": "仅占格、尺寸、边界、供电、全部双向实体通道与最大空矩形；旧版受限类闸门、LP和运行检查未适配。"}

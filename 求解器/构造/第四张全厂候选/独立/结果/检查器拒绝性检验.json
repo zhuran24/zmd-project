@@ -1,0 +1,72 @@
+{
+  "base_layout_sha256": "729fde6011f4eeb9b31ea58342e3c5293b1eb3ba0983877b95eb9250c349cd78",
+  "checker_sha256": "17707ed60ca746a7d821cd18a37905bd9489df90599f2f75acdcad0b69636768",
+  "base_static_pass": false,
+  "all_detected": true,
+  "cases": [
+    {
+      "name": "删除传送带",
+      "expected_check": "声明通道等于自动形成通道",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "反写桥轴方向",
+      "expected_check": "桥轴方向及空轴",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "删除必要供电桩",
+      "expected_check": "230台全部供电",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "占用空矩形",
+      "expected_check": "最大空矩形",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "漏报实体通道",
+      "expected_check": "声明通道等于自动形成通道",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "进路编号重复",
+      "expected_check": "通道和进路编号唯一",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "规则指纹错误",
+      "expected_check": "规则快照指纹",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "配方不符",
+      "expected_check": "配方和开关",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    },
+    {
+      "name": "进路物品不符",
+      "expected_check": "声明进路与重建逐格一致",
+      "baseline_component_pass": true,
+      "mutated_component_pass": false,
+      "detected": true
+    }
+  ],
+  "scope": "基准本身因全厂接法缺失而不通过；这里只检验各已通过组件对新增错误的拒绝。"
+}

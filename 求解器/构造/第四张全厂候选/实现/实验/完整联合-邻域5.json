@@ -1,0 +1,27 @@
+{
+  "schema": "joint-cp-run-v1",
+  "W": 70,
+  "H": 70,
+  "routes": 325,
+  "machines": 230,
+  "fixed_rectangle": [
+    63,
+    14,
+    6,
+    6
+  ],
+  "bridge_restriction": "two used axes; adjacent bridges allowed",
+  "near_placement_radius": 5,
+  "hinted_routes": 225,
+  "no_lp": false,
+  "power_poles": 26,
+  "seed": 1109,
+  "workers": 6,
+  "build_seconds": 3.6609036970039597,
+  "variables": 184026,
+  "constraints": 456672,
+  "validation": "",
+  "status": "ABORT_MEMORY_LIMIT",
+  "exit_code": 134,
+  "reason": "日志 std::bad_alloc；地址空间上限10GiB；没有找到解，不判不可行。"
+}

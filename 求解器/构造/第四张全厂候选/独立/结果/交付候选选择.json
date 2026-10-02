@@ -1,0 +1,1536 @@
+{
+  "raw_source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-173.json",
+  "raw_sha256": "3f782e306dc0da0f7547b8f549bf7c16671725ef91dcc07bdaac9d9cd7155685",
+  "layout_sha256": "729fde6011f4eeb9b31ea58342e3c5293b1eb3ba0983877b95eb9250c349cd78",
+  "score": [
+    false,
+    226,
+    -84,
+    false,
+    1,
+    40,
+    -2301,
+    -4444
+  ],
+  "raw_candidates": 5112,
+  "checked_finalists": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/拥塞401-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 1, [(15, 1, 0), (18, 1, 0)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/拥塞417-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 11, [(21, 2, 1), (23, 3, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/推移327-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 10, [(22, 1, 3), (23, 3, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/推移339-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 2, [(12, 2, 1), (116, 3, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/种子47-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 1, [(114, 1, 0), (261, 1, 0)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/软启动103-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 13, [(122, 1, 0), (225, 1, 0)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/连通211-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 3, [(12, 3, 1), (119, 0, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/连通239-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 2, [(12, 2, 1), (116, 3, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/拥塞433-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 2, [(12, 2, 1), (116, 3, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/推移311-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 8, [(12, 3, 1), (18, 2, 1)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/软启动127-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 19, [(0, 1, 0), (18, 1, 3)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/软启动151-bestplace.json",
+      "error": "AssertionError(('conflicting routing is not exportable', 1, 5, [(116, 2, 0), (126, 3, 0)]))"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-best.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4440,
+        "transport_units": 554,
+        "bridges": 37,
+        "transport_cells_used": 591,
+        "automatic_channels": 824,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 84,
+        "transport_length_lower_bound": 2303,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-136.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4448,
+        "transport_units": 562,
+        "bridges": 42,
+        "transport_cells_used": 604,
+        "automatic_channels": 837,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2331,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-137.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4451,
+        "transport_units": 565,
+        "bridges": 43,
+        "transport_cells_used": 608,
+        "automatic_channels": 841,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2335,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-138.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4452,
+        "transport_units": 566,
+        "bridges": 39,
+        "transport_cells_used": 605,
+        "automatic_channels": 837,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2329,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-140.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4444,
+        "transport_units": 558,
+        "bridges": 42,
+        "transport_cells_used": 600,
+        "automatic_channels": 831,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2344,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-141.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4450,
+        "transport_units": 564,
+        "bridges": 42,
+        "transport_cells_used": 606,
+        "automatic_channels": 838,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2336,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 42,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 63,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-142.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4446,
+        "transport_units": 560,
+        "bridges": 41,
+        "transport_cells_used": 601,
+        "automatic_channels": 834,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2333,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-143.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4447,
+        "transport_units": 561,
+        "bridges": 41,
+        "transport_cells_used": 602,
+        "automatic_channels": 834,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2337,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-144.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4449,
+        "transport_units": 563,
+        "bridges": 36,
+        "transport_cells_used": 599,
+        "automatic_channels": 830,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2341,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-145.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4455,
+        "transport_units": 569,
+        "bridges": 38,
+        "transport_cells_used": 607,
+        "automatic_channels": 839,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2331,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-146.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4448,
+        "transport_units": 562,
+        "bridges": 37,
+        "transport_cells_used": 599,
+        "automatic_channels": 832,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2331,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-147.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4443,
+        "transport_units": 557,
+        "bridges": 39,
+        "transport_cells_used": 596,
+        "automatic_channels": 828,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2333,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-148.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4463,
+        "transport_units": 577,
+        "bridges": 41,
+        "transport_cells_used": 618,
+        "automatic_channels": 850,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2360,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-149.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4454,
+        "transport_units": 568,
+        "bridges": 41,
+        "transport_cells_used": 609,
+        "automatic_channels": 841,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2353,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-150.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4448,
+        "transport_units": 562,
+        "bridges": 41,
+        "transport_cells_used": 603,
+        "automatic_channels": 835,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2335,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-151.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4447,
+        "transport_units": 561,
+        "bridges": 39,
+        "transport_cells_used": 600,
+        "automatic_channels": 832,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2350,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-152.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4458,
+        "transport_units": 572,
+        "bridges": 41,
+        "transport_cells_used": 613,
+        "automatic_channels": 846,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2348,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-153.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4440,
+        "transport_units": 554,
+        "bridges": 40,
+        "transport_cells_used": 594,
+        "automatic_channels": 826,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2337,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-154.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4448,
+        "transport_units": 562,
+        "bridges": 40,
+        "transport_cells_used": 602,
+        "automatic_channels": 833,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2337,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-155.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4450,
+        "transport_units": 564,
+        "bridges": 40,
+        "transport_cells_used": 604,
+        "automatic_channels": 836,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2340,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-156.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4455,
+        "transport_units": 569,
+        "bridges": 41,
+        "transport_cells_used": 610,
+        "automatic_channels": 843,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2345,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-157.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4452,
+        "transport_units": 566,
+        "bridges": 41,
+        "transport_cells_used": 607,
+        "automatic_channels": 839,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2344,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 42,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 63,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-158.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4449,
+        "transport_units": 563,
+        "bridges": 38,
+        "transport_cells_used": 601,
+        "automatic_channels": 833,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2339,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-159.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4442,
+        "transport_units": 556,
+        "bridges": 38,
+        "transport_cells_used": 594,
+        "automatic_channels": 826,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2339,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-160.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4451,
+        "transport_units": 565,
+        "bridges": 40,
+        "transport_cells_used": 605,
+        "automatic_channels": 837,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2328,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-161.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4446,
+        "transport_units": 560,
+        "bridges": 38,
+        "transport_cells_used": 598,
+        "automatic_channels": 829,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2331,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-162.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4448,
+        "transport_units": 562,
+        "bridges": 38,
+        "transport_cells_used": 600,
+        "automatic_channels": 832,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2329,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 42,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 63,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-163.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4452,
+        "transport_units": 566,
+        "bridges": 41,
+        "transport_cells_used": 607,
+        "automatic_channels": 840,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 86,
+        "transport_length_lower_bound": 2331,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 42,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 63,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-164.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4457,
+        "transport_units": 571,
+        "bridges": 44,
+        "transport_cells_used": 615,
+        "automatic_channels": 850,
+        "bridge_reverse_channels": 9,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2327,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-165.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4447,
+        "transport_units": 561,
+        "bridges": 39,
+        "transport_cells_used": 600,
+        "automatic_channels": 831,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2322,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-166.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4450,
+        "transport_units": 564,
+        "bridges": 38,
+        "transport_cells_used": 602,
+        "automatic_channels": 833,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2316,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-167.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4447,
+        "transport_units": 561,
+        "bridges": 38,
+        "transport_cells_used": 599,
+        "automatic_channels": 831,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2319,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-168.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4450,
+        "transport_units": 564,
+        "bridges": 36,
+        "transport_cells_used": 600,
+        "automatic_channels": 831,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2325,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-169.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4448,
+        "transport_units": 562,
+        "bridges": 41,
+        "transport_cells_used": 603,
+        "automatic_channels": 836,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2317,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-170.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4450,
+        "transport_units": 564,
+        "bridges": 41,
+        "transport_cells_used": 605,
+        "automatic_channels": 838,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2318,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-171.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4453,
+        "transport_units": 567,
+        "bridges": 38,
+        "transport_cells_used": 605,
+        "automatic_channels": 836,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2319,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-172.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4451,
+        "transport_units": 565,
+        "bridges": 35,
+        "transport_cells_used": 600,
+        "automatic_channels": 831,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 84,
+        "transport_length_lower_bound": 2302,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-173.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4444,
+        "transport_units": 558,
+        "bridges": 38,
+        "transport_cells_used": 596,
+        "automatic_channels": 827,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 84,
+        "transport_length_lower_bound": 2301,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-174.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4443,
+        "transport_units": 557,
+        "bridges": 37,
+        "transport_cells_used": 594,
+        "automatic_channels": 826,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 84,
+        "transport_length_lower_bound": 2303,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-175.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4445,
+        "transport_units": 559,
+        "bridges": 39,
+        "transport_cells_used": 598,
+        "automatic_channels": 829,
+        "bridge_reverse_channels": 5,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 84,
+        "transport_length_lower_bound": 2303,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-176.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4451,
+        "transport_units": 565,
+        "bridges": 43,
+        "transport_cells_used": 608,
+        "automatic_channels": 841,
+        "bridge_reverse_channels": 7,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 84,
+        "transport_length_lower_bound": 2312,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-maxroutes.json",
+      "routes": 226,
+      "static_pass": false,
+      "structural_errors": [],
+      "stats": {
+        "machines": 230,
+        "machine_area": 3567,
+        "powered": 230,
+        "power_poles": 25,
+        "occupied": 4440,
+        "transport_units": 554,
+        "bridges": 39,
+        "transport_cells_used": 593,
+        "automatic_channels": 825,
+        "bridge_reverse_channels": 6,
+        "completed_routes": 226,
+        "missing_routes": 99,
+        "ore_routes": 40,
+        "product_routes": 1,
+        "fixed_geometry_obstructed": 85,
+        "transport_length_lower_bound": 2347,
+        "transport_slot_upper_bound": 1956,
+        "empty_rectangle": {
+          "area": 36,
+          "short_side": 6,
+          "rectangle": {
+            "x0": 64,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          }
+        }
+      }
+    }
+  ]
+}

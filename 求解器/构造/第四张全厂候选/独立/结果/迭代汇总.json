@@ -1,0 +1,12 @@
+{
+  "raw_state_files": 8670,
+  "integer_model_records": 1488,
+  "status_counts": {
+    "FEASIBLE": 48,
+    "UNKNOWN": 8,
+    "OPTIMAL": 1241,
+    "INFEASIBLE": 191
+  },
+  "selected_raw_state": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/独立/迭代/宏块961-legal-173.json",
+  "note": "状态索引中的进路数为搜索记录数，不能代替实体静态核查。全局机位指派的端口分配数不计为进路。"
+}

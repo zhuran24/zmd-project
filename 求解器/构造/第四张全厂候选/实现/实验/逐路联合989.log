@@ -1,0 +1,6 @@
+direct seed=989 t=30.0019 trials=33764 accept=10690 routed=227 bestscore=461937 bestnr=227 length=604 score=462390
+direct seed=989 t=60.0042 trials=67943 accept=20096 routed=227 bestscore=461935 bestnr=227 length=607 score=463757
+direct seed=989 t=90.0054 trials=102877 accept=29513 routed=227 bestscore=461935 bestnr=227 length=616 score=462847
+direct seed=989 t=120.007 trials=137674 accept=38964 routed=224 bestscore=461935 bestnr=227 length=604 score=477275
+direct seed=989 t=150.008 trials=171842 accept=49805 routed=227 bestscore=461929 bestnr=227 length=616 score=462407
+final routes=227 score=461929

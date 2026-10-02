@@ -1,0 +1,49 @@
+{
+  "start_utc": "2026-10-02T16:53:00Z",
+  "deadline_utc": "2026-10-02T20:53:00Z",
+  "updated_utc": "2026-10-02T20:49:44.631696+00:00",
+  "status": "搜索已结束；构造未完成",
+  "cpu_affinity": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "static_pass": false,
+  "current_plan": "实验/局部改规划4.json",
+  "current_input": "实验/改规划6初值.txt",
+  "protected_routes": "实验/保护进路5.txt",
+  "findings": [
+    "规划74段为66完整进路与8片段",
+    "原核心区285格小于分配的机器与核心375格",
+    "原固定模块角区出口放宽容量6，小于12；供电修正后的模板容量12",
+    "规划4条KF到B错配，已以蓝铁链整体重编号修正",
+    "原运输预留下KO9和KO15无合法供电桩位置；O5上移、O8右移1格并新增两桩后局部核查通过"
+  ],
+  "active_processes": [],
+  "active_exact_job": null,
+  "pending": [
+    "98条进路尚未布通；达标全厂仍未实现"
+  ],
+  "latest_certified_partial": "布局.json",
+  "known_passes": [
+    "230台全部供电",
+    "H6到F4与Q6到F4均为1格",
+    "占格、端口、通道、桥轴及空矩形几何检查通过"
+  ],
+  "remaining_failure": "325条尚未齐全",
+  "affinity_migration_utc": "2026-10-02T18:54:12.403223+00:00",
+  "verified_partial_routes": 227,
+  "power_poles": 26,
+  "equal_lengths": [
+    1,
+    1
+  ],
+  "current_layout": "布局.json",
+  "current_report": "../实现.md",
+  "finalization": "20:48 UTC前停止搜索，冻结和复跑；20:53 UTC前完成交付。",
+  "candidate_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+  "search_stopped_utc": "2026-10-02T20:49:44.631696+00:00"
+}

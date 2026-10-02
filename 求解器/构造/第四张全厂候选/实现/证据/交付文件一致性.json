@@ -1,0 +1,181 @@
+{
+  "time_utc": "2026-10-02T20:49:45.499162+00:00",
+  "candidate_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+  "report_sha256": "48e17724325db6464e0a7bbc92ff0ce79c71f4e426cafc666f1d13a18609d627",
+  "static_pass": false,
+  "built_routes": 227,
+  "missing_routes": 98,
+  "links": [
+    {
+      "document": "实现.md",
+      "label": "布局JSON",
+      "target": "实现/布局.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "布局图SVG",
+      "target": "实现/布局图.svg",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "PNG",
+      "target": "实现/布局图.png",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "自写静态检查结果",
+      "target": "实现/证据/静态检查结果.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "325条逐路清单及端口核查",
+      "target": "实现/证据/逐路与端口核查.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "逐台覆盖",
+      "target": "实现/证据/逐台供电覆盖.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "独立主核查",
+      "target": "实现/独立复核/结果-主.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "独立副核查",
+      "target": "实现/独立复核/结果-副.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "旧A",
+      "target": "实现/证据/旧A复查.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "旧B",
+      "target": "实现/证据/旧B复查.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "汇总",
+      "target": "实现/证据/复核汇总.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "拒绝性核验",
+      "target": "实现/证据/拒绝性核验.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "格式说明",
+      "target": "实现/格式扩展.md",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "错配记录",
+      "target": "实现/证据/规划接法错配.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "割集检查",
+      "target": "实现/证据/最终模板角区出口容量.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "模块运输及端口局部核验",
+      "target": "实现/证据/改规划4模块局部验证.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "完整映射和删路记录",
+      "target": "实现/证据/末端等长重排.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "记录",
+      "target": "实现/证据/删除冗余供电桩.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "实验目录",
+      "target": "实现/实验/",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "搜索记录索引",
+      "target": "实现/证据/搜索范围汇总.json",
+      "exists": true
+    },
+    {
+      "document": "实现.md",
+      "label": "运行记录",
+      "target": "实现/证据/资源与停止记录.json",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "逻辑接法",
+      "target": "逻辑接法.json",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "游戏规则",
+      "target": "依据快照/《明日方舟：终末地》游戏规则.txt",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "求解任务",
+      "target": "依据快照/求解任务.txt",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "临时规则",
+      "target": "依据快照/临时规则.md",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "第107轮充分条件",
+      "target": "依据快照/推导107S2B.md",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "static_check.py",
+      "target": "代码/static_check.py",
+      "exists": true
+    },
+    {
+      "document": "实现/格式扩展.md",
+      "label": "逐路与端口核查.py",
+      "target": "代码/逐路与端口核查.py",
+      "exists": true
+    }
+  ],
+  "python_files_parsed": 36,
+  "all_checks_pass": true,
+  "scope": "这些检查只验证交付文件一致性，不能把缺路候选改判为全厂通过。"
+}

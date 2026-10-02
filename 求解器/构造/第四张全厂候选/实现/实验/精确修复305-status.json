@@ -1,0 +1,8 @@
+{
+ "status": "INFEASIBLE",
+ "wall": 0.016411922000000002,
+ "variables": 33489,
+ "constraints": 61585,
+ "radius": 3,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/改规划联合305-initial-2.json"
+}

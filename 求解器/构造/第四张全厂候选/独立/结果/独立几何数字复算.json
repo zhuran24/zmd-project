@@ -1,0 +1,27 @@
+{
+  "layout_sha256": "729fde6011f4eeb9b31ea58342e3c5293b1eb3ba0983877b95eb9250c349cd78",
+  "method": "整数网格涂色、逐格供电覆盖、二维前缀和枚举所有两边至少6的矩形",
+  "areas": {
+    "machines": 3567,
+    "warehouse_outlets": 138,
+    "power_poles": 100,
+    "storage_boxes": 0,
+    "transport": 558,
+    "core": 81
+  },
+  "overlaps": [],
+  "powered_machines": 230,
+  "occupied": 4444,
+  "empty_rectangles_enumerated": 4601025,
+  "maximum_area": 36,
+  "maximum_short_side": 6,
+  "maximizers": [
+    {
+      "x0": 64,
+      "y0": 64,
+      "x1": 69,
+      "y1": 69
+    }
+  ],
+  "agrees_with_static_check": true
+}

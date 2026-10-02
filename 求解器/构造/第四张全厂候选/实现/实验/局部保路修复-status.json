@@ -1,0 +1,8 @@
+{
+ "status": "OPTIMAL",
+ "wall": 2.84783564,
+ "variables": 4181,
+ "constraints": 7984,
+ "radius": 5,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/局部源-503.json"
+}

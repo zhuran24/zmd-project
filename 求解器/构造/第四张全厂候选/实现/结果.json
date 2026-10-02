@@ -1,0 +1,11 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现.md",
+  "layout_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选/实现/布局.json",
+  "static_pass": false,
+  "empty_rect": "未实现达标空矩形（候选6×6）",
+  "summary": "227/325路；230台供电；指定两路均1格。",
+  "blockers": [
+    "缺98条进路",
+    "整厂达标未认证"
+  ]
+}

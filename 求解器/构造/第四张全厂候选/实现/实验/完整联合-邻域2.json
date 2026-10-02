@@ -1,0 +1,26 @@
+{
+ "schema": "joint-cp-run-v1",
+ "W": 70,
+ "H": 70,
+ "routes": 325,
+ "machines": 230,
+ "fixed_rectangle": [
+  63,
+  14,
+  6,
+  6
+ ],
+ "bridge_restriction": "two used axes; no adjacent bridges",
+ "near_placement_radius": 2,
+ "hinted_routes": 225,
+ "no_lp": false,
+ "power_poles": 26,
+ "seed": 1109,
+ "workers": 6,
+ "build_seconds": 3.6024642839984153,
+ "variables": 184026,
+ "constraints": 455773,
+ "validation": "",
+ "status": "MEMORY_LIMIT",
+ "wall_seconds": 61.09343565299787
+}

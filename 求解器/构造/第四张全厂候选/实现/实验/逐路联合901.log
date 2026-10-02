@@ -1,0 +1,14 @@
+direct seed=901 t=30.0029 trials=39145 accept=13283 routed=209 bestscore=288448 bestnr=211 length=558 score=294369
+direct seed=901 t=60.0042 trials=79874 accept=26856 routed=211 bestscore=286299 bestnr=212 length=582 score=289331
+direct seed=901 t=90.0046 trials=121730 accept=40043 routed=213 bestscore=284004 bestnr=213 length=583 score=284347
+direct seed=901 t=120.007 trials=163480 accept=53546 routed=213 bestscore=283909 bestnr=213 length=550 score=284102
+direct seed=901 t=150.008 trials=203815 accept=66678 routed=214 bestscore=281130 bestnr=214 length=593 score=281284
+direct seed=901 t=180.012 trials=242774 accept=79078 routed=214 bestscore=281028 bestnr=214 length=576 score=281170
+direct seed=901 t=210.012 trials=282437 accept=92322 routed=213 bestscore=280977 bestnr=214 length=583 score=283834
+direct seed=901 t=240.013 trials=324277 accept=106043 routed=214 bestscore=280965 bestnr=214 length=611 score=281627
+direct seed=901 t=270.015 trials=366569 accept=119572 routed=214 bestscore=280965 bestnr=214 length=587 score=281960
+direct seed=901 t=300.017 trials=408598 accept=133122 routed=214 bestscore=280965 bestnr=214 length=607 score=281441
+direct seed=901 t=330.018 trials=448149 accept=145581 routed=216 bestscore=276168 bestnr=216 length=593 score=276596
+direct seed=901 t=360.019 trials=489203 accept=158650 routed=214 bestscore=273577 bestnr=217 length=593 score=281069
+direct seed=901 t=390.02 trials=529180 accept=171679 routed=216 bestscore=271134 bestnr=218 length=583 score=276529
+direct seed=901 t=420.021 trials=570035 accept=184934 routed=219 bestscore=268735 bestnr=219 length=594 score=269267

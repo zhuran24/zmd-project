@@ -1,0 +1,8 @@
+{
+ "status": "UNKNOWN",
+ "wall": 360.087499787,
+ "variables": 79877,
+ "constraints": 236044,
+ "radius": 5,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/逐路联合403-best.json"
+}

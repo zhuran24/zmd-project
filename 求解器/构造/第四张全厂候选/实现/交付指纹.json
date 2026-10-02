@@ -1,0 +1,383 @@
+{
+  "frozen_utc": "2026-10-02T20:51:25.018817+00:00",
+  "layout_sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+  "report_sha256": "48e17724325db6464e0a7bbc92ff0ce79c71f4e426cafc666f1d13a18609d627",
+  "static_pass": false,
+  "files": [
+    {
+      "path": "实现.md",
+      "sha256": "48e17724325db6464e0a7bbc92ff0ce79c71f4e426cafc666f1d13a18609d627",
+      "bytes": 6502
+    },
+    {
+      "path": "实现/布局.json",
+      "sha256": "283de8e9420017fec55b6248975f6e30ce8efe3778ca4ab021be5aa4ecc42dbe",
+      "bytes": 393142
+    },
+    {
+      "path": "实现/结果.json",
+      "sha256": "f0853b1406f4a4582ab61c4cded73de9a1998bec0765d9ed72ce66b1f310d25f",
+      "bytes": 439
+    },
+    {
+      "path": "实现/布局图.svg",
+      "sha256": "6587cd471ba6549a416e60778c42267b7803990b273a716b588bc032101930d0",
+      "bytes": 174330
+    },
+    {
+      "path": "实现/布局图.png",
+      "sha256": "00f5ae0c3ab1907ce57d2b46cfbdd5282a2195c7315aa41eea02bb0c9b7ec9d0",
+      "bytes": 335935
+    },
+    {
+      "path": "实现/格式扩展.md",
+      "sha256": "bd776c3065476868b61cbd17c6dedf204e251efbc9ad093123f6854cd256c72e",
+      "bytes": 3643
+    },
+    {
+      "path": "实现/逻辑接法.json",
+      "sha256": "9fddd762aef9ed5c88486577915dde570168c3d762d7b304245b9a916a6abdb6",
+      "bytes": 119691
+    },
+    {
+      "path": "实现/代码/draw_layout.py",
+      "sha256": "8f95be4379a3d11664becd2ddc376ee3bad0600de292ce49f4086849ea85a600",
+      "bytes": 5263
+    },
+    {
+      "path": "实现/代码/export_candidate.py",
+      "sha256": "3f99bbb4bdc9abcc125618ecb98d3185658d1647c9c75380bb453ad65d3503d7",
+      "bytes": 7287
+    },
+    {
+      "path": "实现/代码/static_check.py",
+      "sha256": "a28688b5dccf7cfe35958f6249f5ae80135f06e184183c4776a0bedd0df26bce",
+      "bytes": 17750
+    },
+    {
+      "path": "实现/代码/供电联合修复.py",
+      "sha256": "df82ae3b4c5f2f89c611152b2da520c401284cdee94d0733d1ced39dcf9e4256",
+      "bytes": 2802
+    },
+    {
+      "path": "实现/代码/全供电联合循环.py",
+      "sha256": "eb6cf4c8c1ff778dfa2108153cc1cf3438acd4cced130b72fcf6a37cc8a0d1f3",
+      "bytes": 7674
+    },
+    {
+      "path": "实现/代码/全厂格点联合.py",
+      "sha256": "7ee753267dd8a9bf0afb063a6b77dad2d1c0031d927e157222f71e39879fec7e",
+      "bytes": 18779
+    },
+    {
+      "path": "实现/代码/全条件联合循环.py",
+      "sha256": "3943b859eeac1580adc8d223b0d2c884bd9f6b248faf7e3aa23a2340ff623690",
+      "bytes": 7675
+    },
+    {
+      "path": "实现/代码/准备整厂.py",
+      "sha256": "b24fdfbbe3bd78aa5b81f57e7f123ab6a2a63f44cd8402f7416fd6a9b841aa59",
+      "bytes": 3485
+    },
+    {
+      "path": "实现/代码/删除冗余供电桩.py",
+      "sha256": "32d4d8b1513d28bb77e204a7d39cfadf86eb8600b78911742c222dcd4ff94e94",
+      "bytes": 2232
+    },
+    {
+      "path": "实现/代码/完整联合尝试.py",
+      "sha256": "b60568da086a20a86c705403cb37139e773ba800b06f8e498bf7d3d54a428a75",
+      "bytes": 3265
+    },
+    {
+      "path": "实现/代码/实线减桩循环.py",
+      "sha256": "2c2366827a17672ffd585eff2e04747a9d939cecc8629885045a90c7a552a5c7",
+      "bytes": 8196
+    },
+    {
+      "path": "实现/代码/实线开路循环.py",
+      "sha256": "c2029f74a5a15c97e99e9792b845319d3e75cdb7ac5913c22c09681253409612",
+      "bytes": 8242
+    },
+    {
+      "path": "实现/代码/实线联合循环.py",
+      "sha256": "7c61f3fffefbff0b67ff9db46483819dc6832582c715b41a1ffd81e45dd3b141",
+      "bytes": 7660
+    },
+    {
+      "path": "实现/代码/导出实现.py",
+      "sha256": "8b26e7e284abc0c9512c5072c15728240e07bc8b39152eba11b78cc04a875a6c",
+      "bytes": 2464
+    },
+    {
+      "path": "实现/代码/局部联合循环.py",
+      "sha256": "e791f590f56f9a55b4252bda75f8e33c59bcfaafd6941522d966eaae5e88057b",
+      "bytes": 4471
+    },
+    {
+      "path": "实现/代码/局部联合模型.py",
+      "sha256": "71725141111949177e8c625605380d43190576f6163e013cb278cb9b61c7922c",
+      "bytes": 19239
+    },
+    {
+      "path": "实现/代码/布局转搜索.py",
+      "sha256": "c1fd74ba557f0b03190ccbb60134a115208062e515373c3312d24cfb3415f530",
+      "bytes": 1880
+    },
+    {
+      "path": "实现/代码/旧检查器复查.py",
+      "sha256": "5f9c27f056c047124665005b75579ba4c77656879385356fcb3381aa9550cfda",
+      "bytes": 2232
+    },
+    {
+      "path": "实现/代码/末端等长重排.py",
+      "sha256": "c048e27c247cd61ba428d862a61e0e4978a4d0b38bcfcc63bbb4f7220bece1a2",
+      "bytes": 3411
+    },
+    {
+      "path": "实现/代码/核对交付文件.py",
+      "sha256": "b40dca38bc28a04de0e46a061d0ff691a6c27c6a9caa83ad437412d566e14d9c",
+      "bytes": 2143
+    },
+    {
+      "path": "实现/代码/核查拒绝性.py",
+      "sha256": "9817cbb81c2a50c8f7122f66a10ffa060d3930055a7bcd53e8930768cee2e82d",
+      "bytes": 2710
+    },
+    {
+      "path": "实现/代码/植物双单元.py",
+      "sha256": "9b3f39c567d03b1799ea90fd27311a1c9bb258a6bec79305dce75111eb60a4c4",
+      "bytes": 1547
+    },
+    {
+      "path": "实现/代码/汇总搜索结果.py",
+      "sha256": "4e51944fc22d452230b06b72f8e6342586376ba24b198619c4f7e6702569c7a2",
+      "bytes": 3535
+    },
+    {
+      "path": "实现/代码/生成实现报告.py",
+      "sha256": "f2483302055094d74772035d2443224831dea7a90b7a3039d762fcdad552d614",
+      "bytes": 9355
+    },
+    {
+      "path": "实现/代码/端口联合循环.py",
+      "sha256": "c00f4e67b21178a56dcbf69fb8aa8c8d62c1cf0b164b6719255095995a2605d9",
+      "bytes": 4620
+    },
+    {
+      "path": "实现/代码/精确摆放修复.py",
+      "sha256": "93aa0b5cafb48d0261e6d29513537b09c3002a0a48813a3a94f9cb35e2ac541a",
+      "bytes": 7100
+    },
+    {
+      "path": "实现/代码/精确摆放修复4.py",
+      "sha256": "6128c201d9505857c8cd14b4ba64d122ebb154384244c0686110ce5be534ba74",
+      "bytes": 9504
+    },
+    {
+      "path": "实现/代码/精确摆放修复5.py",
+      "sha256": "96e2b6a9812f0d5971f4fdda4b8144dde714ab94900982739a261332f04d1527",
+      "bytes": 9504
+    },
+    {
+      "path": "实现/代码/精确摆放修复6.py",
+      "sha256": "fa674d46a6c9c585bf25f811a3475c2c2a7b006953e964ef5909e761dd6d70db",
+      "bytes": 9504
+    },
+    {
+      "path": "实现/代码/精确补一路.py",
+      "sha256": "5a9249a3582045530bea9b578b9c0d879c37e1dcd253b1a3db0252af89e25a8e",
+      "bytes": 11854
+    },
+    {
+      "path": "实现/代码/精确补一路6.py",
+      "sha256": "362e644b70c10d9afe6b2ee6c2ec264f7f34f6d86ae7896e07bff28b4a77cebf",
+      "bytes": 11854
+    },
+    {
+      "path": "实现/代码/规划出口检查.py",
+      "sha256": "a9ee03e9e44dc26162bcd7b474926648f7fa91bc0827866f95605c1ebb84bd79",
+      "bytes": 2902
+    },
+    {
+      "path": "实现/代码/角区联合.py",
+      "sha256": "66fb00c5dc3b89c6a45d51fb9262f64d3fc8daf4406040f77d02b41e14cd0fa8",
+      "bytes": 1446
+    },
+    {
+      "path": "实现/代码/连通联合循环.py",
+      "sha256": "40b791ef0ac8cc223496b3e58d86c31ab474d1adf08dc2be9d131272547e1051",
+      "bytes": 7611
+    },
+    {
+      "path": "实现/代码/逐路与端口核查.py",
+      "sha256": "3db587389a51f604df5315d278503a2d0575d6b1a36f4431431eae39e6f7e2d2",
+      "bytes": 6080
+    },
+    {
+      "path": "实现/代码/验收回放.py",
+      "sha256": "081a9ddd3a70df6e3e3396f712ca4cb8e0a6ea51e8e199ba35ea11a64ea65319",
+      "bytes": 2879
+    },
+    {
+      "path": "实现/证据/交付文件一致性.json",
+      "sha256": "f08e79d19fa5fbb6c070aa1874a848898066d629b3c73e4963409ccaf113f024",
+      "bytes": 4788
+    },
+    {
+      "path": "实现/证据/修改2后角区出口容量.json",
+      "sha256": "5c9efbc779c4565616bc3f929c62af06881c4f2a3caa1eed1f24ee42de6a33b5",
+      "bytes": 1839
+    },
+    {
+      "path": "实现/证据/修改后角区出口容量.json",
+      "sha256": "fff3ada335b78f2715c474aceada0e0ee6f39adb98b4c7c05bbe95e95da23290",
+      "bytes": 1403
+    },
+    {
+      "path": "实现/证据/借用核查程序指纹.json",
+      "sha256": "bdc7256ab61bb3e25c5a11c5e861d606b10c9261da5d6d1478b862fa2e901508",
+      "bytes": 405
+    },
+    {
+      "path": "实现/证据/删除冗余供电桩.json",
+      "sha256": "054b8b7e7459bbcccaf7098435695954412cabe5bbeb512fc33b39c6662836d1",
+      "bytes": 403
+    },
+    {
+      "path": "实现/证据/固定模块供电位置检查.json",
+      "sha256": "efb44c15d228dd770a9392ce979cb366a115b1f20f57be8b9aa84a4dc8ca1c8a",
+      "bytes": 234
+    },
+    {
+      "path": "实现/证据/复核汇总.json",
+      "sha256": "a49fabf20e240cfc83392ce330440bf46809b894e68383239e32d2794198fe81",
+      "bytes": 1006
+    },
+    {
+      "path": "实现/证据/拒绝性核验.json",
+      "sha256": "cb9c1ae036052420a9af7cb59cb5f702725cae834187b59a5391e08a76151478",
+      "bytes": 6976
+    },
+    {
+      "path": "实现/证据/搜索范围汇总.json",
+      "sha256": "f4598d34aee2d7331d6f59499030242783e858316cb588992c0b774a1365fefd",
+      "bytes": 5695
+    },
+    {
+      "path": "实现/证据/改规划4模块局部验证.json",
+      "sha256": "6640a6cd619518d2fa623d2283480ac8cbe571d84edaa8325ad9fbcd96983302",
+      "bytes": 12726
+    },
+    {
+      "path": "实现/证据/旧A复查.json",
+      "sha256": "b1b21f168f8b16179f1e77a4abce6507ea9bffe87e68ab0ee6535f19910c636b",
+      "bytes": 1720
+    },
+    {
+      "path": "实现/证据/旧B复查.json",
+      "sha256": "30e721576a1b1b78495b3f8a3739f9b419d5a8a81ea68fe5ed321f8e3e41b6f9",
+      "bytes": 116676
+    },
+    {
+      "path": "实现/证据/旧检查器来源指纹.json",
+      "sha256": "3802fe94c1995ab1a051c1093d258f89edf7bd6041827c513f19bafb6bae8fe7",
+      "bytes": 1294
+    },
+    {
+      "path": "实现/证据/最终候选选择.json",
+      "sha256": "ceba9766869eb099fa3107fe2937823cae26a9c1e1f9bf61515a6f982ba70665",
+      "bytes": 452
+    },
+    {
+      "path": "实现/证据/最终模板角区出口容量.json",
+      "sha256": "11ef1f7c406f7315d7bb0426e164dcb95b2d845faa3df6e92e92ac2042361593",
+      "bytes": 1711
+    },
+    {
+      "path": "实现/证据/末端等长重排.json",
+      "sha256": "f36a0dda50b01e17fb1b0854c6a05f52d67c8acc22272dc43455d751a4889d10",
+      "bytes": 1523
+    },
+    {
+      "path": "实现/证据/规划接法错配.json",
+      "sha256": "8f1e87109e8487eb3e78ae468ed8d74871a9503878530047208378b0980c6c10",
+      "bytes": 662
+    },
+    {
+      "path": "实现/证据/规划角区出口容量.json",
+      "sha256": "284706a4e9ae515d0be61cef43c583b56d9129e2e409da2fa0929bfa5a213943",
+      "bytes": 970
+    },
+    {
+      "path": "实现/证据/计算资源快照.json",
+      "sha256": "aaacc3b2b1b06ab8039fa8845b95aecfc874d959582161207a6fa00c1b95977c",
+      "bytes": 4060
+    },
+    {
+      "path": "实现/证据/读者自审.json",
+      "sha256": "54a256b8ac39b19f0e4f512166fe21cded814a41715c858fcbfcf343c1289aa2",
+      "bytes": 1528
+    },
+    {
+      "path": "实现/证据/资源与停止记录.json",
+      "sha256": "f7d1c3b484358e2b23c23e8eb23c43b1a8dce320c1d815a7b55d8b7cbe0e3134",
+      "bytes": 581
+    },
+    {
+      "path": "实现/证据/输入完整性复核.json",
+      "sha256": "daca38de4c9bb763892fa753e3b7923c2586adfc08512dc7b8573c3b50333cee",
+      "bytes": 3475
+    },
+    {
+      "path": "实现/证据/输入指纹.json",
+      "sha256": "e1f75b203477f741274c3a847ef18601527de5cfaefd04b0e57af638c080ff67",
+      "bytes": 2073
+    },
+    {
+      "path": "实现/证据/逐台供电覆盖.json",
+      "sha256": "ac4cd10e2813f22724e2a8190322b7bfad50126947995e500d51e0aba6042e37",
+      "bytes": 58000
+    },
+    {
+      "path": "实现/证据/逐路与端口核查.json",
+      "sha256": "fc465e6fed5bd75be8b00993113faf84b3bbf7d2306f5655816212b1f629ff6d",
+      "bytes": 338317
+    },
+    {
+      "path": "实现/证据/阶段-独立主.json",
+      "sha256": "595e4aa2dfef4a614648bebce8cd86dd29187c29c681faf0e90cd26780727cb2",
+      "bytes": 64495
+    },
+    {
+      "path": "实现/证据/阶段-独立副.json",
+      "sha256": "41934abc65b733855651066f42a2bdc4652428084ae269a62945918c137be6a5",
+      "bytes": 15453
+    },
+    {
+      "path": "实现/证据/静态检查结果.json",
+      "sha256": "1a731c2eb1f8100f090ff4c96c303270ebde889c196525554702f3b8a54ee924",
+      "bytes": 58394
+    },
+    {
+      "path": "实现/独立复核/结果-主.json",
+      "sha256": "59261b252623121ae685a80a55212bc472d3355b8416b5e0fb6aee3f2e430171",
+      "bytes": 68761
+    },
+    {
+      "path": "实现/独立复核/结果-副.json",
+      "sha256": "f1b8280c03d4f75110d4de5f342aa0098e0ab4519e6d64d56467d26fc0e46901",
+      "bytes": 15682
+    },
+    {
+      "path": "实现/独立复核/check_main.py",
+      "sha256": "8150778e146be9044517d894cd71d9634b3e2f5f5eb608244fec5cb5d12cd3ad",
+      "bytes": 26677
+    },
+    {
+      "path": "实现/独立复核/check_alt.py",
+      "sha256": "598fb271a4cb05c1e36165509d535dc7f3257b9fd745ddd848f1c62482e7084c",
+      "bytes": 16789
+    }
+  ]
+}

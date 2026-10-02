@@ -1,0 +1,25 @@
+{
+  "status": "已结束；未找到达标全厂",
+  "started_utc": "2026-10-02T16:27:18+00:00",
+  "finished_utc": "2026-10-02T20:27:49.656423+00:00",
+  "elapsed_seconds": 14431.656423,
+  "deadline_utc": "2026-10-02T20:27:18Z",
+  "within_four_hours": false,
+  "max_cpu_cores": 6,
+  "cpu_affinity_union": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "static_pass": false,
+  "completed_routes": 226,
+  "total_routes": 325,
+  "layout_sha256": "729fde6011f4eeb9b31ea58342e3c5293b1eb3ba0983877b95eb9250c349cd78",
+  "git_used": false,
+  "kernel_cargo_tests_run": false,
+  "write_root": "/home/zhuran24/zmd-research-fresh/求解器/构造/第四张全厂候选",
+  "active_search_processes": []
+}

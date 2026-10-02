@@ -1,0 +1,8 @@
+{
+ "status": "FEASIBLE",
+ "wall": 180.01177262800002,
+ "variables": 16727,
+ "constraints": 60577,
+ "radius": 4,
+ "source": "求解器/构造/第四张全厂候选/实现/实验/全机供电修复源.json"
+}
