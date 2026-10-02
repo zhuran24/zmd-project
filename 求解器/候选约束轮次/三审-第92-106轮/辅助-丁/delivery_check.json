@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "item_count": 9,
+  "formal_clause_count": 9,
+  "local_links_checked": 23,
+  "numeric_files_status": "PASS",
+  "source_fingerprints_unchanged": true,
+  "report_sha256": "6f6799105b62c7d38b156be4a1306d9b21348162d692aaeb4d698cf93e1b8bfb",
+  "result_sha256": "e6b1e94f04704c6edfdf38b9cbb548686a34d35f159bf5cc06b14f88944849ee",
+  "unresolved_items": []
+}

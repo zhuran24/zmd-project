@@ -1,0 +1,243 @@
+{
+  "all_checks_passed": true,
+  "cases": {
+    "U": {
+      "first": "U",
+      "repeat_step_ends_zero_based": [
+        144,
+        184
+      ],
+      "completed_steps": [
+        145,
+        185
+      ],
+      "period_steps": 40,
+      "rates_per_tick": {
+        "S→M": "0",
+        "S→N": "1/5",
+        "U→M": "1/5"
+      },
+      "minimum_warehouse": 79966,
+      "occupied_cells": 128,
+      "channel_count": 44,
+      "belt_lengths": {
+        "LA": 16,
+        "LB": 16,
+        "RA": 1,
+        "RB": 2
+      },
+      "levels": {
+        "LA": 5,
+        "LB": 5,
+        "RA": 1,
+        "RB": 1,
+        "P": 4,
+        "Q": 4,
+        "S": 3,
+        "U": 3,
+        "M": 2,
+        "N": 2
+      },
+      "base_order": [
+        "RA",
+        "RB",
+        "M",
+        "N",
+        "U",
+        "S",
+        "P",
+        "Q",
+        "LA",
+        "LB"
+      ],
+      "connection_times": {
+        "LA0→LA1": 111,
+        "LA1→LA2": 112,
+        "LA10→LA11": 121,
+        "LA11→LA12": 122,
+        "LA12→LA13": 123,
+        "LA13→LA14": 124,
+        "LA14→LA15": 125,
+        "LA15→P": 125,
+        "LA2→LA3": 113,
+        "LA3→LA4": 114,
+        "LA4→LA5": 115,
+        "LA5→LA6": 116,
+        "LA6→LA7": 117,
+        "LA7→LA8": 118,
+        "LA8→LA9": 119,
+        "LA9→LA10": 120,
+        "LB0→LB1": 131,
+        "LB1→LB2": 132,
+        "LB10→LB11": 141,
+        "LB11→LB12": 142,
+        "LB12→LB13": 143,
+        "LB13→LB14": 144,
+        "LB14→LB15": 145,
+        "LB15→Q": 145,
+        "LB2→LB3": 133,
+        "LB3→LB4": 134,
+        "LB4→LB5": 135,
+        "LB5→LB6": 136,
+        "LB6→LB7": 137,
+        "LB7→LB8": 138,
+        "LB8→LB9": 139,
+        "LB9→LB10": 140,
+        "M→RA0": 100,
+        "N→RB0": 101,
+        "P→S": 5,
+        "Q→U": 6,
+        "RA0→C": 100,
+        "RB0→RB1": 102,
+        "RB1→C": 102,
+        "S→M": 3,
+        "S→N": 4,
+        "U→M": 2,
+        "WA→LA0": 110,
+        "WB→LB0": 130
+      },
+      "events": [
+        [
+          144,
+          "U",
+          "M"
+        ],
+        [
+          144,
+          "S",
+          "N"
+        ],
+        [
+          184,
+          "U",
+          "M"
+        ],
+        [
+          184,
+          "S",
+          "N"
+        ]
+      ],
+      "cycle_key_includes": "warehouse, all transport goods with capped age and physical previous unit, gate window remainders, splitter pointer"
+    },
+    "S": {
+      "first": "S",
+      "repeat_step_ends_zero_based": [
+        128,
+        208
+      ],
+      "completed_steps": [
+        129,
+        209
+      ],
+      "period_steps": 80,
+      "rates_per_tick": {
+        "S→M": "1/10",
+        "S→N": "1/10",
+        "U→M": "1/5"
+      },
+      "minimum_warehouse": 79966,
+      "occupied_cells": 128,
+      "channel_count": 44,
+      "belt_lengths": {
+        "LA": 16,
+        "LB": 16,
+        "RA": 1,
+        "RB": 2
+      },
+      "levels": {
+        "LA": 5,
+        "LB": 5,
+        "RA": 1,
+        "RB": 1,
+        "P": 4,
+        "Q": 4,
+        "S": 3,
+        "U": 3,
+        "M": 2,
+        "N": 2
+      },
+      "base_order": [
+        "RA",
+        "RB",
+        "M",
+        "N",
+        "S",
+        "U",
+        "P",
+        "Q",
+        "LA",
+        "LB"
+      ],
+      "connection_times": {
+        "LA0→LA1": 111,
+        "LA1→LA2": 112,
+        "LA10→LA11": 121,
+        "LA11→LA12": 122,
+        "LA12→LA13": 123,
+        "LA13→LA14": 124,
+        "LA14→LA15": 125,
+        "LA15→P": 125,
+        "LA2→LA3": 113,
+        "LA3→LA4": 114,
+        "LA4→LA5": 115,
+        "LA5→LA6": 116,
+        "LA6→LA7": 117,
+        "LA7→LA8": 118,
+        "LA8→LA9": 119,
+        "LA9→LA10": 120,
+        "LB0→LB1": 131,
+        "LB1→LB2": 132,
+        "LB10→LB11": 141,
+        "LB11→LB12": 142,
+        "LB12→LB13": 143,
+        "LB13→LB14": 144,
+        "LB14→LB15": 145,
+        "LB15→Q": 145,
+        "LB2→LB3": 133,
+        "LB3→LB4": 134,
+        "LB4→LB5": 135,
+        "LB5→LB6": 136,
+        "LB6→LB7": 137,
+        "LB7→LB8": 138,
+        "LB8→LB9": 139,
+        "LB9→LB10": 140,
+        "M→RA0": 100,
+        "N→RB0": 101,
+        "P→S": 5,
+        "Q→U": 6,
+        "RA0→C": 100,
+        "RB0→RB1": 102,
+        "RB1→C": 102,
+        "S→M": 2,
+        "S→N": 3,
+        "U→M": 4,
+        "WA→LA0": 110,
+        "WB→LB0": 130
+      },
+      "events": [
+        [
+          144,
+          "S",
+          "N"
+        ],
+        [
+          144,
+          "U",
+          "M"
+        ],
+        [
+          184,
+          "S",
+          "M"
+        ],
+        [
+          192,
+          "U",
+          "M"
+        ]
+      ],
+      "cycle_key_includes": "warehouse, all transport goods with capped age and physical previous unit, gate window remainders, splitter pointer"
+    }
+  }
+}

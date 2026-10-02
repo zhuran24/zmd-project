@@ -1,0 +1,13 @@
+recipe_account PASS 0.003
+interval_capacity PASS 0.011
+mixed_clearing_trace PASS 0.0
+saturated_box_head PASS 0.049
+box_cooling PASS 1.582
+transfer_order_witness PASS 0.0
+expiry_boundary_sensitivity PASS 0.0
+polling_groups PASS 3.023
+polling_subset_random PASS 0.076
+polling_resets PASS 0.565
+mixed_formula PASS 0.028
+core_geometry PASS 0.03
+ALL PASS 5.37

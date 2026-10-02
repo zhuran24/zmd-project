@@ -1,0 +1,12 @@
+{
+  "schema_valid": true,
+  "items": 9,
+  "all_local_links_exist": true,
+  "full_final_articles_present": true,
+  "version_100_equals_105_106": true,
+  "97_to_100_single_replacement": true,
+  "report_sha256": "6248a4ddc81741ceea437775743a1b363b056e05e1adca9f84637b8984f28209",
+  "rule_lines": 115,
+  "necessary_article_count": 77,
+  "sufficient_article_count": 11
+}

@@ -1,0 +1,631 @@
+{
+  "scope": "乙席三审准备材料；数学与局部接口独立复算；非主会话三审结论",
+  "inputs": {
+    "第107-109轮/前提快照/《明日方舟：终末地》游戏规则.txt": {
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "lines": 115
+    },
+    "第107-109轮/前提快照/求解任务.txt": {
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "lines": 15
+    },
+    "第107-109轮/前提快照/求解约束.txt": {
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "lines": 168
+    },
+    "第107-109轮/前提快照/求解充分条件.txt": {
+      "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435",
+      "lines": 24
+    },
+    "第107-109轮/临时规则.md": {
+      "sha256": "6807b9a5baf9be40020930ee186b67e4ed657069e1c6cd341af237dff20b986d",
+      "lines": 15
+    },
+    "第92-94轮/推导92A.md": {
+      "sha256": "acdbbe3b1b1d5d233a8b1ed44dc91d46c151820ba2116e9b7c074edb8dc873a5",
+      "lines": 555
+    },
+    "第92-94轮/推导92B.md": {
+      "sha256": "467d08e712f1e5755a52514eb29ce171f02ca1cff81b70b2a2d9232a69df5f47",
+      "lines": 1030
+    },
+    "第92-94轮/复核93A.md": {
+      "sha256": "5821ef52622f0d5676cf89b2381508137ac9dc8f05e2431c736cb7fd310661a5",
+      "lines": 286
+    },
+    "第92-94轮/复核94A.md": {
+      "sha256": "71ea8173493b99fa55b20638c82d033c53b2ab20009d8e028390d921ba617708",
+      "lines": 202
+    },
+    "第92-94轮/复核93B.md": {
+      "sha256": "bfaeb72d01544bdfccf970ca6aa92a2266d86db2fbae4b5163d33d2ac43a78ca",
+      "lines": 261
+    },
+    "第92-94轮/复核94B.md": {
+      "sha256": "b16ea0c8bd79cc710442bbf611dd3998b767f97e9bca85235f31d4c64c6af372",
+      "lines": 118
+    },
+    "第95-97轮/推导95T.md": {
+      "sha256": "c520da40f67c67ca4e1d83587ad34dba5d7f4cabbc4cb1880e32d3746a83c3e7",
+      "lines": 331
+    },
+    "第95-97轮/复核96T.md": {
+      "sha256": "c60de311aa981f0c822d9f8d56b7d80daec8ca83d80f34778104062a621936b7",
+      "lines": 299
+    },
+    "第95-97轮/复核97T.md": {
+      "sha256": "b4f5b7c6fa947b561e62f3af2836bf73acbc17f2b9f5c176b2d32c6122858270",
+      "lines": 171
+    },
+    "第101-103轮/推导101H.md": {
+      "sha256": "62e875371010c8964ec726068815aa7fb7e763c13c1ce42e6bcc504d70d33639",
+      "lines": 426
+    },
+    "第101-103轮/复核102H.md": {
+      "sha256": "6216e589e446f467e8466d26112fab2c0fc302308a5d1b3661f2153394518212",
+      "lines": 326
+    },
+    "第101-103轮/复核103H.md": {
+      "sha256": "669d545f9dd0fc192f4d21ce128238380ee43e5970cfa6e7d15051d2af56b42b",
+      "lines": 268
+    },
+    "三审-第92-106轮/三审报告.md": {
+      "sha256": "f6e319e799373ba08364364edd3adaa04cc66c784e1b69944d368cd7a5afb5e7",
+      "lines": 41
+    }
+  },
+  "recipe_account": {
+    "recipe_count": 18,
+    "rank_with_recycle_fixed": 18,
+    "at_recycle_0_and_1": [
+      {
+        "ore": {
+          "蓝铁矿": "34",
+          "源矿": "18"
+        },
+        "plant_birth_rate": {
+          "荞花": "11",
+          "砂叶": "21"
+        }
+      },
+      {
+        "ore": {
+          "蓝铁矿": "34",
+          "源矿": "18"
+        },
+        "plant_birth_rate": {
+          "荞花": "11",
+          "砂叶": "21"
+        }
+      }
+    ],
+    "rates_at_recycle_0": {
+      "1 源矿 → 1 源石粉末，1 tick": "18",
+      "1 蓝铁块 → 1 蓝铁粉末，1 tick": "34",
+      "1 荞花 → 2 荞花粉末，1 tick": "11/2",
+      "1 砂叶 → 3 砂叶粉末，1 tick": "21/2",
+      "1 蓝铁矿 → 1 蓝铁块，1 tick": "34",
+      "1 致密蓝铁粉末 → 1 钢块，1 tick": "17",
+      "1 蓝铁粉末 → 1 蓝铁块，1 tick": "0",
+      "2 蓝铁粉末 ＋ 1 砂叶粉末 → 1 致密蓝铁粉末，1 tick": "17",
+      "2 源石粉末 ＋ 1 砂叶粉末 → 1 致密源石粉末，1 tick": "9",
+      "2 荞花粉末 ＋ 1 砂叶粉末 → 1 细磨荞花粉末，1 tick": "11/2",
+      "2 钢块 → 1 钢质瓶，1 tick": "11/2",
+      "1 钢块 → 1 钢制零件，1 tick": "6",
+      "1 荞花种子 → 1 荞花，1 tick": "11",
+      "1 砂叶种子 → 1 砂叶，1 tick": "21",
+      "1 荞花 → 2 荞花种子，1 tick": "11/2",
+      "1 砂叶 → 2 砂叶种子，1 tick": "21/2",
+      "10 钢制零件 ＋ 15 致密源石粉末 → 1 高容谷地电池，5 tick": "3/5",
+      "10 钢质瓶 ＋ 10 细磨荞花粉末 → 1 精选荞愈胶囊，5 tick": "11/20"
+    },
+    "average_stock_lower_bounds": {
+      "荞花种子及植株各": 22,
+      "砂叶种子及植株各": 42
+    },
+    "ore_port_capacity": 52
+  },
+  "interval_capacity": {
+    "window_8_positions": 1,
+    "window_40_positions": 5,
+    "window_41_positions": 6,
+    "box_bounds_40_41": [
+      15,
+      18
+    ],
+    "cyclic_saturation_cases": 32,
+    "lifetime_window_cases": 512,
+    "per_machine_batches_each_window": 2,
+    "32_machines_stock_each": 64,
+    "alternating_channel_bounds": {
+      "(3, 2)": 3,
+      "(3, 1)": 2,
+      "(2, 1)": 2,
+      "(2, 2)": 2
+    }
+  },
+  "mixed_clearing_trace": {
+    "scope": "局部接口时序，输入及时可得；不认证全厂",
+    "trace": [
+      {
+        "step": 0,
+        "send": [
+          0,
+          0,
+          "X"
+        ],
+        "output": [
+          "X",
+          2
+        ],
+        "new_batch": "Y",
+        "cache": [
+          "Y",
+          1,
+          8
+        ]
+      },
+      {
+        "step": 1,
+        "send": [
+          1,
+          1,
+          "X"
+        ],
+        "output": [
+          "X",
+          1
+        ],
+        "new_batch": null,
+        "cache": [
+          "Y",
+          1,
+          8
+        ]
+      },
+      {
+        "step": 7,
+        "send": null,
+        "output": [
+          "X",
+          1
+        ],
+        "new_batch": null,
+        "cache": [
+          "Y",
+          1,
+          8
+        ]
+      },
+      {
+        "step": 8,
+        "send": [
+          8,
+          0,
+          "X"
+        ],
+        "output": [
+          "Y",
+          1
+        ],
+        "new_batch": "X",
+        "cache": [
+          "X",
+          3,
+          16
+        ]
+      },
+      {
+        "step": 9,
+        "send": [
+          9,
+          1,
+          "Y"
+        ],
+        "output": [
+          "Y",
+          0
+        ],
+        "new_batch": null,
+        "cache": [
+          "X",
+          3,
+          16
+        ]
+      },
+      {
+        "step": 16,
+        "send": [
+          16,
+          0,
+          "X"
+        ],
+        "output": [
+          "X",
+          2
+        ],
+        "new_batch": "Y",
+        "cache": [
+          "Y",
+          1,
+          24
+        ]
+      },
+      {
+        "step": 17,
+        "send": [
+          17,
+          1,
+          "X"
+        ],
+        "output": [
+          "X",
+          1
+        ],
+        "new_batch": null,
+        "cache": [
+          "Y",
+          1,
+          24
+        ]
+      },
+      {
+        "step": 24,
+        "send": [
+          24,
+          0,
+          "X"
+        ],
+        "output": [
+          "Y",
+          1
+        ],
+        "new_batch": "X",
+        "cache": [
+          "X",
+          3,
+          32
+        ]
+      },
+      {
+        "step": 25,
+        "send": [
+          25,
+          1,
+          "Y"
+        ],
+        "output": [
+          "Y",
+          0
+        ],
+        "new_batch": null,
+        "cache": [
+          "X",
+          3,
+          32
+        ]
+      }
+    ],
+    "batch_starts": [
+      0,
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56
+    ],
+    "sends": [
+      [
+        0,
+        0,
+        "X"
+      ],
+      [
+        1,
+        1,
+        "X"
+      ],
+      [
+        8,
+        0,
+        "X"
+      ],
+      [
+        9,
+        1,
+        "Y"
+      ],
+      [
+        16,
+        0,
+        "X"
+      ],
+      [
+        17,
+        1,
+        "X"
+      ],
+      [
+        24,
+        0,
+        "X"
+      ],
+      [
+        25,
+        1,
+        "Y"
+      ],
+      [
+        32,
+        0,
+        "X"
+      ],
+      [
+        33,
+        1,
+        "X"
+      ],
+      [
+        40,
+        0,
+        "X"
+      ],
+      [
+        41,
+        1,
+        "Y"
+      ],
+      [
+        48,
+        0,
+        "X"
+      ],
+      [
+        49,
+        1,
+        "X"
+      ],
+      [
+        56,
+        0,
+        "X"
+      ],
+      [
+        57,
+        1,
+        "Y"
+      ]
+    ]
+  },
+  "saturated_box_head": {
+    "phase_acceptance_observation_cases": 30272,
+    "allow_coincident_phases": true,
+    "result": "最小违规库存c_x+1仍无法在随后8步清空；全部拒绝x的口均丢掉应有成功"
+  },
+  "box_cooling": {
+    "cases": 6144,
+    "steps_per_case": 192,
+    "maximum_inventory": 15,
+    "reset_and_physical_orders_checked": true,
+    "expiry_example": {
+      "keep": [
+        0,
+        40,
+        80
+      ],
+      "clear": [
+        0,
+        17,
+        57,
+        97
+      ]
+    },
+    "expiry_convention": "第s步传输后，第s+40步本箱判定时冷却已到期"
+  },
+  "transfer_order_witness": {
+    "scope": "局部单次判定，箱头1件且两去处均可收",
+    "branches": {
+      "wireless then physical": {
+        "wireless": 1,
+        "physical": 0,
+        "stock": 0
+      },
+      "physical then wireless": {
+        "wireless": 0,
+        "physical": 1,
+        "stock": 0
+      }
+    }
+  },
+  "expiry_boundary_sensitivity": {
+    "readings": {
+      "40": {
+        "maximum_before_transfer": 15,
+        "first_peak_step": 33
+      },
+      "41": {
+        "maximum_before_transfer": 18,
+        "first_peak_step": 41
+      }
+    },
+    "scope": "只检验40/41步到期读法对数值的影响；41步读法是否被规则允许留待主会话裁定"
+  },
+  "polling_groups": {
+    "four_group_exhaustive_cases": 925504,
+    "success_events": 6629312,
+    "k_range": [
+      1,
+      6
+    ],
+    "source_first_opportunity_delay": [
+      0,
+      1
+    ],
+    "head_release_before_or_after_source": true,
+    "result": "成功词均保持固定轮转"
+  },
+  "polling_subset_random": {
+    "cases": 3000,
+    "selected_successes": 42252,
+    "includes_same_level_outside_and_higher_priority_successes": true,
+    "scope": "局部接口放宽；外通道服务按对手选择，不声称全厂几何"
+  },
+  "polling_resets": {
+    "cases": 1500,
+    "time_interval_checks": 45000,
+    "maximum_spread_minus_internal_offlines": 1,
+    "one_item_each_8_steps_160_steps": {
+      "keep": [
+        7,
+        7,
+        6
+      ],
+      "clear": [
+        20,
+        0,
+        0
+      ]
+    },
+    "scope": "非运输单位局部接口；首格独占、恰8步前移持续成立"
+  },
+  "mixed_formula": {
+    "parameter_pairs": 360,
+    "indicator_equalities": 38430,
+    "L_range": [
+      1,
+      60
+    ],
+    "k_range": [
+      1,
+      6
+    ],
+    "tail_splice_example": [
+      [
+        [
+          "A",
+          0
+        ],
+        [
+          "B",
+          1
+        ],
+        [
+          "A",
+          2
+        ],
+        [
+          "C",
+          0
+        ]
+      ],
+      [
+        [
+          "B",
+          2
+        ],
+        [
+          "A",
+          0
+        ],
+        [
+          "B",
+          1
+        ],
+        [
+          "A",
+          2
+        ],
+        [
+          "C",
+          0
+        ],
+        [
+          "B",
+          1
+        ],
+        [
+          "A",
+          2
+        ]
+      ],
+      [
+        [
+          "B",
+          1
+        ],
+        [
+          "A",
+          2
+        ],
+        [
+          "C",
+          0
+        ],
+        [
+          "B",
+          1
+        ],
+        [
+          "A",
+          2
+        ],
+        [
+          "B",
+          0
+        ],
+        [
+          "A",
+          1
+        ],
+        [
+          "C",
+          2
+        ]
+      ]
+    ],
+    "correct_counts": {
+      "('A', 0)": 2,
+      "('A', 1)": 1,
+      "('A', 2)": 5,
+      "('B', 0)": 1,
+      "('B', 1)": 5,
+      "('B', 2)": 1,
+      "('C', 0)": 3,
+      "('C', 2)": 1
+    },
+    "incorrect_material_restart_counts": {
+      "('A', 0)": 3,
+      "('A', 1)": 3,
+      "('A', 2)": 3,
+      "('B', 0)": 2,
+      "('B', 1)": 2,
+      "('B', 2)": 3,
+      "('C', 0)": 1,
+      "('C', 1)": 1,
+      "('C', 2)": 1
+    }
+  },
+  "core_geometry": {
+    "single_edge_arrangements": 24,
+    "two_edge_arrangements": 47,
+    "nine_row_span_checks": 1440,
+    "source_m_min_max": [
+      2,
+      3
+    ],
+    "legal_interval_core_touch_cases": 3306,
+    "only_touch_offsets": [
+      0,
+      8
+    ],
+    "minimum_x_for_west_adjacent_width_6": 8,
+    "forced_ore_neighbours": 6,
+    "with_direct_finished_product": 7,
+    "corner_argument": "x0,y0均<=3各自迫使朝带边为存货边，但相邻边不可能都是同一对平行存货边"
+  },
+  "elapsed_seconds": 5.37,
+  "script_sha256": "a157dfe8aa2afa11a76196195de1419f60678979d31be42b2c37355be46792d5",
+  "all_checks_passed": true
+}

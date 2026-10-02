@@ -1,0 +1,322 @@
+{
+  "general": {
+    "cases": 900,
+    "steps": 450000,
+    "clear_events": 12952,
+    "min_phi": 27.0,
+    "violations": 0
+  },
+  "strong": {
+    "cases": 360,
+    "steps": 576000,
+    "min_B_raw_K_raw_B_out_K_out": [
+      49,
+      49,
+      50,
+      47
+    ],
+    "violations": 0
+  },
+  "finite": {
+    "cases": 450,
+    "minimum_output": {
+      "1": 48,
+      "2": 46,
+      "3": 44
+    },
+    "first_possible_empty": 400,
+    "violations": 0
+  },
+  "prepared_176": {
+    "L": 7,
+    "start": 183.0,
+    "events": [
+      {
+        "step": 1,
+        "event": "B",
+        "phi": 182.5
+      },
+      {
+        "step": 2,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 3,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 4,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 5,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 6,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 7,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 8,
+        "event": null,
+        "phi": 182.5
+      },
+      {
+        "step": 9,
+        "event": "B",
+        "phi": 182.0
+      },
+      {
+        "step": 10,
+        "event": "A",
+        "phi": 182.5
+      }
+    ],
+    "note": "准备截面上的176只能作被否证的旧加强；150仍成立"
+  },
+  "low_inventory": {
+    "cases": [
+      {
+        "k": 2,
+        "clear": false,
+        "lengths": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 121,
+          "A": 121,
+          "B": 121,
+          "K": 121
+        }
+      },
+      {
+        "k": 2,
+        "clear": false,
+        "lengths": [
+          7,
+          8,
+          31,
+          4
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 12,
+          "A": 13,
+          "B": 13,
+          "K": 13
+        }
+      },
+      {
+        "k": 2,
+        "clear": false,
+        "lengths": [
+          12,
+          3,
+          17,
+          9
+        ],
+        "min_phi": 1.0,
+        "batches": {
+          "C": 16,
+          "A": 16,
+          "B": 17,
+          "K": 16
+        }
+      },
+      {
+        "k": 2,
+        "clear": true,
+        "lengths": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 123,
+          "A": 123,
+          "B": 123,
+          "K": 123
+        }
+      },
+      {
+        "k": 2,
+        "clear": true,
+        "lengths": [
+          7,
+          8,
+          31,
+          4
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 12,
+          "A": 13,
+          "B": 13,
+          "K": 13
+        }
+      },
+      {
+        "k": 2,
+        "clear": true,
+        "lengths": [
+          12,
+          3,
+          17,
+          9
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 16,
+          "A": 16,
+          "B": 16,
+          "K": 16
+        }
+      },
+      {
+        "k": 3,
+        "clear": false,
+        "lengths": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "min_phi": 1.0,
+        "batches": {
+          "C": 125,
+          "A": 125,
+          "B": 125,
+          "K": 125
+        }
+      },
+      {
+        "k": 3,
+        "clear": false,
+        "lengths": [
+          7,
+          8,
+          31,
+          4
+        ],
+        "min_phi": 1.0,
+        "batches": {
+          "C": 12,
+          "A": 13,
+          "B": 13,
+          "K": 13
+        }
+      },
+      {
+        "k": 3,
+        "clear": false,
+        "lengths": [
+          12,
+          3,
+          17,
+          9
+        ],
+        "min_phi": 1.0,
+        "batches": {
+          "C": 16,
+          "A": 16,
+          "B": 17,
+          "K": 16
+        }
+      },
+      {
+        "k": 3,
+        "clear": true,
+        "lengths": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 123,
+          "A": 123,
+          "B": 123,
+          "K": 123
+        }
+      },
+      {
+        "k": 3,
+        "clear": true,
+        "lengths": [
+          7,
+          8,
+          31,
+          4
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 12,
+          "A": 13,
+          "B": 13,
+          "K": 13
+        }
+      },
+      {
+        "k": 3,
+        "clear": true,
+        "lengths": [
+          12,
+          3,
+          17,
+          9
+        ],
+        "min_phi": 0.5,
+        "batches": {
+          "C": 16,
+          "A": 16,
+          "B": 16,
+          "K": 16
+        }
+      }
+    ],
+    "steps": 48000,
+    "violations": 0
+  },
+  "origin_probe": {
+    "initial": {
+      "P": {
+        "item": "源矿",
+        "previous": "Q",
+        "age": 8
+      },
+      "Q": null,
+      "X_raw": 0,
+      "X_cache": null
+    },
+    "steps": 128,
+    "forward_moves": 0,
+    "final": {
+      "P": {
+        "item": "源矿",
+        "previous": "Q",
+        "age": 8
+      },
+      "Q": null,
+      "X_raw": 0,
+      "X_cache": null
+    },
+    "status": "literal-topology countermodel; applicability depends on whether dedicated-route wording constrains initial provenance"
+  }
+}

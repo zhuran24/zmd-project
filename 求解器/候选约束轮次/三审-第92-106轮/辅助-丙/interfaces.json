@@ -1,0 +1,162 @@
+{
+  "clear_history_witness": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      40,
+      2
+    ],
+    [
+      41,
+      1
+    ],
+    [
+      42,
+      0
+    ]
+  ],
+  "clear_window_counts": [
+    0,
+    0,
+    2
+  ],
+  "merge_priority_witness": [
+    [
+      0,
+      0
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      8,
+      0
+    ],
+    [
+      16,
+      0
+    ],
+    [
+      17,
+      1
+    ]
+  ],
+  "dedicated_cases": 100,
+  "dedicated_steps": 500000,
+  "dedicated_violations": 0,
+  "single_mixed_initial_output_probe": {
+    "input_slots": [
+      null,
+      null
+    ],
+    "output_type": "A",
+    "next_item": "A",
+    "prefix_rA": 0,
+    "prefix_condition": true,
+    "rule13_accepts": false,
+    "status": "conditional countermodel; requires a permitted initial misplaced A in output slot"
+  },
+  "dedicated_initial_origin_geometry": {
+    "bodies": {
+      "warehouse_port": [
+        0,
+        10,
+        0,
+        12
+      ],
+      "P": [
+        1,
+        11,
+        1,
+        11
+      ],
+      "Q": [
+        2,
+        11,
+        2,
+        11
+      ],
+      "X": [
+        1,
+        12,
+        3,
+        14
+      ],
+      "core": [
+        1,
+        1,
+        9,
+        9
+      ],
+      "power": [
+        4,
+        11,
+        5,
+        12
+      ]
+    },
+    "final_path": [
+      "warehouse_port",
+      "P",
+      "Q",
+      "X"
+    ],
+    "core_output_port": [
+      2,
+      9
+    ],
+    "temporary_belt": [
+      2,
+      10
+    ],
+    "preparation_path": [
+      "core",
+      "temporary_belt",
+      "Q",
+      "P"
+    ],
+    "preparation_Q_ports": {
+      "input": "S",
+      "output": "W"
+    },
+    "preparation_P_ports": {
+      "input": "E",
+      "output": "W"
+    },
+    "final_P_ports": {
+      "input": "W",
+      "output": "E"
+    },
+    "final_Q_ports": {
+      "input": "W",
+      "output": "N"
+    },
+    "X_ports": {
+      "input": "S",
+      "output": "N"
+    },
+    "rotation_checks": true,
+    "stable_state": {
+      "P_item": "源矿",
+      "P_previous": "Q",
+      "P_mature": true,
+      "Q_empty": true,
+      "X_raw": 0,
+      "X_output": "源石粉末或空",
+      "X_cache_empty": true
+    },
+    "actual_rule24_move_possible": false,
+    "conditional_status": "若专用进路只限定最终拓扑，则为阻塞循环；若包括全部初货来源，此初态不符合前件"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "items": 8,
+  "formal_versions": 11,
+  "pass_recommendations": 6,
+  "doubts": 2,
+  "unfinished": 0,
+  "checked_relative_links": 37,
+  "source_files": 26,
+  "report_sha256": "23096f671e8346590218c6bad462acddf5241a603a16b95e5611868959badc3e",
+  "reader_review": "全文重读完成；初态疑点、版本差别、数值口径和证明范围分别标明",
+  "script_check": "AST通过；全部check脚本实际运行完成",
+  "limits": "仅局部模型和所列静态放宽；不替主会话作三审结论，不认证全厂"
+}

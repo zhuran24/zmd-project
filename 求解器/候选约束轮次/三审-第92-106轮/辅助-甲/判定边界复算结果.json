@@ -1,0 +1,666 @@
+{
+  "all_checks_passed": true,
+  "trigger_table_cases": 72,
+  "triggers_but_receiver_full": 1,
+  "offline_cases": [
+    {
+      "clear_polling": false,
+      "clear_cooldown": false,
+      "sent": [
+        [
+          "B.horizontal",
+          "E"
+        ],
+        [
+          "B.vertical",
+          "N"
+        ]
+      ],
+      "judgements": 4,
+      "box_attempts": 0,
+      "previous_unit_record_after_offline": "B_original_location",
+      "polling": "previous_success"
+    },
+    {
+      "clear_polling": false,
+      "clear_cooldown": true,
+      "sent": [
+        [
+          "B.horizontal",
+          "E"
+        ],
+        [
+          "B.vertical",
+          "N"
+        ]
+      ],
+      "judgements": 4,
+      "box_attempts": 1,
+      "previous_unit_record_after_offline": "B_original_location",
+      "polling": "previous_success"
+    },
+    {
+      "clear_polling": true,
+      "clear_cooldown": false,
+      "sent": [
+        [
+          "B.horizontal",
+          "E"
+        ],
+        [
+          "B.vertical",
+          "N"
+        ]
+      ],
+      "judgements": 4,
+      "box_attempts": 0,
+      "previous_unit_record_after_offline": "B_original_location",
+      "polling": null
+    },
+    {
+      "clear_polling": true,
+      "clear_cooldown": true,
+      "sent": [
+        [
+          "B.horizontal",
+          "E"
+        ],
+        [
+          "B.vertical",
+          "N"
+        ]
+      ],
+      "judgements": 4,
+      "box_attempts": 1,
+      "previous_unit_record_after_offline": "B_original_location",
+      "polling": null
+    }
+  ],
+  "axis_receiving_groups": {
+    "B.horizontal": [
+      "W"
+    ],
+    "B.vertical": [
+      "S"
+    ]
+  },
+  "trigger_table": [
+    {
+      "present": false,
+      "age": 0,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 0,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 0,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 0,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 1,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 1,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 1,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 1,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 2,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 2,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 2,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 2,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 3,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 3,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 3,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 3,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 4,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 4,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 4,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 4,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 5,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 5,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 5,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 5,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 6,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 6,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 6,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 6,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 7,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 7,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 7,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 7,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 8,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 8,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 8,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": false,
+      "age": 8,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 0,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 0,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 0,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 0,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 1,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 1,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 1,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 1,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 2,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 2,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 2,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 2,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 3,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 3,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 3,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 3,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 4,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 4,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 4,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 4,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 5,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 5,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 5,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 5,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 6,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 6,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 6,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 6,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 7,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 7,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 7,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 7,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 8,
+      "came_from_receiver": false,
+      "receiver_full": false,
+      "triggers": true,
+      "moves": true
+    },
+    {
+      "present": true,
+      "age": 8,
+      "came_from_receiver": false,
+      "receiver_full": true,
+      "triggers": true,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 8,
+      "came_from_receiver": true,
+      "receiver_full": false,
+      "triggers": false,
+      "moves": false
+    },
+    {
+      "present": true,
+      "age": 8,
+      "came_from_receiver": true,
+      "receiver_full": true,
+      "triggers": false,
+      "moves": false
+    }
+  ],
+  "scope": "本程序核对已明确的规则边界，不定义多出口联判的未定部分，不证明任何整厂可达性。"
+}
