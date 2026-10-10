@@ -19,3 +19,6 @@ __pycache__/
 /求解器/结构检测/*/raw/*/*.npz
 # 超过 GitHub 单文件 100 MB 上限，入库的是同目录同名 .json.gz，gunzip 得到逐字节相同的原文件
 /求解器/结构检测/2026-09-25/models/flow_all/variables.json
+
+# 项目技能（rule-drafting 等）不进公开仓；post-commit 钩子把它镜像到 ~/zmd-project-cc/project-skills/，只进私有仓（2026-10-10）
+/.claude/skills/
