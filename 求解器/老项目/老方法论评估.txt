@@ -1,6 +1,6 @@
 老方法论评估（主会话读原文写；重点是能吸收的）
 
-读的原文：29 号卡全文（求解面方法论，70 行，/mnt/wd_external/zmd-old-extract/docs/zmd-all/01-项目仓库与工作树/C-zmd-projects/zmd-pj/docs/项目说明/29_solving_methodology_skill.md）；zmd-method 全文（194 行，同目录上两级 .agents/skills/zmd-method/SKILL.md）；你的原话汇编 METHOD_ORIGIN.txt（…/C-zmd-projects/zmd-research/research_lab/）；7 月 16—17 日会话 5c4e70f0 和 8 月 3—6 日会话 0e0796c6 里你的全部消息（在 /mnt/wd_external/zmd-old-extract/ 下的 raw 目录）。每条写：原文说什么；能不能吸收；在现在的题里怎么用。和今天 LBBD 讨论的对照见《临时·对LBBD的思考》。
+读的原文：29 号卡全文（求解面方法论，70 行，/home/zhuran24/zmd-old-extract/docs/zmd-all/01-项目仓库与工作树/C-zmd-projects/zmd-pj/docs/项目说明/29_solving_methodology_skill.md）；zmd-method 全文（194 行，同目录上两级 .agents/skills/zmd-method/SKILL.md）；你的原话汇编 METHOD_ORIGIN.txt（…/C-zmd-projects/zmd-research/research_lab/）；7 月 16—17 日会话 5c4e70f0 和 8 月 3—6 日会话 0e0796c6 里你的全部消息（在 /home/zhuran24/zmd-old-extract/ 下的 raw 目录）。每条写：原文说什么；能不能吸收；在现在的题里怎么用。和今天 LBBD 讨论的对照见《临时·对LBBD的思考》。
 
 一、问题观（29 号卡第一节）
 
