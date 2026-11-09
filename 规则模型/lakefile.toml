@@ -1,0 +1,6 @@
+name = "endfield"
+version = "0.1.0"
+defaultTargets = ["Endfield"]
+
+[[lean_lib]]
+name = "Endfield"
