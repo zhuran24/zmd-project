@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """只读核对 + 生成表：`Endfield/作用.lean` 里「每样东西 × 每种事」的每一格有没有着落。
 
-状态的字段从 `Endfield/框架.lean` 的 `structure «状态»` 读；每种操作从 `def «作用»` 的各个分支读。
+状态的字段从 `Endfield/框架.lean` 的 `structure «状态»` 读；每种操作从 `def «作用»` 的各个分支读，
+走一步最后的计时从 `Endfield/框架.lean` 的 `def «计时»` 读。
 每个分支里，每个字段那一行（`      «字段» := ……    -- 着落`）行尾的注释是这一格的着落，开头必须是
 据、实测、没测、未定、待写、约定、无关 七种之一。少一格、多一格、没写着落、写法不在七种里，都报错，退出码 1。
 
@@ -30,19 +31,32 @@ def state_fields():
     return re.findall(r"^  «([^»]+)» :", body, re.M)
 
 
+TICK_FIELD_RE = re.compile(r"^  «([^»]+)» :=(.*)$")
+
+
 def cells():
+    ops, table, errors = [], {}, []
+    # 框架.lean 的 `计时`：走一步的最后一件事，写成和 `作用` 的一个分支一样的格子
+    text = open(FRAME, encoding="utf-8").read()
+    body = text[text.index("def «计时»"):]
+    body = body[:body.index("/-- 判定顺序")]
+    lines = [("计时", TICK_FIELD_RE, l) for l in body.split("\n")[1:]]
+    ops.append("计时")
+    table["计时"] = {}
     text = open(ACT, encoding="utf-8").read()
     body = text[text.index("def «作用»"):]
-    ops, table, errors = [], {}, []
+    lines += [(None, FIELD_RE, l) for l in body.split("\n")]
     op = None
-    for no, line in enumerate(body.split("\n")):
-        m = CASE_RE.match(line)
+    for fixed, field_re, line in lines:
+        if fixed:
+            op = fixed
+        m = None if fixed else CASE_RE.match(line)
         if m:
             op = m.group(2) or m.group(1)
             ops.append(op)
             table[op] = {}
             continue
-        m = FIELD_RE.match(line)
+        m = field_re.match(line)
         if m and op:
             field, rest = m.group(1), m.group(2)
             if "--" not in rest:
@@ -71,7 +85,7 @@ def render(fields, ops, table):
     out.append("- 没测：没有哪一行写，照最自然的做法写了；未定：有不止一种说得通的做法，当参数带着；")
     out.append("- 待写：规则有，模型里还没写到；约定：只是模型里的记法；无关：这件事碰不到这样东西。")
     out.append("")
-    out.append("「走一步」那一列不在这张表里展开：一步里的五条判定各改哪些东西，等判定写出来以后另列。")
+    out.append("「走一步」是五条判定加上最后的计时。五条判定还没写，等写出来以后各占一列；现在只有「计时」一列。")
     out.append("")
     cols = [o for o in ops if o != "走一步"]
     out.append("| | " + " | ".join(cols) + " |")
