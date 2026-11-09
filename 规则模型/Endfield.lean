@@ -15,3 +15,5 @@ import Endfield.«回放».«工具»
 import Endfield.«例子».«走步»
 import Endfield.«回放».«分流器出口变动»
 import Endfield.«回放».«出货先后»
+import Endfield.«回放».«缓存格»
+import Endfield.«回放».«一步的尺子»
