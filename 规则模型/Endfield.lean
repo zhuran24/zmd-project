@@ -6,6 +6,7 @@ import Endfield.«单位»
 import Endfield.«通道与移动»
 import Endfield.«拓扑与级别»
 import Endfield.«框架»
+import Endfield.«作用»
 import Endfield.«例子».«拓扑»
 import Endfield.«回放».«分流器出口变动»
 import Endfield.«回放».«出货先后»
