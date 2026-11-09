@@ -2,13 +2,14 @@
 """只读：核对规则模型的每条声明和规则文件的对应关系。
 
 每条 def / abbrev / structure / inductive / class / theorem 前面都要有 /-- … -/ 文档注释，
-注释第一行是下面六种之一：
+注释第一行是下面七种之一：
   名词：……       规则文件里「名词：」那一行的原文（去掉缩进后逐字相同）。这条声明就是这个名词的定义。
   据：甲、乙      由规则文件的这几行推出来的辅助定义或定理；也可以写「规则里没有：」登记过的名字。
   规则里没有：名字  规则文件没写、写代码时不得不定下来的东西。要在 边界清单.md 里有一条。
   工具：……       和规则无关的表、数的引理。
   回放：……       把实测、现象写成编译时核对的测试用的脚手架。
   例子：……       照规则算一遍的小布局，不是实测。
+  框架：……       模型的骨架（状态、操作这些），不对应规则文件的某一行。
 
 输出：规则文件里已有定义的名词、还没有定义的名词数、「规则里没有」的名字、不合上面写法的声明。
 有不合写法的声明时退出码为 1。规则文件某一行改了字，引它的那条声明会在这里报出来。
@@ -25,7 +26,7 @@ SRC = os.path.join(HERE, "Endfield")
 
 NAME_RE = re.compile(r"^([^：:\s，。、；（）()「」]{1,24})[：:]")
 DOC_DECL_RE = re.compile(
-    r"/--(.*?)-/\s*(?:@\[[^\]]*\]\s*)*(?:(?:private|protected|noncomputable)\s+)*"
+    r"/--((?:(?!-/).)*)-/\s*(?:@\[[^\]]*\]\s*)*(?:(?:private|protected|noncomputable)\s+)*"
     r"(theorem|def|abbrev|structure|inductive|class)\s+([^\s:({\[]+)", re.S)
 DECL_RE = re.compile(
     r"^[ \t]*(?:(?:private|protected|noncomputable)\s+)*"
@@ -76,7 +77,7 @@ def main():
                     cites.append((where, re.split("[、，]", first[2:].strip())))
                 elif first.startswith("规则里没有："):
                     hidden.append((first[len("规则里没有："):].strip(), where))
-                elif first.startswith(("工具：", "回放：", "例子：")):
+                elif first.startswith(("工具：", "回放：", "例子：", "框架：")):
                     pass
                 else:
                     nm = NAME_RE.match(first)
