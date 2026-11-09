@@ -23,15 +23,16 @@ inductive «货位» where
   | «仓库»
 deriving DecidableEq, Repr
 
-/-- 工具：一格的货里添一件 x。 -/
-def «添一件» (l : List «一堆») (x : «物品») : List «一堆» :=
-  if l.any (·.«物» == x) then
-    l.map fun p => if p.«物» == x then { p with «件数» := p.«件数» + 1 } else p
-  else l ++ [⟨x, 1⟩]
+/-- 工具：一格的货里添 n 件 x。 -/
+def «添几件» (l : List «一堆») (x : «物品») (n : Nat) : List «一堆» :=
+  if n == 0 then l
+  else if l.any (·.«物» == x) then
+    l.map fun p => if p.«物» == x then { p with «件数» := p.«件数» + n } else p
+  else l ++ [⟨x, n⟩]
 
-/-- 工具：一格的货里拿走一件 x；拿空了的那一堆不留。 -/
-def «拿一件» (l : List «一堆») (x : «物品») : List «一堆» :=
-  (l.map fun p => if p.«物» == x then { p with «件数» := p.«件数» - 1 } else p).filter (·.«件数» > 0)
+/-- 工具：一格的货里拿走 n 件 x；拿空了的那一堆不留。 -/
+def «拿几件» (l : List «一堆») (x : «物品») (n : Nat) : List «一堆» :=
+  (l.map fun p => if p.«物» == x then { p with «件数» := p.«件数» - n } else p).filter (·.«件数» > 0)
 
 namespace «状态»
 
@@ -48,10 +49,10 @@ def «件数» (s : «状态») (g : «格位») (x : «物品») : Nat :=
 - 协议储存箱：编号最小的非空物品格里的物品；
 - 制造单位：取货物品格里的物品；
 - 协议核心、仓库取货口：这条通道接的取货端口指向的那种物品，仓库里有才算。
-`port` 给出一条通道接在第几个取货端口上（现在取自 `待写.口`）。 -/
-def «可移动物品» (port : «通道» → Nat) (s : «状态») (c : «通道») : Option («物品» × «货位») :=
+`L` 是 s 的布局，由用它的地方算好传进来（下同）；`port` 给出一条通道接在第几个取货端口上（现在取自 `待写.口`）。 -/
+def «可移动物品» (L : Endfield.«布局») (port : «通道» → Nat) (s : «状态») (c : «通道») : Option («物品» × «货位») :=
   let u := c.«起»
-  match s.«布局».«种类» u with
+  match L.«种类» u with
   | some .«传送带» | some .«分流器» | some .«汇流器» | some .«物品准入口» | some .«桥接器格» =>
     match s.«货» ⟨u, .«格» 0⟩ with
     | p :: _ =>
@@ -80,9 +81,9 @@ def «可移动物品» (port : «通道» → Nat) (s : «状态») (c : «通�
 - 制造单位：已经放着这种物品的那个存货物品格（不到 50 件才收；同种物品只能占一格，所以满了不会另占一格）；
   都没放着这种物品时，放进编号最小的空存货物品格（没测：规则没说哪个空格，两个格没有分别）；
 - 协议核心：仓库里这种物品不到 80000 件才收；仓库取货口没有存货端口。 -/
-def «放进哪» (s : «状态») (c : «通道») (x : «物品») : Option «货位» :=
+def «放进哪» (L : Endfield.«布局») (s : «状态») (c : «通道») (x : «物品») : Option «货位» :=
   let v := c.«止»
-  match s.«布局».«种类» v with
+  match L.«种类» v with
   | some .«传送带» | some .«分流器» | some .«汇流器» | some .«桥接器格» =>
     if (s.«货» ⟨v, .«格» 0⟩).isEmpty then some (.«格» ⟨v, .«格» 0⟩) else none
   | some .«物品准入口» =>
@@ -118,10 +119,11 @@ def «放进哪» (s : «状态») (c : «通道») (x : «物品») : Option «
 
 通道 c 这时能不能移一件：起点里有可移动物品，那一头收得下，而且不是移回它刚离开的上一物品格。
 能移时给出那件物品、它现在在哪、要放进哪。汇流器的输入判定不在这里管。 -/
-def «能移» (port : «通道» → Nat) (s : «状态») (c : «通道») : Option («物品» × «货位» × «货位») :=
-  match s.«可移动物品» port c with
+def «能移» (L : Endfield.«布局») (port : «通道» → Nat) (s : «状态») (c : «通道») :
+    Option («物品» × «货位» × «货位») :=
+  match s.«可移动物品» L port c with
   | some (x, src) =>
-    match s.«放进哪» c x with
+    match s.«放进哪» L c x with
     | some dst =>
       let back :=
         match src, dst with
@@ -134,32 +136,32 @@ def «能移» (port : «通道» → Nat) (s : «状态») (c : «通道») : O
 /-- 框架：一件物品 x 从 src 经通道 c 移到 dst 以后的状态（一次移动）。
 
 每个字段行尾是这一格的着落，写法同 `作用.lean`。前提（`能移` 给出的就是这三样）由用它的地方保证。 -/
-def «移一件» (s : «状态») (c : «通道») (x : «物品») (src dst : «货位») : «状态» where
+def «移一件» (L : Endfield.«布局») (s : «状态») (c : «通道») (x : «物品») (src dst : «货位») : «状态» where
   «历史» := s.«历史»    -- 无关
   «货» := fun g =>    -- 据：移动
-    let l := if src = .«格» g then «拿一件» (s.«货» g) x else s.«货» g
-    if dst = .«格» g then «添一件» l x else l
+    let l := if src = .«格» g then «拿几件» (s.«货» g) x 1 else s.«货» g
+    if dst = .«格» g then «添几件» l x 1 else l
   «已停» := fun g =>    -- 据：滞留（进来的那一步从零算起）
     if src = .«格» g || dst = .«格» g then 0 else s.«已停» g
   «来处» := fun g =>    -- 据：移动（不会移回刚离开的上一物品格）
     if dst = .«格» g then
       match src with
-      | .«格» h => if s.«布局».«是运输单位» g.«单位» then some h else none
+      | .«格» h => if L.«是运输单位» g.«单位» then some h else none
       | .«仓库» => none
     else if src = .«格» g then none
     else s.«来处» g
   «分流器上次» :=    -- 据：元件轮询（上一次移动物品的通道）
-    if s.«布局».«种类» c.«起» == some .«分流器» then «换» s.«分流器上次» c.«起» (some c)
+    if L.«种类» c.«起» == some .«分流器» then «换» s.«分流器上次» c.«起» (some c)
     else s.«分流器上次»
   «进货上次» :=    -- 据：元件轮询、输入判定（上一次移动物品的通道）
-    if s.«布局».«算进货» c then «换» s.«进货上次» c.«止» (some c) else s.«进货上次»
+    if L.«算进货» c then «换» s.«进货上次» c.«止» (some c) else s.«进货上次»
   «出货已移动» :=    -- 据：非运输单位轮询（已移动过物品的通道按最近一次移动的先后）
-    if s.«布局».«算出货» c then
+    if L.«算出货» c then
       «换» s.«出货已移动» c.«起» ((s.«出货已移动» c.«起»).filter (· != c) ++ [c])
     else s.«出货已移动»
   «制造中» := s.«制造中»    -- 无关
   «准入口» :=    -- 没测：没设上限时也照样计数；那 5 tick 是 40 步
-    if s.«布局».«种类» c.«止» == some .«物品准入口» then
+    if L.«种类» c.«止» == some .«物品准入口» then
       let g := s.«准入口» c.«止»
       «换» s.«准入口» c.«止»
         { g with

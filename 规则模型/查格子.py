@@ -2,7 +2,7 @@
 """只读核对 + 生成表：`Endfield/作用.lean` 里「每样东西 × 每种事」的每一格有没有着落。
 
 状态的字段从 `Endfield/框架.lean` 的 `structure «状态»` 读；每种操作从 `def «作用»` 的各个分支读，
-走一步最后的计时从 `Endfield/框架.lean` 的 `def «计时»` 读，一次移动从 `Endfield/物品格.lean` 的 `def «移一件»` 读。
+走一步里的六种事（移一件、结束一次制造、进取货格、开始一次制造、传输一次、计时）从各自那条 `def …… where` 读。
 每个分支里，每个字段那一行（`      «字段» := ……    -- 着落`）行尾的注释是这一格的着落，开头必须是
 据、实测、没测、未定、待写、约定、无关 七种之一。少一格、多一格、没写着落、写法不在七种里，都报错，退出码 1。
 
@@ -18,6 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FRAME = os.path.join(HERE, "Endfield", "框架.lean")
 ACT = os.path.join(HERE, "Endfield", "作用.lean")
 ITEMS = os.path.join(HERE, "Endfield", "物品格.lean")
+JUDGE = os.path.join(HERE, "Endfield", "判定.lean")
 OUT = os.path.join(HERE, "格子表.md")
 
 KINDS = ["据", "实测", "没测", "未定", "待写", "约定", "无关"]
@@ -50,8 +51,14 @@ def where_def(path, start):
 def cells():
     ops, table, errors = [], {}, []
     lines = []
-    # 写成 `where` 的两条：走一步最后的计时；一次移动（移动判定里每移一件就是它）
-    for name, path, start in (("计时", FRAME, "def «计时»"), ("移一件", ITEMS, "def «移一件»")):
+    # 写成 `where` 的六条：走一步里状态的变化都由它们拼成
+    for name, path, start in (
+            ("移一件", ITEMS, "def «移一件»"),
+            ("结束一次制造", JUDGE, "def «结束一次制造»"),
+            ("进取货格", JUDGE, "def «进取货格»"),
+            ("开始一次制造", JUDGE, "def «开始一次制造»"),
+            ("传输一次", JUDGE, "def «传输一次»"),
+            ("计时", FRAME, "def «计时»")):
         ops.append(name)
         table[name] = {}
         lines += [(name, TICK_FIELD_RE, l) for l in where_def(path, start)]
@@ -97,8 +104,8 @@ def render(fields, ops, table):
     out.append("- 没测：没有哪一行写，照最自然的做法写了；未定：有不止一种说得通的做法，当参数带着；")
     out.append("- 待写：规则有，模型里还没写到；约定：只是模型里的记法；无关：这件事碰不到这样东西。")
     out.append("")
-    out.append("「走一步」是五条判定加上最后的计时。判定里每移动一件物品就是一次「移一件」；")
-    out.append("开始制造、结束制造、传输各自怎样改状态还没写，写出来以后各占一列。")
+    out.append("前六列是走一步里会发生的六种事：一步里状态的变化都由它们拼成，哪件事在什么时候轮到由判定顺序、级别、轮询定（`Endfield/判定.lean`）。")
+    out.append("后面各列是两步之间的操作。")
     out.append("")
     cols = [o for o in ops if o != "走一步"]
     out.append("| | " + " | ".join(cols) + " |")
@@ -147,7 +154,7 @@ def main():
             print("  " + e)
         sys.exit(1)
     text = render(fields, ops, table)
-    n = (len(ops) - 1) * len(fields)
+    n = (len(ops) - 1) * len(fields)   # 「走一步」那个分支不算一列
     if "--check" in sys.argv[1:]:
         old = open(OUT, encoding="utf-8").read() if os.path.exists(OUT) else ""
         if old != text:

@@ -1,4 +1,4 @@
-import Endfield.«物品格»
+import Endfield.«判定»
 
 /-!
 # 作用：每种操作发生以后，状态的每一样怎样变
