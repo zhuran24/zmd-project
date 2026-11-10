@@ -49,7 +49,7 @@ theorem «整理不改历史» (T : «判定表») (port : «通道» → Nat) (
     · exact «前移一遍不改历史» T port s
 
 /-- 框架：一组通道的移动判定不改历史。 -/
-theorem «判一组不改历史» (T : «判定表») (port : «通道» → Nat) (sel : «单位号» → Option «通道»)
+theorem «判一组不改历史» (T : «判定表») (port : «通道» → Nat) (sel : «通道» → Bool)
     (order : List «通道») (s : «状态») :
     (s.«判一组» T port sel order).«历史» = s.«历史» := by
   unfold «判一组»
@@ -63,7 +63,7 @@ theorem «判一组不改历史» (T : «判定表») (port : «通道» → Nat
 
 /-- 框架：元件的移动判定不改历史。 -/
 theorem «元件的移动判定不改历史» (T : «判定表») (port : «通道» → Nat)
-    (sel : «单位号» → Option «通道») (s : «状态») :
+    (sel : «通道» → Bool) (s : «状态») :
     (s.«元件的移动判定» T port sel).«历史» = s.«历史» := by
   unfold «元件的移动判定»
   apply «逐个做不改历史»
@@ -72,7 +72,7 @@ theorem «元件的移动判定不改历史» (T : «判定表») (port : «通�
 
 /-- 框架：选取一个非运输单位不改历史。 -/
 theorem «选取不改历史» (T : «判定表») (un : «未定») (todo : «待写») (port : «通道» → Nat)
-    (sel : «单位号» → Option «通道») (s : «状态») (p : «单位号» × List («组» × List «通道»)) :
+    (sel : «通道» → Bool) (s : «状态») (p : «单位号» × List («组» × List «通道»)) :
     (s.«选取» T un todo port sel p).«历史» = s.«历史» := by
   have ht : ∀ s : «状态»,
       (if s.«该传输» T.«现布局» un todo p.1 then s.«传输一次» p.1 else s).«历史» = s.«历史» := by
@@ -88,7 +88,7 @@ theorem «选取不改历史» (T : «判定表») (un : «未定») (todo : «�
 
 /-- 框架：非运输单位的移动判定不改历史。 -/
 theorem «非运输单位的移动判定不改历史» (T : «判定表») (un : «未定») (todo : «待写»)
-    (port : «通道» → Nat) (sel : «单位号» → Option «通道») (s : «状态») :
+    (port : «通道» → Nat) (sel : «通道» → Bool) (s : «状态») :
     (s.«非运输单位的移动判定» T un todo port sel).«历史» = s.«历史» := by
   unfold «非运输单位的移动判定»
   apply «逐个做不改历史»
