@@ -20,3 +20,4 @@ import Endfield.«回放».«缓存格»
 import Endfield.«回放».«一步的尺子»
 import Endfield.«回放».«现象»
 import Endfield.«回放».«分流器出口变动走步»
+import Endfield.«回放».«终点的时刻»
