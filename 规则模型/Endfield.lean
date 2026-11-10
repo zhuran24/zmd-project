@@ -8,6 +8,7 @@ import Endfield.«拓扑与级别»
 import Endfield.«框架»
 import Endfield.«物品格»
 import Endfield.«判定»
+import Endfield.«走步不改历史»
 import Endfield.«作用»
 import Endfield.«例子».«拓扑»
 import Endfield.«例子».«移动»
