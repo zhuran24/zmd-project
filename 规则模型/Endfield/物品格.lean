@@ -160,16 +160,19 @@ def «移一件» (L : Endfield.«布局») (s : «状态») (c : «通道») (x
       «换» s.«出货已移动» c.«起» ((s.«出货已移动» c.«起»).filter (· != c) ++ [c])
     else s.«出货已移动»
   «制造中» := s.«制造中»    -- 无关
-  «准入口» :=    -- 没测：没设上限时也照样计数；那 5 tick 是 40 步
+  «准入口» :=    -- 实测：没设累计上限时不计数（操控工具说明，2026-10-08）；每 5 tick 那项照样处理、那 5 tick 是 40 步，是没测
     if L.«种类» c.«止» == some .«物品准入口» then
       let g := s.«准入口» c.«止»
       «换» s.«准入口» c.«止»
         { g with
-          «累计已收» := g.«累计已收» + 1
-          «本段已收» := g.«本段已收» + 1
-          «本段还剩» := match g.«本段还剩» with
-            | some n => some n
-            | none => some (5 * «tick») }
+          «累计已收» := if g.«累计上限».isSome then g.«累计已收» + 1 else g.«累计已收»
+          «本段已收» := if g.«每5tick上限».isSome then g.«本段已收» + 1 else g.«本段已收»
+          «本段还剩» :=
+            if g.«每5tick上限».isSome then
+              match g.«本段还剩» with
+              | some n => some n
+              | none => some (5 * «tick»)
+            else g.«本段还剩» }
     else s.«准入口»
   «储存箱» := s.«储存箱»    -- 无关
   «开关» := s.«开关»    -- 无关

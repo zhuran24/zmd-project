@@ -103,14 +103,16 @@ def «输入判定» (T : «判定表») (port : «通道» → Nat) (s : «状�
 
 汇流器 j 这一步收不收从通道 c 来的货（c 不是与分流器形成的）：有通道出现输入判定时，只收那一条；
 那一组通道的起点里都没有可移动物品时怎么办，取自 `未定.输入判定都没货时`。
-`s1` 是做输入判定那一刻的状态（结束制造判定之后、移动判定之前）。 -/
-def «汇流器收» (T : «判定表») (port : «通道» → Nat) (un : «未定») (s1 : «状态») (c : «通道») : Bool :=
+`s1` 是做输入判定那一刻的状态（结束制造判定之后、移动判定之前）；
+`s3` 是元件的移动判定做完以后的状态，只有 `再判一次` 用到（元件的移动判定期间传 `s1` 进来）。 -/
+def «汇流器收» (T : «判定表») (port : «通道» → Nat) (un : «未定») (s1 s3 : «状态») (c : «通道») : Bool :=
   match s1.«输入判定» T port c.«止» with
   | some c' => c' == c
   | none =>
     match un.«输入判定都没货时» with
     | .«不收» => false
     | .«都收» => true
+    | .«再判一次» => s3.«输入判定» T port c.«止» == some c
     | .«轮到的那条» =>
       match T.«汇流器».find? (·.1 == c.«止») with
       | some p => («元件先后» p.2 (s1.«进货上次» c.«止»)).head? == some c
@@ -355,9 +357,8 @@ def «一步于» (T : «判定表») (un : «未定») (todo : «待写») (s :
   let port := todo.«口» s
   let s0 := «状态».«整理» T port T.«现布局».«单位表».length s
   let s1 := s0.«结束制造判定» T todo
-  let sel := fun c => s1.«汇流器收» T port un c
-  let s3 := s1.«元件的移动判定» T port sel
-  let s4 := s3.«非运输单位的移动判定» T un todo port sel
+  let s3 := s1.«元件的移动判定» T port (fun c => s1.«汇流器收» T port un s1 c)
+  let s4 := s3.«非运输单位的移动判定» T un todo port (fun c => s1.«汇流器收» T port un s3 c)
   let s5 := s4.«开始制造判定» T todo
   «计时» un todo s5
 
