@@ -23,3 +23,12 @@ import Endfield.«回放».«分流器出口变动走步»
 import Endfield.«回放».«终点的时刻»
 import Endfield.«回放».«两个中转箱»
 import Endfield.«回放».«存货箱和中转箱»
+import Endfield.«回放».«绕回卡两件»
+import Endfield.«回放».«桥接器»
+import Endfield.«回放».«原料格堆满»
+import Endfield.«回放».«下游放置翻转»
+import Endfield.«回放».«配件机和带子»
+import Endfield.«回放».«换配方»
+import Endfield.«回放».«同时接通的先后»
+import Endfield.«回放».«分流器最后放»
+import Endfield.«回放».«出货先后走步»
