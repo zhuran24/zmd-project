@@ -91,9 +91,14 @@ private theorem order_some («h终点» : «命题».«末端元件有终点»)
   · rfl
 
 private theorem walk (L : «布局») (hw : L.«走得通» = true) (u : Nat)
-    (hu : L.«是运输单位» u = true) :
+    (hu : L.«是运输单位» u = true)
+    (hc : L.«进» u ≠ [] ∨ L.«出» u ≠ []) :
     ∃ e, L.«所在元件» (L.«单位表».length + 1) u = some e ∧
       L.«运输带从» (L.«单位表».length + 1) e ≠ [] := by
+  have hconnected : ((L.«进» u).isEmpty && (L.«出» u).isEmpty) = false := by
+    rcases hc with hi | ho
+    · simp [hi]
+    · simp [ho]
   unfold «布局».«是运输单位» at hu
   cases hk : L.«种类» u with
   | none => simp [hk] at hu
@@ -104,7 +109,7 @@ private theorem walk (L : «布局») (hw : L.«走得通» = true) (u : Nat)
     have hh := List.all_eq_true.mp hw p hm
     simp only [«布局».«走得通»] at hw
     simp only [hk] at hu
-    simp only [hpk, hu, Bool.not_true, Bool.false_or, he] at hh
+    simp only [hpk, hu, Bool.not_true, Bool.false_or, he, hconnected] at hh
     split at hh
     · exact ⟨_, by assumption, by simpa using hh⟩
     · contradiction
@@ -212,14 +217,24 @@ theorem «每个组都有级别» («h终点» : «命题».«末端元件有终
     intro p hp
     by_cases hge : g.«是元件的» = true
     · obtain ⟨hu, he⟩ := group_source L hport g p hp hge
-      obtain ⟨e, he', hpath⟩ := walk L hw _ hu
+      have hc : L.«出» p.1.«起» ≠ [] := by
+        have hm : p ∈ L.«出» p.1.«起» := by
+          simp [«布局».«出», (List.mem_filter.mp hp).1]
+        intro he
+        simp [he] at hm
+      obtain ⟨e, he', hpath⟩ := walk L hw _ hu (Or.inr hc)
       have heq : e = p.1.«起» := Option.some.inj (he'.symm.trans he)
       subst e
       exact (show (f p).isSome = true from by
         simpa [f, hge] using order_some «h终点» H H.length _ hport hpath)
     · have hge' : g.«是元件的» = false := Bool.eq_false_iff.mpr hge
       have hu := group_target L (H.«合规则整齐» hreg H.length) g p hp hge'
-      obtain ⟨e, he, hpath⟩ := walk L hw _ hu
+      have hc : L.«进» p.1.«止» ≠ [] := by
+        have hm : p ∈ L.«进» p.1.«止» := by
+          simp [«布局».«进», (List.mem_filter.mp hp).1]
+        intro he
+        simp [he] at hm
+      obtain ⟨e, he, hpath⟩ := walk L hw _ hu (Or.inl hc)
       simpa [f, hge', he] using order_some «h终点» H H.length e hport hpath
   obtain ⟨ns, hns, hlen, hmem⟩ := all_values f (L.«组的通道» g) hf
   cases ns with
