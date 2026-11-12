@@ -12,6 +12,7 @@ import Endfield.«走步不改历史»
 import Endfield.«作用»
 import Endfield.«合法基地»
 import Endfield.«命题»
+import Endfield.«证明».«总»
 import Endfield.«例子».«拓扑»
 import Endfield.«例子».«移动»
 import Endfield.«回放».«工具»
