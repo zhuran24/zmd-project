@@ -35,3 +35,4 @@ import Endfield.«回放».«换配方»
 import Endfield.«回放».«同时接通的先后»
 import Endfield.«回放».«分流器最后放»
 import Endfield.«回放».«出货先后走步»
+import Endfield.«回放».«前提»
