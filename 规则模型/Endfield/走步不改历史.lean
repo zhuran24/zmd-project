@@ -79,9 +79,8 @@ theorem «选取不改历史» (T : «判定表») (un : «未定») (todo : «�
     intro s; split <;> rfl
   unfold «选取»
   dsimp only
-  split
-  · refine Eq.trans («逐个做不改历史» _ ?_ _ _) (ht s)
-    intro s g; exact «判一组不改历史» ..
+  refine Eq.trans («逐个做不改历史» _ ?_ _ _) ?_
+  · intro s g; exact «判一组不改历史» ..
   · refine Eq.trans (ht _) ?_
     refine «逐个做不改历史» _ ?_ _ _
     intro s g; exact «判一组不改历史» ..

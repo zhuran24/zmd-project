@@ -207,8 +207,9 @@ def «该传输» (L : Endfield.«布局») (un : «未定») (todo : «待写»
 
 /-- 据：判定顺序、传输、非运输单位轮询
 
-非运输单位 u 被选取：它的各组按级别从高到低依次进行移动判定；是协议储存箱时还有传输，
-传输排在各组的移动判定之前还是之后，取自 `未定`。 -/
+非运输单位 u 被选取：它的各组按级别从高到低依次进行移动判定；是协议储存箱时还有传输。
+规则文件写明传输和它各组的移动判定的先后无法确定：做完前几组以后传输，取自 `未定`
+（0 是各组之前，不小于组数是各组之后）。 -/
 def «选取» (T : «判定表») (un : «未定») (todo : «待写») (port : «通道» → Nat)
     (sel : «通道» → Bool) (s : «状态»)
     (p : «单位号» × List («组» × List «通道»)) : «状态» :=
@@ -219,18 +220,19 @@ def «选取» (T : «判定表») (un : «未定») (todo : «待写») (port :
     | _ => false
   let trans (s : «状态») : «状态» :=
     if s.«该传输» T.«现布局» un todo u then s.«传输一次» u else s
-  let moves (s : «状态») : «状态» :=
-    p.2.foldl (fun s g =>
+  let moves (gs : List («组» × List «通道»)) (s : «状态») : «状态» :=
+    gs.foldl (fun s g =>
       let order :=
         match g.1 with
         | .«出货的» _ => «出货先后» isM g.2 (s.«出货已移动» u)
         | _ => g.2
       s.«判一组» T port sel order) s
-  if un.«传输先于移动判定» u then moves (trans s) else trans (moves s)
+  let k := un.«传输排在几组之后» u
+  moves (p.2.drop k) (trans (moves (p.2.take k) s))
 
 /-- 据：判定顺序
 
-判定顺序第 4 条：非运输单位按建成的先后依次选取，每个非运输单位的各组按级别从高到低依次进行移动判定。 -/
+判定顺序第 5 条：非运输单位按建成的先后依次选取，每个非运输单位的各组按级别从高到低依次进行移动判定。 -/
 def «非运输单位的移动判定» (T : «判定表») (un : «未定») (todo : «待写») (port : «通道» → Nat)
     (sel : «通道» → Bool) (s : «状态») : «状态» :=
   T.«非运输单位».foldl (fun s p => s.«选取» T un todo port sel p) s

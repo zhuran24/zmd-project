@@ -1,7 +1,7 @@
 import Endfield.«证明».«基础»
 
 /-!
-证明可达状态合规。先说明历史末尾添加当时布局容得下的事件仍然合规，
+证明操作保持合规、可达状态合规。先说明历史末尾添加当时布局容得下的事件仍然合规，
 再证明每个成功的操作保持历史合规，最后对操作表归纳，并从空状态出发。
 -/
 
@@ -66,6 +66,13 @@ private theorem «依次作用保持合规» (un : «未定») (todo : «待写�
     | some next =>
       simp only [ho, Option.bind_some] at h
       exact ih next («作用保持合规» un todo s next o hs ho) h
+
+/-- 据：通道、接通
+
+每种操作做完以后历史仍合规。 -/
+theorem «操作保持合规» : «命题».«操作保持合规» := by
+  intro un todo s s' o hs h
+  exact «作用保持合规» un todo s s' o hs h
 
 /-- 据：通道、接通
 

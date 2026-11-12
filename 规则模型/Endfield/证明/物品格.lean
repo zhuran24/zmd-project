@@ -2,7 +2,8 @@ import Endfield.«证明».«基础»
 
 /-!
 证明「走一步守物品格的规矩」。先证明拿货、按收货条件添货以及制造、传输保持各格的容量
-和制造单位存货的物品种类不重复，再沿判定中的折叠逐段归纳。走步不改历史，因而布局固定。
+和制造单位存货的物品种类不重复；另证缓存格与制造进度一致。两部分分别沿判定中的折叠
+逐段归纳，包括在任意两组之间传输的情形。走步不改历史，因而布局固定。
 -/
 
 namespace Endfield.«证明»
@@ -24,14 +25,33 @@ private def unitOK (f : «格位» → List «一堆») (u : «单位号») : «
 private def goods (L : «布局») (s : «状态») : Prop :=
   (∀ p ∈ L.«单位表», unitOK s.«货» p.1 p.2) ∧ ∀ x, s.«仓库» x ≤ 80000
 
+private def cacheOK (s : «状态») (u : «单位号») : Prop :=
+  (match s.«制造中» u with
+    | some (r, _) => «配方表».contains r
+    | none => «一格合规矩» 50 (s.«货» ⟨u, .«缓存»⟩)) = true
+
+private def progressOK (L : «布局») (s : «状态») : Prop :=
+  ∀ p ∈ L.«单位表», match p.2 with
+    | .«制造» _ => cacheOK s p.1
+    | _ => True
+
 private theorem goods_iff (L : «布局») (s : «状态») :
-    goods L s ↔ s.«各格合规矩» L = true ∧ ∀ x, s.«仓库» x ≤ 80000 := by
-  simp only [goods, «状态».«各格合规矩», List.all_eq_true]
-  apply and_congr_left';
-  apply forall_congr'; intro p
-  apply imp_congr_right; intro _
-  cases p.2 <;> simp [unitOK, List.all_eq_true, Bool.and_eq_true,
-    List.mem_range, List.flatMap_map, and_assoc]
+    goods L s ∧ progressOK L s ↔ s.«各格合规矩» L = true ∧ ∀ x, s.«仓库» x ≤ 80000 := by
+  have he : (∀ p ∈ L.«单位表», unitOK s.«货» p.1 p.2 ∧
+      (match p.2 with | .«制造» _ => cacheOK s p.1 | _ => True)) ↔
+      s.«各格合规矩» L = true := by
+    simp only [«状态».«各格合规矩», List.all_eq_true]
+    apply forall_congr'; intro p
+    apply imp_congr_right; intro _
+    cases p.2 <;> simp [unitOK, cacheOK, List.all_eq_true, Bool.and_eq_true,
+      List.mem_range, List.flatMap_map, and_assoc]
+    all_goals intros; cases s.«制造中» p.1 <;> rfl
+  constructor
+  · rintro ⟨⟨hg,hw⟩,hp⟩
+    exact ⟨he.mp (fun p hm => ⟨hg p hm, hp p hm⟩),hw⟩
+  · rintro ⟨hg,hw⟩
+    have hp := he.mpr hg
+    exact ⟨⟨fun p hm => (hp p hm).1,hw⟩,fun p hm => (hp p hm).2⟩
 
 private theorem one_cases {cap : Nat} {l : List «一堆»} (h : «一格合规矩» cap l = true) :
     l = [] ∨ ∃ x n, l = [⟨x,n⟩] ∧ 1 ≤ n ∧ n ≤ cap := by
@@ -627,8 +647,9 @@ private theorem select_goods (T : «判定表») (un : «未定») (todo : «待
         exact he.1.1.1.1
       exact transfer_goods _ _ _ ht hk hs
     next => exact hs
-  have moves (s : «状态») (isM : Bool) (hs : goods T.«现布局» s) : goods T.«现布局»
-      (p.2.foldl (fun s g => s.«判一组» T port sel
+  have moves (gs : List («组» × List «通道»)) (s : «状态») (isM : Bool)
+      (hs : goods T.«现布局» s) : goods T.«现布局»
+      (gs.foldl (fun s g => s.«判一组» T port sel
         (match g.1 with
         | .«出货的» _ => «出货先后» isM g.2 (s.«出货已移动» p.1)
         | _ => g.2)) s) := by
@@ -636,10 +657,7 @@ private theorem select_goods (T : «判定表») (un : «未定») (todo : «待
     intro s g hs
     exact group_goods _ _ _ _ _ ht hs
   unfold «状态».«选取»
-  try dsimp only
-  split
-  · exact moves _ _ (trans s hs)
-  · exact trans _ (moves s _ hs)
+  exact moves _ _ _ (trans _ (moves _ s _ hs))
 
 private theorem nontransport_goods (T : «判定表») (un : «未定») (todo : «待写»)
     (port : «通道» → Nat) (sel : «通道» → Bool) (s : «状态»)
@@ -700,14 +718,273 @@ private theorem step_goods (T : «判定表») (un : «未定») (todo : «待�
   apply endcheck_goods _ _ _ _ ht
   exact tidy_goods _ _ _ _ ht hs
 
+private theorem cache_congr (s t : «状态») (u : «单位号»)
+    (hm : t.«制造中» u = s.«制造中» u)
+    (hc : t.«货» ⟨u,.«缓存»⟩ = s.«货» ⟨u,.«缓存»⟩) : cacheOK t u ↔ cacheOK s u := by
+  simp only [cacheOK, hm, hc]
+
+private theorem progress_congr (L : «布局») (s t : «状态»)
+    (hm : ∀ u, t.«制造中» u = s.«制造中» u)
+    (hc : ∀ u, t.«货» ⟨u,.«缓存»⟩ = s.«货» ⟨u,.«缓存»⟩)
+    (hs : progressOK L s) : progressOK L t := by
+  rintro ⟨u,k⟩ hp
+  have h := hs (u,k) hp
+  cases k <;> first | trivial | exact (cache_congr s t u (hm u) (hc u)).mpr h
+
+private theorem branch_eq {α : Type} {p : Prop} [Decidable p] {a b c : α} :
+    (if p then a else b) = c ↔ (p ∧ a = c) ∨ (¬p ∧ b = c) := by
+  by_cases p <;> simp_all
+
+private theorem source_not_cache (L : «布局») (port : «通道» → Nat) (s : «状态»)
+    (c : «通道») (x : «物品») (src : «货位»)
+    (h : s.«可移动物品» L port c = some (x,src)) (u : «单位号») : src ≠ .«格» ⟨u,.«缓存»⟩ := by
+  intro he
+  subst src
+  unfold «状态».«可移动物品» at h
+  cases hk : L.«种类» c.«起» with
+  | none => simp [hk] at h
+  | some k =>
+    cases k <;> simp only [hk] at h
+    all_goals first
+      | (solve | split at h <;> simp_all [branch_eq, «格位».mk.injEq])
+      | (solve | obtain ⟨i,_,hi⟩ := List.exists_of_findSome?_eq_some h
+                 split at hi <;> simp_all [«格位».mk.injEq])
+      | (solve | simp only [Option.bind_eq_some_iff] at h
+                 obtain ⟨y,_,hy⟩ := h
+                 simp [branch_eq] at hy)
+
+private theorem dest_not_cache (L : «布局») (s : «状态»)
+    (c : «通道») (x : «物品») (dst : «货位»)
+    (h : s.«放进哪» L c x = some dst) (u : «单位号») : dst ≠ .«格» ⟨u,.«缓存»⟩ := by
+  intro he
+  subst dst
+  unfold «状态».«放进哪» at h
+  cases hk : L.«种类» c.«止» with
+  | none => simp [hk] at h
+  | some k =>
+    cases k <;> simp only [hk] at h
+    all_goals first
+      | (solve | simp [branch_eq, Option.map_eq_some_iff, «格位».mk.injEq] at h)
+      | (solve | split at h <;> simp_all [branch_eq, Option.map_eq_some_iff, «格位».mk.injEq])
+
+private theorem move_progress (L : «布局») (s : «状态») (c : «通道»)
+    (port : «通道» → Nat) (x : «物品») (src dst : «货位»)
+    (hs : progressOK L s) (hm : s.«能移» L port c = some (x,src,dst)) :
+    progressOK L (s.«移一件» L c x src dst) := by
+  have hp : s.«可移动物品» L port c = some (x,src) ∧ s.«放进哪» L c x = some dst := by
+    unfold «状态».«能移» at hm
+    split at hm <;> try contradiction
+    next y a ha =>
+      split at hm <;> try contradiction
+      next d hd =>
+        have he := unless_some hm
+        simp only [Prod.mk.injEq] at he
+        rcases he with ⟨rfl,rfl,rfl⟩
+        exact ⟨ha,hd⟩
+  refine progress_congr L s _ ?_ ?_ hs
+  · intro _; rfl
+  · intro u
+    simp [«状态».«移一件», source_not_cache L port s c x src hp.1 u,
+      dest_not_cache L s c x dst hp.2 u]
+
+private theorem recipe_product : ∀ r ∈ «配方表»,
+    «一格合规矩» 50 [⟨r.«产物».1,r.«产物».2⟩] = true := by decide
+
+private theorem selected_recipe (s : «状态») (u : «单位号») (k : «制造单位») (r : «配方»)
+    (h : s.«符合的配方» k u = some r) : r ∈ «配方表» := by
+  unfold «状态».«符合的配方» at h
+  split at h <;> try contradiction
+  next r' he =>
+    cases Option.some.inj h
+    have hm : r ∈ «配方表».filter (fun r => r.«单位» == k &&
+        r.«原料».all (fun p => s.«存货件数» k u p.1 ≥ p.2)) := by
+      rw [he]; simp
+    exact (List.mem_filter.mp hm).1
+
+private theorem end_progress (L : «布局») (s : «状态») (u : «单位号») (r : «配方»)
+    (hr : r ∈ «配方表») (hs : progressOK L s) : progressOK L (s.«结束一次制造» u r) := by
+  rintro ⟨v,k⟩ hp
+  have ho := hs (v,k) hp
+  cases k <;> try trivial
+  by_cases he : v = u
+  · subst v
+    simpa [cacheOK, «状态».«结束一次制造», «换»] using recipe_product r hr
+  · apply (cache_congr s _ v ?_ ?_).mpr ho
+    · simp [«状态».«结束一次制造», «换», he]
+    · simp [«状态».«结束一次制造», «格位».mk.injEq, he]
+
+private theorem start_progress (L : «布局») (s : «状态») (u : «单位号») (r : «配方»)
+    (hr : r ∈ «配方表») (hs : progressOK L s) : progressOK L (s.«开始一次制造» u r) := by
+  rintro ⟨v,k⟩ hp
+  have ho := hs (v,k) hp
+  cases k <;> try trivial
+  by_cases he : v = u
+  · subst v
+    simpa [cacheOK, «状态».«开始一次制造», «换»] using hr
+  · apply (cache_congr s _ v ?_ ?_).mpr ho
+    · simp [«状态».«开始一次制造», «换», he]
+    · simp [«状态».«开始一次制造», he]
+
+private theorem batch_progress (L : «布局») (s : «状态») (u : «单位号»)
+    (hs : progressOK L s) : progressOK L (s.«进取货格» u) := by
+  rintro ⟨v,k⟩ hp
+  have ho := hs (v,k) hp
+  cases k <;> try trivial
+  by_cases he : v = u
+  · subst v
+    cases hm : s.«制造中» u <;>
+      simpa [cacheOK, «状态».«进取货格», «格位».mk.injEq, «一格合规矩», hm] using ho
+  · apply (cache_congr s (s.«进取货格» u) v rfl ?_).mpr ho
+    simp [«状态».«进取货格», «格位».mk.injEq, he]
+
+private theorem transfer_progress (L : «布局») (s : «状态») (u : «单位号»)
+    (hs : progressOK L s) : progressOK L (s.«传输一次» u) := by
+  refine progress_congr L s _ ?_ ?_ hs
+  · intro _; rfl
+  · intro v; simp [«状态».«传输一次»]
+
+private theorem clock_progress (L : «布局») (un : «未定») (todo : «待写») (s : «状态»)
+    (hs : progressOK L s) : progressOK L («计时» un todo s) := by
+  rintro ⟨u,k⟩ hp
+  have ho := hs (u,k) hp
+  cases k <;> try trivial
+  change cacheOK s u at ho
+  change cacheOK («计时» un todo s) u
+  cases hm : s.«制造中» u with
+  | none => simpa [cacheOK, «计时», hm] using ho
+  | some r =>
+    rcases r with ⟨r,n⟩
+    by_cases hr : s.«运行» todo u = true <;>
+      simpa [cacheOK, «计时», hm, hr] using ho
+
+private theorem forward_progress (T : «判定表») (port : «通道» → Nat) (s : «状态»)
+    (hs : progressOK T.«现布局» s) : progressOK T.«现布局» (s.«前移一遍» T port).1 := by
+  unfold «状态».«前移一遍»
+  apply fold_preserve (fun acc : «状态» × Bool => progressOK T.«现布局» acc.1) _ _ _ _ hs
+  intro acc c ha
+  split
+  next x a b he => exact move_progress _ _ _ _ _ _ _ ha he
+  next => exact ha
+
+private theorem tidy_progress (T : «判定表») (port : «通道» → Nat) (fuel : Nat) (s : «状态»)
+    (hs : progressOK T.«现布局» s) : progressOK T.«现布局» («状态».«整理» T port fuel s) := by
+  induction fuel generalizing s with
+  | zero => exact hs
+  | succ fuel ih =>
+    have hh := forward_progress T port s hs
+    simp only [«状态».«整理»]
+    split
+    · exact ih _ hh
+    · exact hh
+
+private theorem group_progress (T : «判定表») (port : «通道» → Nat) (sel : «通道» → Bool)
+    (cs : List «通道») (s : «状态») (hs : progressOK T.«现布局» s) :
+    progressOK T.«现布局» (s.«判一组» T port sel cs) := by
+  unfold «状态».«判一组»
+  apply fold_preserve (progressOK T.«现布局») _ _ _ _ hs
+  intro s c hs
+  split
+  · exact hs
+  · split
+    next x a b he => exact tidy_progress _ _ _ _ (move_progress _ _ _ _ _ _ _ hs he)
+    next => exact hs
+
+private theorem components_progress (T : «判定表») (port : «通道» → Nat) (sel : «通道» → Bool)
+    (s : «状态») (hs : progressOK T.«现布局» s) :
+    progressOK T.«现布局» (s.«元件的移动判定» T port sel) := by
+  unfold «状态».«元件的移动判定»
+  apply fold_preserve (progressOK T.«现布局») _ _ _ _ hs
+  intro s p hs
+  exact group_progress _ _ _ _ _ hs
+
+private theorem select_progress (T : «判定表») (un : «未定») (todo : «待写»)
+    (port : «通道» → Nat) (sel : «通道» → Bool) (s : «状态»)
+    (p : «单位号» × List («组» × List «通道»)) (hs : progressOK T.«现布局» s) :
+    progressOK T.«现布局» (s.«选取» T un todo port sel p) := by
+  have trans (s : «状态») (hs : progressOK T.«现布局» s) : progressOK T.«现布局»
+      (if s.«该传输» T.«现布局» un todo p.1 then s.«传输一次» p.1 else s) := by
+    split
+    · exact transfer_progress _ _ _ hs
+    · exact hs
+  have moves (gs : List («组» × List «通道»)) (s : «状态») (isM : Bool)
+      (hs : progressOK T.«现布局» s) : progressOK T.«现布局»
+      (gs.foldl (fun s g => s.«判一组» T port sel
+        (match g.1 with
+        | .«出货的» _ => «出货先后» isM g.2 (s.«出货已移动» p.1)
+        | _ => g.2)) s) := by
+    apply fold_preserve (progressOK T.«现布局») _ _ _ _ hs
+    intro s g hs
+    exact group_progress _ _ _ _ _ hs
+  unfold «状态».«选取»
+  exact moves _ _ _ (trans _ (moves _ s _ hs))
+
+private theorem nontransport_progress (T : «判定表») (un : «未定») (todo : «待写»)
+    (port : «通道» → Nat) (sel : «通道» → Bool) (s : «状态»)
+    (hs : progressOK T.«现布局» s) :
+    progressOK T.«现布局» (s.«非运输单位的移动判定» T un todo port sel) := by
+  unfold «状态».«非运输单位的移动判定»
+  apply fold_preserve (progressOK T.«现布局») _ _ _ _ hs
+  intro s p hs
+  exact select_progress _ _ _ _ _ _ _ hs
+
+private theorem endcheck_progress (L : «布局») (todo : «待写») (us : List «单位号») (s : «状态»)
+    (hs : progressOK L s) : progressOK L (s.«结束制造判定» L todo us) := by
+  unfold «状态».«结束制造判定»
+  apply fold_preserve (progressOK L) _ _ _ _ hs
+  intro s u hs
+  split
+  next k hk =>
+    have hb (s : «状态») (hs : progressOK L s) : progressOK L
+        (if s.«进得去» u then s.«进取货格» u else s) := by
+      split
+      · exact batch_progress _ _ _ hs
+      · exact hs
+    apply hb
+    split
+    next r n hm =>
+      split
+      · have ho : cacheOK s u := hs (u,.«制造» k) (kind_mem L hk)
+        have hr : r ∈ «配方表» := by simpa [cacheOK, hm] using ho
+        exact end_progress _ _ _ _ hr hs
+      · exact hs
+    next => exact hs
+  next => exact hs
+
+private theorem startcheck_progress (L : «布局») (todo : «待写») (us : List «单位号») (s : «状态»)
+    (hs : progressOK L s) : progressOK L (s.«开始制造判定» L todo us) := by
+  unfold «状态».«开始制造判定»
+  apply fold_preserve (progressOK L) _ _ _ _ hs
+  intro s u hs
+  split
+  next k _ =>
+    split
+    · split
+      next r hr => exact start_progress _ _ _ _ (selected_recipe s u k r hr) hs
+      next => exact hs
+    · exact hs
+  next => exact hs
+
+private theorem step_progress (T : «判定表») (un : «未定») (todo : «待写») (s : «状态»)
+    (hs : progressOK T.«现布局» s) : progressOK T.«现布局» («一步于» T un todo s) := by
+  unfold «一步于»
+  apply clock_progress
+  apply startcheck_progress
+  apply nontransport_progress
+  apply components_progress
+  apply endcheck_progress
+  exact tidy_progress _ _ _ _ hs
+
 /-- 据：物品格、运输单位、协议储存箱、存货/取货物品格
 
-初态的货合规且历史合规时，走一步后每个物品格、制造单位存货的种类和仓库件数仍然合规。 -/
+初态的货合规且历史合规时，走一步后各格的容量、制造单位存货的种类、仓库件数
+以及缓存格与制造进度的对应关系仍然合规。 -/
 theorem «走一步守物品格的规矩» : «命题».«走一步守物品格的规矩» := by
   intro un todo s hh hs
   have ht := (s.«历史».«合规则整齐» hh s.«历史».length).«单位不重»
-  have hg : goods s.«历史».«立表».«现布局» s := (goods_iff _ s).mpr hs
-  have ho := (goods_iff _ _).mp (step_goods s.«历史».«立表» un todo s ht hg)
+  have hg : goods s.«历史».«立表».«现布局» s ∧ progressOK s.«历史».«立表».«现布局» s :=
+    (goods_iff _ s).mpr hs
+  have ho := (goods_iff _ _).mp ⟨step_goods s.«历史».«立表» un todo s ht hg.1,
+    step_progress s.«历史».«立表» un todo s hg.2⟩
   have hl : («一步» un todo s).«布局» = s.«布局» := by
     unfold «状态».«布局»
     rw [«一步不改历史»]
