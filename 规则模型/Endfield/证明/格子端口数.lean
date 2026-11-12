@@ -47,10 +47,10 @@ private def «端口样式» (p : «摆件») (o : «接通先后») : List (Boo
   | .«分流器» d => (false, d, 0) :: (ring d).map (fun d => (true, d, 0))
   | .«汇流器» d => (ring d).map (fun d => (false, d, 0)) ++ [(true, d, 0)]
   | .«物品准入口» d => [(false, d.«对边», 0), (true, d, 0)]
-  | .«桥接器» =>
+  | .«桥接器» d0 =>
     let ds := «朝向».«各边».map fun d => (d, 0)
-    («排端口» (fun d _ => o.«桥接器存货» d) ds).map (fun (d,n) => (false,d,n)) ++
-      («排端口» (fun d _ => o.«桥接器取货» d) ds).map (fun (d,n) => (true,d,n))
+    («排端口» (fun d _ => «格子».«桥接器存货先后» d0 d) ds).map (fun (d,n) => (false,d,n)) ++
+      («排端口» (fun d _ => «格子».«桥接器取货先后» d0 d) ds).map (fun (d,n) => (true,d,n))
   | .«协议储存箱» d | .«制造» _ d => sides d
   | .«协议核心» a =>
     («排端口» o.«协议核心» («核心边格» a false)).map (fun (d,n) => (false,d,n)) ++
@@ -106,7 +106,7 @@ private theorem «端口展开成功» (p : «摆件») (o : «接通先后») (
 
 private theorem «造端口性质» (p : «摆件») (b : Bool) (d : «朝向») (n : Nat)
     (a : «端口») (h : p.«造端口» b d n = some a) :
-    a.«单位» = (if p.«种类» == .«桥接器» then
+    a.«单位» = (if p.«是桥接器» then
       p.«号» + (if b then d.«对边» else d).«编号» else p.«号») ∧
     a.«边» = d ∧ a.«取货» = b ∧ p.«边格» d n = some a.«格» := by
   simp only [«摆件».«造端口», Option.map_eq_some_iff] at h
@@ -168,7 +168,7 @@ private theorem «端口单位属于摆件» (p : «摆件») (o : «接通先�
   obtain ⟨b,d,n,hs⟩ := «端口来自造端口» p o ps hp a ha
   have hu := («造端口性质» p b d n a hs).1
   cases hk : p.«种类» <;>
-    simp [«摆件».«单位», hk, hu, «朝向».«各边»]
+    simp [«摆件».«单位», «摆件».«是桥接器», hk, hu, «朝向».«各边»]
   case «桥接器» => cases b <;> cases d <;> simp [«朝向».«编号», «朝向».«对边», «朝向».«顺时针»]
   case «供电桩» =>
     have hh := («端口展开成功» p o ps hp).2
@@ -177,7 +177,7 @@ private theorem «端口单位属于摆件» (p : «摆件») (o : «接通先�
     simp at ha
 
 private def «样式标签» (p : «摆件») (v : Bool × «朝向» × Nat) : Nat × Bool :=
-  (if p.«种类» == .«桥接器» then
+  (if p.«是桥接器» then
     p.«号» + (if v.1 then v.2.1.«对边» else v.2.1).«编号» else p.«号», v.1)
 
 private theorem «端口标签表» (p : «摆件») (o : «接通先后»)
@@ -211,43 +211,43 @@ private theorem «样式标签计数» (p : «摆件») (o : «接通先后»)
       Prod.mk.injEq, List.mem_map] at hu
   case «传送带» a d =>
     obtain ⟨rfl,rfl⟩ := hu
-    cases b <;> simp [«端口样式», «样式标签», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
+    cases b <;> simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
   case «分流器» d =>
     obtain ⟨rfl,rfl⟩ := hu
-    cases b <;> simp [«端口样式», «样式标签», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
+    cases b <;> simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
   case «汇流器» d =>
     obtain ⟨rfl,rfl⟩ := hu
-    cases b <;> simp [«端口样式», «样式标签», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
+    cases b <;> simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
   case «物品准入口» d =>
     obtain ⟨rfl,rfl⟩ := hu
-    cases b <;> simp [«端口样式», «样式标签», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
+    cases b <;> simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
   case «桥接器» =>
     obtain ⟨d, _, rfl, rfl⟩ := hu
     simp only [«端口样式», hk, List.map_append, List.map_map, List.filter_append,
       List.length_append, «排端口映射筛长度»]
     cases b <;> cases d <;>
-      simp [«样式标签», hk, «朝向».«各边», «朝向».«编号», «朝向».«对边», «朝向».«顺时针»,
+      simp [«样式标签», «摆件».«是桥接器», hk, «朝向».«各边», «朝向».«编号», «朝向».«对边», «朝向».«顺时针»,
         «单位种类».«存货端口数», «单位种类».«取货端口数»]
   case «协议储存箱» d =>
     obtain ⟨rfl,rfl⟩ := hu
     cases b <;> cases d <;>
-      simp [«端口样式», «样式标签», hk, «摆件».«大小», «同边先后»,
+      simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «摆件».«大小», «同边先后»,
         «单位种类».«存货端口数», «单位种类».«取货端口数», List.filter_map, List.map_map, Function.comp_def, «标签相等», «筛常数»]
   case «制造» mk d =>
     obtain ⟨rfl,rfl⟩ := hu
     cases b <;> cases d <;> cases mk <;>
-      simp [«端口样式», «样式标签», hk, «摆件».«大小», «制造大小», «同边先后»,
+      simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «摆件».«大小», «制造大小», «同边先后»,
         «单位种类».«存货端口数», «单位种类».«取货端口数», «制造单位».«端口边长», List.filter_map, List.map_map, Function.comp_def, «标签相等», «筛常数»]
   case «协议核心» a =>
     obtain ⟨rfl,rfl⟩ := hu
     simp only [«端口样式», hk, List.map_append, List.map_map, List.filter_append,
       List.length_append, «排端口映射筛长度»]
     cases b <;> cases a <;>
-      simp [«样式标签», hk, «核心边格», «朝向».«各边», «平行边».«包含»,
+      simp [«样式标签», «摆件».«是桥接器», hk, «核心边格», «朝向».«各边», «平行边».«包含»,
         «单位种类».«存货端口数», «单位种类».«取货端口数», List.filter_map, List.map_map, Function.comp_def, «标签相等», «筛常数»]
   case «仓库取货口» d =>
     obtain ⟨rfl,rfl⟩ := hu
-    cases b <;> simp [«端口样式», «样式标签», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
+    cases b <;> simp [«端口样式», «样式标签», «摆件».«是桥接器», hk, «单位种类».«存货端口数», «单位种类».«取货端口数»]
 
 private theorem «每单位端口数» (p : «摆件») (o : «接通先后»)
     (ps : List «端口») (hp : p.«端口» o = some ps)
@@ -542,7 +542,7 @@ private theorem «关系计数界» {α β : Type} (xs : List α) (ys : List β)
 
 private theorem «单位号在占号里» (p : «摆件») (u : Nat)
     (hu : u ∈ p.«单位».map Prod.fst) : u ∈ p.«占号» := by
-  cases hk : p.«种类» <;> simp [«摆件».«单位», hk, «摆件».«占号»] at * <;> try assumption
+  cases hk : p.«种类» <;> simp [«摆件».«单位», hk, «摆件».«占号», «摆件».«是桥接器»] at * <;> try assumption
   case «桥接器» =>
     obtain ⟨d, _, rfl⟩ := hu
     cases d <;> simp [«朝向».«编号»]
@@ -1004,7 +1004,7 @@ private theorem sync_build (F G : «场地») (o : «接通先后») (p : «摆�
 
 private theorem unit_id_reserved (p : «摆件») (u : Nat) (hu : u ∈ p.«单位».map Prod.fst) :
     u ∈ p.«占号» := by
-  cases hk : p.«种类» <;> simp [«摆件».«单位», «摆件».«占号», hk, «朝向».«各边»,
+  cases hk : p.«种类» <;> simp [«摆件».«单位», «摆件».«占号», «摆件».«是桥接器», hk, «朝向».«各边»,
     «朝向».«编号», List.range_succ] at hu ⊢ <;> exact hu
 
 private theorem field_separate (F : «场地») (hF : FieldGood F) (p q : «摆件»)
