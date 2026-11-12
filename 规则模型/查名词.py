@@ -11,6 +11,8 @@
   例子：……       照规则算一遍的小布局，不是实测。
   框架：……       模型的骨架（状态、操作这些），不对应规则文件的某一行。
 
+`Endfield/证明/` 下 private 的声明是证明内部的辅助引理，不要求有注释，也不核对注释的写法。
+
 输出：规则文件里已有定义的名词、还没有定义的名词数、「规则里没有」的名字、不合上面写法的声明。
 有不合写法的声明时退出码为 1。规则文件某一行改了字，引它的那条声明会在这里报出来。
 
@@ -68,9 +70,12 @@ def main():
             rel = os.path.relpath(path, HERE)
             text = open(path, encoding="utf-8").read()
             documented = set()
+            in_proofs = rel.startswith(os.path.join("Endfield", "证明") + os.sep)
             for m in DOC_DECL_RE.finditer(text):
                 decl = m.group(3)
                 documented.add(m.start(2))
+                if in_proofs and "private" in text[m.end(1):m.start(2)].split():
+                    continue
                 first = m.group(1).strip().split("\n", 1)[0].strip()
                 where = f"{rel}: {decl}"
                 if first.startswith("据："):
@@ -88,6 +93,8 @@ def main():
                     else:
                         defined.setdefault(nm.group(1), where)
             for m in DECL_RE.finditer(text):
+                if in_proofs and "private" in m.group(0).split():
+                    continue
                 if m.start(1) not in documented:
                     errors.append(f"{rel}: {m.group(2)}：没有文档注释")
     hidden_names = {h for h, _ in hidden}

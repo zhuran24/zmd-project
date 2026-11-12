@@ -96,11 +96,11 @@ theorem «非运输单位的移动判定不改历史» (T : «判定表») (un :
   exact «选取不改历史» ..
 
 /-- 框架：结束制造判定不改历史。 -/
-theorem «结束制造判定不改历史» (T : «判定表») (todo : «待写») (s : «状态») :
-    (s.«结束制造判定» T todo).«历史» = s.«历史» := by
+theorem «结束制造判定不改历史» (L : Endfield.«布局») (todo : «待写») (us : List «单位号») (s : «状态») :
+    (s.«结束制造判定» L todo us).«历史» = s.«历史» := by
   unfold «结束制造判定»
   apply «逐个做不改历史»
-  intro s p
+  intro s u
   dsimp only
   split
   · split
@@ -111,12 +111,11 @@ theorem «结束制造判定不改历史» (T : «判定表») (todo : «待写�
   · rfl
 
 /-- 框架：开始制造判定不改历史。 -/
-theorem «开始制造判定不改历史» (T : «判定表») (todo : «待写») (s : «状态») :
-    (s.«开始制造判定» T todo).«历史» = s.«历史» := by
+theorem «开始制造判定不改历史» (L : Endfield.«布局») (todo : «待写») (us : List «单位号») (s : «状态») :
+    (s.«开始制造判定» L todo us).«历史» = s.«历史» := by
   unfold «开始制造判定»
   apply «逐个做不改历史»
-  intro s p
-  dsimp only
+  intro s u
   split
   · split
     · split <;> rfl
