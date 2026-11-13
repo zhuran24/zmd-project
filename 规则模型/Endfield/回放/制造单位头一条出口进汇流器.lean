@@ -63,4 +63,27 @@ def «依次去哪» («先后» : List String) (k : Nat) : Option (List Nat) :=
 -- 组四：汇流器换到右出口先接，再接左、中。先送中。
 #guard «依次去哪» ["右汇", "左带", "中带"] 4 == some [1, 0, 1, 0]
 
+/-- 回放：补做的对照。照 `先后` 接好，放 2 件；再把 `收带` 里的带子一格格收掉，只剩汇流器这一个出口，放 1 件。
+返回这 3 件各进了哪个收货箱。 -/
+def «收带以后» («先后» : List String) («收带» : List Nat) : Option (List Nat) := do
+  let s ← «布置» (← «底»)
+  let s ← «先后».foldlM (fun s o => do (← «出口» o).foldlM (fun s p => «做» s (.«建» p)) s) s
+  let read := fun (t : Endfield.«格子».«状态») => [51, 52, 53].map fun u => «箱货» t u .«蓝铁块»
+  let one := fun (s : Endfield.«格子».«状态») => do
+    let a := read s
+    let t := «等» 160 (← «做» s (.«原样» (.«放货» 1 .«蓝铁矿» 1)))
+    let d := ((read t).zip a).map fun (x, y) => x - y
+    let w := (List.range 3).filter fun i => d.getD i 0 > 0
+    return (t, if d.foldl (· + ·) 0 == 1 then w.getD 0 9 else 9)
+  let (s, a) ← one s
+  let (s, b) ← one s
+  let s ← «收带».foldlM (fun s u => «做» s (.«收» u)) s
+  let (_, c) ← one s
+  return [a, b, c]
+
+-- 补做：组一重做，头 2 件右、中；收掉中带、右带以后那 1 件经汇流器进左箱。
+#guard «收带以后» ["左汇", "中带", "右带"] [31, 32, 41, 42, 43, 44] == some [2, 1, 0]
+-- 补做：组四重做，头 2 件中、左；收掉左带、中带以后那 1 件经右出口的汇流器进右箱。
+#guard «收带以后» ["右汇", "左带", "中带"] [61, 62, 63, 64, 31, 32] == some [1, 0, 2]
+
 end Endfield.«回放».«头一条出口进汇流器»
