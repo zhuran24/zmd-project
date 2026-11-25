@@ -591,9 +591,10 @@ def «限速» : List «一幕» :=
   ++ «一串带» 4 ((List.range 10).map (· + 10)) ++ [«连» 19 30] ++ «装满» 0 .«源矿»
 
 -- 准入口前面三格都有货；后面十格每五格一件；每 5 tick（40 步）进箱子 1 件。
+-- （看的两步取 396、436：头两件隔 36 步、以后每 40 步一件，见 `准入口周期.lean`。）
 #guard («演» «状态».«空» «限速»).map («逐次看» (fun s =>
     ([1, 2, 3].map fun u => («格里» s u).isSome, (List.range 10).map fun i => («格里» s (i + 10)).isSome,
-      «箱里几件» s 30 .«源矿»)) [400, 440]) ==
+      «箱里几件» s 30 .«源矿»)) [396, 436]) ==
   some [([true, true, true], [true, false, false, false, false, true, false, false, false, false], 8),
         ([true, true, true], [true, false, false, false, false, true, false, false, false, false], 9)]
 

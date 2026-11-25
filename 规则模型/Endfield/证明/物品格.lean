@@ -650,7 +650,7 @@ private theorem select_goods (T : «判定表») (un : «未定») (todo : «待
     next he =>
       have hk : T.«现布局».«种类» p.1 = some .«协议储存箱» := by
         simp only [«状态».«该传输», Bool.and_eq_true, beq_iff_eq] at he
-        exact he.1.1.1.1
+        exact he.1.1.1
       exact transfer_goods _ _ _ ht hk hs
     next => exact hs
   have moves (gs : List («组» × List «通道»)) (s : «状态») (isM : Bool)

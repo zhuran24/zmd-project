@@ -220,6 +220,7 @@ private theorem fieldGood_place (F G : «场地») (o : «格子».«接通先�
       dsimp only at hG
       subst G'
       exact fieldGood_build F' G o p fs (fieldGood_remove F F' _ es' hF hrem) hb
+    · exact fieldGood_build F G o p es hF h
     · cases h
   all_goals exact fieldGood_build F G o p es hF h
 
@@ -942,6 +943,7 @@ private theorem sync_place (F G : «场地») (o : «接通先后») (p : «摆�
       subst G' es
       rw [replay_append]
       exact sync_build F' G o p fs _ (sync_remove F F' o _ es' s hF hs hrem) hb
+    · exact sync_build F G o p es s hs h
     · cases h
   all_goals exact sync_build F G o p es s hs h
 
@@ -1769,6 +1771,7 @@ private theorem feasible_place (F G : «场地») (o : «接通先后») (p : «
       exact ⟨feasible_remove F F' o _ es' s hs hrem,
         feasible_build F' G o p fs _ (fieldGood_remove F F' _ es' hF hrem)
           (sync_remove F F' o _ es' s hF hs hrem) hb⟩
+    · exact feasible_build F G o p es s hF hs h
     · cases h
   all_goals exact feasible_build F G o p es s hF hs h
 

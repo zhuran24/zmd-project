@@ -44,4 +44,7 @@ import Endfield.«回放».«格子边界»
 import Endfield.«回放».«格子»
 import Endfield.«回放».«桥接器各边的先后»
 import Endfield.«回放».«制造单位头一条出口进汇流器»
+import Endfield.«回放».«准入口周期»
+import Endfield.«回放».«传输周期»
+import Endfield.«回放».«供电范围»
 import Endfield.«例子».«桥接器各边的先后»

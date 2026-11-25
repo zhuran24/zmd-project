@@ -98,7 +98,7 @@ def «放进哪» (L : Endfield.«布局») (s : «状态») (c : «通道») (x
       | none => true
     let ok3 :=
       match g.«每5tick上限» with
-      | some n => g.«本段已收» < n
+      | some n => g.«名额».length < n
       | none => true
     if (s.«货» ⟨v, .«格» 0⟩).isEmpty && ok1 && ok2 && ok3 then some (.«格» ⟨v, .«格» 0⟩) else none
   | some .«协议储存箱» =>
@@ -160,19 +160,17 @@ def «移一件» (L : Endfield.«布局») (s : «状态») (c : «通道») (x
       «换» s.«出货已移动» c.«起» ((s.«出货已移动» c.«起»).filter (· != c) ++ [c])
     else s.«出货已移动»
   «制造中» := s.«制造中»    -- 无关
-  «准入口» :=    -- 实测：没设累计上限时不计数（操控工具说明，2026-10-08）；每 5 tick 那项照样处理、那 5 tick 是 40 步，是没测
+  «准入口» :=    -- 实测：没设累计上限时不计数（操控工具说明，2026-10-08）；设了每 5 tick 上限时这一件占一个名额，名额一腾出就进来的占 40 步，别的占 36 步（实测-2026-11-25）
     if L.«种类» c.«止» == some .«物品准入口» then
       let g := s.«准入口» c.«止»
       «换» s.«准入口» c.«止»
         { g with
           «累计已收» := if g.«累计上限».isSome then g.«累计已收» + 1 else g.«累计已收»
-          «本段已收» := if g.«每5tick上限».isSome then g.«本段已收» + 1 else g.«本段已收»
-          «本段还剩» :=
+          «名额» :=
             if g.«每5tick上限».isSome then
-              match g.«本段还剩» with
-              | some n => some n
-              | none => some (5 * «tick»)
-            else g.«本段还剩» }
+              g.«名额» ++ [if g.«刚腾出» then 5 * «tick» else 5 * «tick» - 4]
+            else g.«名额»
+          «刚腾出» := false }
     else s.«准入口»
   «储存箱» := s.«储存箱»    -- 无关
   «开关» := s.«开关»    -- 无关

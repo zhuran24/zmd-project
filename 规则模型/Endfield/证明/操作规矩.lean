@@ -162,10 +162,7 @@ theorem «操作守物品格的规矩» (hstep : «命题».«走一步守物品
         apply unit_congr s _ p.1 p.2 (fun n => by simp [hm'.2]) (by simp [«换», hm'.2])
         exact hu p hm'.1
       · intro x
-        dsimp
-        split
-        · exact Nat.max_le.mpr ⟨hg.2 x, Nat.min_le_left _ _⟩
-        · exact hg.2 x
+        exact hg.2 x
   | «放货» u x n =>
     simp [«作用», hd] at ho
     cases ho
