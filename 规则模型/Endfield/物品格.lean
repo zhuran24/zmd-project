@@ -98,7 +98,7 @@ def «放进哪» (L : Endfield.«布局») (s : «状态») (c : «通道») (x
       | none => true
     let ok3 :=
       match g.«每5tick上限» with
-      | some n => (g.«名额».filter (· > 4)).length < n
+      | some n => g.«名额».length < n
       | none => true
     if (s.«货» ⟨v, .«格» 0⟩).isEmpty && ok1 && ok2 && ok3 then some (.«格» ⟨v, .«格» 0⟩) else none
   | some .«协议储存箱» =>
@@ -168,7 +168,7 @@ def «移一件» (L : Endfield.«布局») (s : «状态») (c : «通道») (x
           «累计已收» := if g.«累计上限».isSome then g.«累计已收» + 1 else g.«累计已收»
           «名额» :=
             match g.«每5tick上限» with
-            | some n => «用一个名额» n g.«名额»
+            | some _ => «用一个名额» g.«拍» g.«名额»
             | none => g.«名额» }
     else s.«准入口»
   «储存箱» := s.«储存箱»    -- 无关
