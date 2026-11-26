@@ -93,9 +93,10 @@ def «头两件» («摆法» : Endfield.«格子».«状态» → Option Endfie
   let s := { s with «模型» := «压平» s.«模型».«布局» s.«模型» }
   let «哪个» (t : Endfield.«格子».«状态») (old : List Nat) : Nat :=
     let now := [61, 62, 63].map fun u => «箱里几件» t.«模型» u .«蓝铁矿»
-    match (now.zip old).zipIdx.find? (fun p => p.1.1 > p.1.2) with
-    | some p => p.2 + 1
-    | none => 0
+    match ((now.zip old).map fun p => p.1 - p.2).zipIdx.filter (fun p => p.1 != 0) with
+    | [] => 0
+    | [(1, i)] => i + 1
+    | _ => 9
   let s ← «做» s (.«原样» (.«设准入口» 5 (some .«蓝铁矿») (some 1) none))
   let s := «等» 100 s
   let a := «哪个» s [0, 0, 0]
@@ -133,7 +134,8 @@ def «拉出口» («序» : List Nat) («改» : Endfield.«格子».«状态»
 -- S12：O3 最后一格收掉重拉。O3 本来就排最后，还是下、右。
 #guard «头两件» («拉出口» [1, 2, 3] («收掉重拉» [(33, 33, 19, .«左», .«右»)])) == some (2, 3)
 
--- S10：O1 最后一格收掉、不补（带子断头）。头一件进右边的箱子，第二件走进断头的 O1、没进箱。
+-- S10：O1 最后一格收掉、不补（带子断头）。头一件进右边的箱子，第二件三个箱子都没进（游戏里读到的也只到这里；
+-- 模型里它走进了断头的 O1，这条核对不查它在哪）。
 #guard «头两件» («拉出口» [1, 2, 3] (fun s => «做» s (.«收» 13))) == some (3, 0)
 
 /-! ## 分流器走过货以后再改一条出口带
@@ -155,9 +157,10 @@ def «走过货再改» («前» : Nat) («改» : Endfield.«格子».«状态�
   let s ← «做» { s with «模型» := «压平» s.«模型».«布局» s.«模型» } (.«原样» (.«设准入口» 5 (some .«蓝铁矿») (some 1) none))
   let «三箱» (t : Endfield.«格子».«状态») : List Nat := [61, 62, 63].map fun u => «箱里几件» t.«模型» u .«蓝铁矿»
   let «哪个» (t : Endfield.«格子».«状态») (old : List Nat) : Nat :=
-    match ((«三箱» t).zip old).zipIdx.find? (fun p => p.1.1 > p.1.2) with
-    | some p => p.2 + 1
-    | none => 0
+    match (((«三箱» t).zip old).map fun p => p.1 - p.2).zipIdx.filter (fun p => p.1 != 0) with
+    | [] => 0
+    | [(1, i)] => i + 1
+    | _ => 9
   let «放» (t : Endfield.«格子».«状态») (k : Nat) : Option (Endfield.«格子».«状态» × List Nat) :=
     (List.range k).foldlM (fun (acc : Endfield.«格子».«状态» × List Nat) _ => do
       let old := «三箱» acc.1
@@ -171,6 +174,8 @@ def «走过货再改» («前» : Nat) («改» : Endfield.«格子».«状态�
   let (_, b) ← «放» s 3
   return (w :: a, b)
 
+-- 游戏里每轮改之后放了四件，其中两件是一起读到的、谁先谁后分不出（第 1 轮是左和下，第 2、3 轮是后两件），这里的先后是模型的；
+-- 游戏放的第四件这里没核。能对上的是改之后的头一件（三轮都是新先后的第 2 条）和这几件各去了哪。
 -- 放过两件（下、右，上一次是右）以后改左边那条：先后变成 下、右、左，从第 2 条起：右、左、下。
 -- 要是接着原来的「上一次」走会是 左、下、右。
 #guard «走过货再改» 2 («换准入口» 71 27 19 .«左») == some ([2, 3], [3, 1, 2])
