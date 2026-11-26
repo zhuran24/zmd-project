@@ -143,7 +143,7 @@ theorem «操作守物品格的规矩» (hstep : «命题».«走一步守物品
         apply unit_congr s _ p.1 p.2 (fun n => by simp [hn]) (by simp [«换», hn])
         exact hu p hm
       · apply empty_unit <;> simp [«换»]
-    | «接通» c =>
+    | «接通» c | «重接» c =>
       simp [«作用», hd] at ho
       cases ho
       refine ⟨?_,hg.2⟩

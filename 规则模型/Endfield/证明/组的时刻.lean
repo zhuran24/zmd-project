@@ -51,6 +51,9 @@ private theorem new_group (L : «布局») (t : «时刻») (e : «事件») (g 
       (by simp [«布局».«加拆除_种类», hp.2.1])
       (by simp [«布局».«加拆除_种类», hp.2.2])
     exact False.elim (old_absent p hp.1 (hc ▸ hg))
+  | «重接» c =>
+    obtain ⟨old, hold⟩ := L.«重接前已有» t c he p hp
+    exact False.elim (old_absent (p.1, old) hold hg)
   | «接通» c =>
     simp only [«布局».«加», List.mem_append, List.mem_singleton] at hp
     rcases hp with hp | hp

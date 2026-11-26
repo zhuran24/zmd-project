@@ -146,7 +146,7 @@ def «作用» (un : «未定») (o : «接通先后») (bad : «通道» → Na
     return ⟨ps, t⟩
   match a with
   | .«建» p => apply (s.«场地».«建» o p)
-  | .«收» u => apply (s.«场地».«收» u)
+  | .«收» u => apply (s.«场地».«收» u o)
   | .«蓝图» ps => apply (s.«场地».«放蓝图» o ps)
   | .«离线» ps =>
     let H ← s.«场地».«重建» o ps

@@ -147,7 +147,7 @@ private theorem edge_new_or_old (L : «布局») (t : «时刻») (ev : «事件
     (p : «通道» × «时刻») (htidy : L.«整齐»)
     (hok : L.«容得下» ev = true) (hp : p ∈ (L.«加» t ev).«通道表») :
     (ev = .«接通» p.1 ∧ p.2 = t) ∨
-      (p ∈ L.«通道表» ∧
+      ((p ∈ L.«通道表» ∨ (ev = .«重接» p.1 ∧ p.2 = t ∧ ∃ old, (p.1, old) ∈ L.«通道表»)) ∧
        (L.«加» t ev).«种类» p.1.«起» = L.«种类» p.1.«起» ∧
        (L.«加» t ev).«种类» p.1.«止» = L.«种类» p.1.«止») := by
   cases ev with
@@ -159,17 +159,23 @@ private theorem edge_new_or_old (L : «布局») (t : «时刻») (ev : «事件
     have hb := htidy.«两头都在» p hp
     have hstart : p.1.«起» ≠ u := by intro he; simp [he, hnone] at hb
     have hstop : p.1.«止» ≠ u := by intro he; simp [he, hnone] at hb
-    exact Or.inr ⟨hp, by simp [«布局».«加建成_种类», hnone, hstart],
+    exact Or.inr ⟨Or.inl hp, by simp [«布局».«加建成_种类», hnone, hstart],
       by simp [«布局».«加建成_种类», hnone, hstop]⟩
   | «接通» c =>
     have hp : p ∈ L.«通道表» ∨ p = (c, t) := by simpa [«布局».«加»] using hp
     rcases hp with hp | rfl
-    · exact Or.inr ⟨hp, rfl, rfl⟩
+    · exact Or.inr ⟨Or.inl hp, rfl, rfl⟩
     · exact Or.inl ⟨rfl, rfl⟩
+  | «重接» c =>
+    have hold := L.«重接前已有» t c hok p hp
+    simp only [«布局».«加», List.mem_append, List.mem_filter, List.mem_singleton] at hp
+    rcases hp with ⟨hp, _⟩ | rfl
+    · exact Or.inr ⟨Or.inl hp, rfl, rfl⟩
+    · exact Or.inr ⟨Or.inr ⟨rfl, rfl, hold⟩, rfl, rfl⟩
   | «拆除» u =>
     have hp : p ∈ L.«通道表» ∧ p.1.«起» ≠ u ∧ p.1.«止» ≠ u := by
       simpa [«布局».«加»] using hp
-    exact Or.inr ⟨hp.1, by simp [«布局».«加拆除_种类», hp.2.1],
+    exact Or.inr ⟨Or.inl hp.1, by simp [«布局».«加拆除_种类», hp.2.1],
       by simp [«布局».«加拆除_种类», hp.2.2]⟩
 
 private theorem present_step (L : «布局») (t : «时刻») (ev : «事件»)
@@ -178,7 +184,7 @@ private theorem present_step (L : «布局») (t : «时刻») (ev : «事件»)
     (hafter : ((L.«加» t ev).«种类» x).isSome = true) :
     (L.«加» t ev).«种类» x = L.«种类» x := by
   cases ev with
-  | «接通» c => rfl
+  | «接通» _ | «重接» _ => rfl
   | «建成» u k =>
     have hnone : L.«种类» u = none := by
       simp only [«布局».«容得下», Bool.and_eq_true, Option.isNone_iff_eq_none] at hok
@@ -240,8 +246,10 @@ private theorem endpoint_step (L : «布局») (t : «时刻») (ev : «事件»
       rw [hx] at hold
       rw [← hold.2.2]
       exact hnon
-    have hpold : p ∈ L.«出» e := by simp [«布局».«出», hold.1, hs]
-    have he := endpoint_of_edge L e x k p hports hkold htr hn hpold hx hnold
+    obtain ⟨old, hm⟩ : ∃ old, (p.1, old) ∈ L.«通道表» :=
+      hold.1.elim (fun h => ⟨p.2, h⟩) (fun h => h.2.2)
+    have hpold : (p.1, old) ∈ L.«出» e := by simp [«布局».«出», hm, hs]
+    have he := endpoint_of_edge L e x k (p.1, old) hports hkold htr hn hpold hx hnold
     simp [hb] at he
 
 private def has_output (L : «布局») (x : «单位号») : Bool :=
@@ -266,12 +274,14 @@ private theorem output_step (L : «布局») (t : «时刻») (ev : «事件»)
     congr 1
     cases p with
     | mk c time => cases c; simp_all
-  · have hpold : p ∈ L.«出» x := by simp [«布局».«出», hold.1, hs]
+  · obtain ⟨old, hm⟩ : ∃ old, (p.1, old) ∈ L.«通道表» :=
+      hold.1.elim (fun h => ⟨p.2, h⟩) (fun h => h.2.2)
+    have hpold : (p.1, old) ∈ L.«出» x := by simp [«布局».«出», hm, hs]
     have hnold : L.«是非运输单位» p.1.«止» = true := by
       unfold «布局».«是非运输单位» at *
       rw [← hold.2.2]
       exact hn
-    have he : has_output L x = true := List.any_eq_true.mpr ⟨p, hpold, hnold⟩
+    have he : has_output L x = true := List.any_eq_true.mpr ⟨(p.1, old), hpold, hnold⟩
     simp [hb] at he
 
 private theorem nonsplit_time (H : «历史») (x : «单位号») (t : «时刻»)

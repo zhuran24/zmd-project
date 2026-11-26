@@ -1,4 +1,4 @@
-import Endfield.«证明».«基础»
+import Endfield.«证明».«格子重接»
 
 /-!
 证明格子层的历史端口数合。把端口列表还原为各摆件的边格枚举，
@@ -400,8 +400,8 @@ private theorem fieldGood_build (F G : «场地») (o : «格子».«接通先�
     obtain ⟨fs, _, rfl, _⟩ := h
     exact fieldGood_add F p hF hp
 
-private theorem fieldGood_remove (F G : «场地») (u : Nat) (es : «历史»)
-    (hF : FieldGood F) (h : F.«收» u = some (G, es)) : FieldGood G := by
+private theorem fieldGood_remove (F G : «场地») {o : «格子».«接通先后»} (u : Nat) (es : «历史»)
+    (hF : FieldGood F) (h : F.«收» u o = some (G, es)) : FieldGood G := by
   unfold «场地».«收» at h
   split at h
   · cases h
@@ -795,16 +795,9 @@ private theorem «可达布局端口数合» («h同步» : «命题».«格子�
   · intro ct hct
     exact «该有通道来自场地» _ _ cs hcs ct.1 ((hmem ct.1).mpr (List.mem_map.mpr ⟨ct,hct,rfl⟩))
 
-@[reducible] private def Snapshot := List («单位号» × «单位种类») × List «通道»
+open «格子快照»
 
 private def snapshot (L : «布局») : Snapshot := (L.«单位表», L.«通道表».map Prod.fst)
-
-private def addSnapshot (s : Snapshot) : «事件» → Snapshot
-  | .«建成» u k => (s.1 ++ [(u,k)], s.2)
-  | .«接通» c => (s.1, s.2 ++ [c])
-  | .«拆除» u => (s.1.filter (fun p => p.1 != u), s.2.filter (fun c => c.«起» != u && c.«止» != u))
-
-private def replay (s : Snapshot) (es : «历史») : Snapshot := es.foldl addSnapshot s
 
 private theorem replay_append (s : Snapshot) (es fs : «历史») :
     replay s (es ++ fs) = replay (replay s es) fs := by
@@ -851,19 +844,6 @@ private theorem forms_swap (p q : «摆件») (a b : «端口») :
   split
   · rfl
   · split <;> split <;> simp_all
-
-private def Between (o : «接通先后») (p q : «摆件») (c : «通道») : Prop :=
-  ∃ ps qs, p.«端口» o = some ps ∧ q.«端口» o = some qs ∧
-    ∃ a ∈ ps, ∃ b ∈ qs, «格子».«形成通道» p q a b = some c
-
-private def Geometry (F : «场地») (o : «接通先后») (c : «通道») : Prop :=
-  ∃ p ∈ F, ∃ q ∈ F, Between o p q c
-
-private def PortsExist (F : «场地») (o : «接通先后») : Prop :=
-  ∀ p ∈ F, ∃ ps, p.«端口» o = some ps
-
-private def Synchronized (F : «场地») (o : «接通先后») (s : Snapshot) : Prop :=
-  s.1 = F.flatMap «摆件».«单位» ∧ PortsExist F o ∧ ∀ c, c ∈ s.2 ↔ Geometry F o c
 
 private theorem between_symm {o : «接通先后»} {p q : «摆件»} {c : «通道»}
     (h : Between o p q c) : Between o q p c := by
@@ -978,6 +958,33 @@ private theorem replay_connections (s : Snapshot) (es : «历史»)
     rw [hh.2]
     simp [addSnapshot, or_assoc, eq_comm]
 
+private theorem reconnect_geometry (F : «场地») (o : «接通先后») (p : «摆件») :
+    ∀ c ∈ F.«重接通道» o p, Geometry F o c := by
+  intro c hc
+  obtain ⟨q, hq, es, hes, he⟩ := («重接通道有来处» F o p c hc).1
+  obtain ⟨d, hd, r, hr, hqr⟩ := ((connections_spec F o q es hes).2 _).mp he
+  cases hd
+  exact ⟨q, hq, r, hr, hqr⟩
+
+private theorem sync_new_connections (F : «场地») (o : «接通先后») (p : «摆件»)
+    (cs : «历史») (s : Snapshot) (hs : Synchronized F o s) (hcs : F.«接通事件» o p = some cs) :
+    Synchronized (F ++ [p]) o (replay s ((p.«单位».map fun (u,k) => .«建成» u k) ++ cs)) := by
+  obtain ⟨hports, hspec⟩ := connections_spec F o p cs hcs
+  have hconn : ∀ e ∈ cs, ∃ c, e = .«接通» c := by
+    intro e he
+    obtain ⟨c, hc, _⟩ := (hspec e).mp he
+    exact ⟨c, hc⟩
+  rw [replay_append]
+  rw [replay_builds]
+  obtain ⟨hunits, hchan⟩ := replay_connections (s.1 ++ p.«单位», s.2) cs hconn
+  refine ⟨?_, hports, ?_⟩
+  · rw [hunits, hs.1]
+    simp
+  · intro c
+    rw [hchan, hs.2.2, geometry_add]
+    apply or_congr_right
+    simpa using hspec («事件».«接通» c)
+
 private theorem sync_build (F G : «场地») (o : «接通先后») (p : «摆件»)
     (es : «历史») (s : Snapshot) (hs : Synchronized F o s)
     (h : F.«建成» o p = some (G,es)) : Synchronized G o (replay s es) := by
@@ -987,21 +994,10 @@ private theorem sync_build (F G : «场地») (o : «接通先后») (p : «摆�
   · simp only [Option.bind_eq_bind, Option.bind_eq_some_iff, Option.pure_def,
       Option.some.injEq, Prod.mk.injEq] at h
     obtain ⟨cs, hcs, rfl, rfl⟩ := h
-    obtain ⟨hports, hspec⟩ := connections_spec F o p cs hcs
-    have hconn : ∀ e ∈ cs, ∃ c, e = .«接通» c := by
-      intro e he
-      obtain ⟨c, hc, _⟩ := (hspec e).mp he
-      exact ⟨c, hc⟩
     rw [replay_append]
-    rw [replay_builds]
-    obtain ⟨hunits, hchan⟩ := replay_connections (s.1 ++ p.«单位», s.2) cs hconn
-    refine ⟨?_, hports, ?_⟩
-    · rw [hunits, hs.1]
-      simp
-    · intro c
-      rw [hchan, hs.2.2, geometry_add]
-      apply or_congr_right
-      simpa using hspec («事件».«接通» c)
+    apply sync_reconnects _ o _ _ (sync_new_connections F o p cs s hs hcs)
+    intro c hc
+    exact (geometry_add F o p c).mpr (Or.inl (reconnect_geometry F o p c hc))
 
 private theorem unit_id_reserved (p : «摆件») (u : Nat) (hu : u ∈ p.«单位».map Prod.fst) :
     u ∈ p.«占号» := by
@@ -1134,9 +1130,24 @@ private theorem remove_units (F : «场地») (hF : FieldGood F) (p : «摆件»
     have hn := field_units_disjoint F hF q p hq hp hneq v.1 (List.mem_map.mpr ⟨v,hv,rfl⟩)
     simpa using hn
 
+private theorem sync_removed_units (F : «场地») (o : «接通先后») (p : «摆件»)
+    (s : Snapshot) (hF : FieldGood F) (hs : Synchronized F o s) (hp : p ∈ F) :
+    Synchronized (F.filter (·.«号» != p.«号»)) o (replay s (p.«单位».map fun (v,_) => .«拆除» v)) := by
+  have hem : (p.«单位».map fun (v,_) => «事件».«拆除» v) =
+      (p.«单位».map Prod.fst).map «事件».«拆除» := by simp [List.map_map]
+  rw [hem, replay_removes]
+  refine ⟨?_, ?_, ?_⟩
+  · rw [hs.1]
+    exact remove_units F hF p hp
+  · intro q hq
+    exact hs.2.1 q (List.mem_filter.mp hq).1
+  · intro c
+    simp only [List.mem_filter, Bool.and_eq_true, Bool.not_eq_true', List.contains_eq_mem, decide_eq_false_iff_not]
+    rw [hs.2.2, geometry_remove F hF o p hp c]
+
 private theorem sync_remove (F G : «场地») (o : «接通先后») (u : Nat)
     (es : «历史») (s : Snapshot) (hF : FieldGood F) (hs : Synchronized F o s)
-    (h : F.«收» u = some (G,es)) : Synchronized G o (replay s es) := by
+    (h : F.«收» u o = some (G,es)) : Synchronized G o (replay s es) := by
   unfold «场地».«收» at h
   split at h
   next p he =>
@@ -1145,17 +1156,8 @@ private theorem sync_remove (F G : «场地») (o : «接通先后») (u : Nat)
       have hm : p ∈ F.filter (fun p => p.«号» == u) := by rw [he]; simp
       simpa using hm
     rcases hp with ⟨hp,rfl⟩
-    have hem : (p.«单位».map fun (v,_) => «事件».«拆除» v) =
-        (p.«单位».map Prod.fst).map «事件».«拆除» := by simp [List.map_map]
-    rw [hem, replay_removes]
-    refine ⟨?_, ?_, ?_⟩
-    · rw [hs.1]
-      exact remove_units F hF p hp
-    · intro q hq
-      exact hs.2.1 q (List.mem_filter.mp hq).1
-    · intro c
-      simp only [List.mem_filter, Bool.and_eq_true, Bool.not_eq_true', List.contains_eq_mem, decide_eq_false_iff_not]
-      rw [hs.2.2, geometry_remove F hF o p hp c]
+    rw [replay_append]
+    exact sync_reconnects _ o _ _ (sync_removed_units F o p s hF hs hp) (reconnect_geometry _ o p)
   next => cases h
 
 private theorem sync_place (F G : «场地») (o : «接通先后») (p : «摆件»)
@@ -1337,7 +1339,7 @@ private theorem capacity_sub {s t : Snapshot} (h : SnapshotSub s t) (ht : Capaci
   exact ⟨Nat.le_trans (h.2.filter _).length_le hh.1, Nat.le_trans (h.2.filter _).length_le hh.2⟩
 
 private def AddOnly : «事件» → Prop
-  | .«拆除» _ => False
+  | .«拆除» _ | .«重接» _ => False
   | _ => True
 
 private def RemoveOnly : «事件» → Prop
@@ -1349,13 +1351,13 @@ private theorem add_extends (s : Snapshot) (e : «事件») (h : AddOnly e) :
   cases e with
   | «建成» u k => exact ⟨by intro uk hm; simp [addSnapshot,hm], .refl _⟩
   | «接通» c => exact ⟨List.Subset.refl _, by simp [addSnapshot]⟩
-  | «拆除» u => cases h
+  | «拆除» _ | «重接» _ => cases h
 
 private theorem remove_shrinks (s : Snapshot) (e : «事件») (h : RemoveOnly e) :
     SnapshotSub (addSnapshot s e) s := by
   cases e with
   | «建成» u k => cases h
-  | «接通» c => cases h
+  | «接通» _ | «重接» _ => cases h
   | «拆除» u => exact ⟨List.filter_sublist.subset, List.filter_sublist⟩
 
 private theorem replay_extends (s : Snapshot) (es : «历史»)
@@ -1410,36 +1412,78 @@ private theorem walk_remove (s : Snapshot) (es : «历史»)
     exact ⟨hc,ih _ (fun e he => h e (by simp [he]))
       (capacity_sub (remove_shrinks s e (h e (by simp))) hc)⟩
 
+private theorem walk_reconnects (cs : List «通道») (s : Snapshot) (hcap : Capacity s)
+    (hc : ∀ c ∈ cs, c ∈ s.2) : Walk Capacity s (cs.map .«重接») := by
+  induction cs generalizing s with
+  | nil => exact hcap
+  | cons c cs ih =>
+    have hm := hc c (by simp)
+    refine ⟨hcap, ih (addSnapshot s (.«重接» c)) ?_ ?_⟩
+    · intro uk huk
+      have h := hcap uk huk
+      exact ⟨Nat.le_trans («重接不增条数» s.2 c hm _) h.1, Nat.le_trans («重接不增条数» s.2 c hm _) h.2⟩
+    · intro d hd
+      exact («重接保留成员» s.2 c hm d).mpr (hc d (by simp [hd]))
+
 private theorem walk_build (F G : «场地») (o : «接通先后») (p : «摆件»)
     (es : «历史») (s : Snapshot) (hF : FieldGood F) (hs : Synchronized F o s)
     (hn : Walk (fun t => t.2.Nodup) s es)
     (h : F.«建成» o p = some (G,es)) : Walk Capacity s es := by
-  have hend := capacity_synced G o _ (fieldGood_build F G o p es hF h)
-    (sync_build F G o p es s hs h) (walk_last hn)
-  apply walk_add s es _ hend
+  have hG := fieldGood_build F G o p es hF h
   unfold «场地».«建成» at h
   split at h
   · contradiction
   · simp only [Option.bind_eq_bind, Option.bind_eq_some_iff, Option.pure_def,
       Option.some.injEq, Prod.mk.injEq] at h
-    obtain ⟨cs,hcs,_,rfl⟩ := h
-    intro e he
-    rcases List.mem_append.mp he with he | he
-    · obtain ⟨⟨u,k⟩,_,rfl⟩ := List.mem_map.mp he
-      trivial
-    · obtain ⟨c,rfl,_⟩ := ((connections_spec F o p cs hcs).2 e).mp he
-      trivial
+    obtain ⟨cs,hcs,rfl,rfl⟩ := h
+    rw [walk_append] at hn ⊢
+    have hs' := sync_new_connections F o p cs s hs hcs
+    have hcap := capacity_synced _ o _ hG hs' (walk_last hn.1)
+    constructor
+    · apply walk_add _ _ _ hcap
+      intro e he
+      rcases List.mem_append.mp he with he | he
+      · obtain ⟨⟨u,k⟩,_,rfl⟩ := List.mem_map.mp he
+        trivial
+      · obtain ⟨c,rfl,_⟩ := ((connections_spec F o p cs hcs).2 e).mp he
+        trivial
+    · apply walk_reconnects _ _ hcap
+      intro c hc
+      apply (hs'.2.2 c).mpr
+      exact (geometry_add F o p c).mpr (Or.inl (reconnect_geometry F o p c hc))
 
-private theorem walk_collect (F G : «场地») (u : Nat) (es : «历史»)
-    (s : Snapshot) (hc : Capacity s) (h : F.«收» u = some (G,es)) : Walk Capacity s es := by
-  apply walk_remove s es _ hc
+private theorem walk_collect (F G : «场地») {o : «接通先后»} (u : Nat) (es : «历史»)
+    (s : Snapshot) (hc : Capacity s) (h : F.«收» u o = some (G,es)) :
+    Walk Capacity s (es.filter (fun e => match e with | .«重接» _ => false | _ => true)) ∧
+    ((∀ c, .«重接» c ∈ es → Geometry F o c → c ∈ s.2) → Walk Capacity s es) := by
   unfold «场地».«收» at h
   split at h
-  · cases h
-    intro e he
-    obtain ⟨⟨v,k⟩,_,rfl⟩ := List.mem_map.mp he
-    trivial
-  · contradiction
+  next p he =>
+    cases h
+    have hem : (p.«单位».map fun (v,_) => «事件».«拆除» v) =
+        (p.«单位».map Prod.fst).map «事件».«拆除» := by simp [List.map_map]
+    rw [hem]
+    have hbase : Walk Capacity s ((p.«单位».map Prod.fst).map «事件».«拆除») := by
+      apply walk_remove _ _ _ hc
+      intro e he
+      obtain ⟨v, _, rfl⟩ := List.mem_map.mp he
+      trivial
+    constructor
+    · have keep {α : Type} (xs : List α) : xs.filter (fun _ => true) = xs := by simp
+      have drop {α : Type} (xs : List α) : xs.filter (fun _ => false) = [] := by simp
+      simpa [List.filter_append, List.filter_map, Function.comp_def, keep, drop] using hbase
+    · intro hmem
+      rw [walk_append]
+      refine ⟨hbase, walk_reconnects _ _ (walk_last hbase) ?_⟩
+      intro c hc
+      have hids := («重接通道有来处» _ o p c hc).2
+      obtain ⟨q, hq, r, hr, hqr⟩ := reconnect_geometry _ o p c hc
+      have hg : Geometry F o c :=
+        ⟨q, (List.mem_filter.mp hq).1, r, (List.mem_filter.mp hr).1, hqr⟩
+      have hm := hmem c (List.mem_append_right _ (List.mem_map_of_mem hc)) hg
+      rw [replay_removes]
+      simp [List.mem_filter, hm, hids.1, hids.2]
+  next => contradiction
 
 private theorem walk_place (F G : «场地») (o : «接通先后») (p : «摆件»)
     (es : «历史») (s : Snapshot) (hF : FieldGood F) (hs : Synchronized F o s)
@@ -1454,7 +1498,7 @@ private theorem walk_place (F G : «场地») (o : «接通先后») (p : «摆�
       dsimp only at hG hE
       subst G' es
       rw [walk_append] at hn ⊢
-      refine ⟨walk_collect F F' _ es' s hc hrem, ?_⟩
+      refine ⟨(walk_collect F F' _ es' s hc hrem).2 (fun c _ => (hs.2.2 c).mpr), ?_⟩
       exact walk_build F' G o p fs _ (fieldGood_remove F F' _ es' hF hrem)
         (sync_remove F F' o _ es' s hF hs hrem) hn.2 hb
     · exact walk_build F G o p es s hF hs hn h
@@ -1646,7 +1690,7 @@ private theorem grid_step_capacity («h同步» : «命题».«格子层的单�
     have hw : Walk Capacity (snapshot s.«模型».«布局») es := by
       first
         | exact walk_place _ _ o _ es _ hF hsync hcap hn hgeom
-        | exact walk_collect _ _ _ es _ hcap hgeom
+        | exact (walk_collect _ _ _ es _ hcap hgeom).2 (fun c _ => (hsync.2.2 c).mpr)
         | exact walk_blueprint _ _ o _ es _ hF hsync hcap hn hgeom
     apply (capacity_walk u.«历史»).mp
     rw [hh,walk_append]

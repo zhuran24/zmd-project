@@ -80,10 +80,11 @@ private theorem group_eq (T U : «判定表») (hl : U.«现布局» = T.«现�
 
 private theorem component_eq (T U : «判定表») (hl : U.«现布局» = T.«现布局»)
     (hg : U.«元件的组» = T.«元件的组»)
+    (hf : ∀ j, U.«汇流器».find? (·.1 == j) = T.«汇流器».find? (·.1 == j))
     (ht : ∀ port s, «状态».«整理» U port U.«现布局».«单位表».length s =
       «状态».«整理» T port T.«现布局».«单位表».length s)
     (port sel) (s : «状态») : s.«元件的移动判定» U port sel = s.«元件的移动判定» T port sel := by
-  simp only [«状态».«元件的移动判定», hg, group_eq T U hl ht]
+  simp only [«状态».«元件的移动判定», hg, hf, group_eq T U hl ht]
 
 private theorem select_eq (T U : «判定表») (hl : U.«现布局» = T.«现布局»)
     (ht : ∀ port s, «状态».«整理» U port U.«现布局».«单位表».length s =
@@ -137,7 +138,7 @@ theorem «一步不看没定的先后»
   have ht' := ht
   simp only [hl] at ht'
   simp only [ht', hl, hm₁, hm₂, accept_eq T U hl hf,
-    component_eq T U hl rfl ht, nontransport_eq T U hl rfl ht]
+    component_eq T U hl rfl hf ht, nontransport_eq T U hl rfl ht]
 
 /-- 据：判定顺序、级别、移动
 

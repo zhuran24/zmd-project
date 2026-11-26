@@ -55,7 +55,7 @@ def «历史».«立表照» (H : «历史») (gs : List «组») : «判定表�
       L.«种类» c.«起» == some .«传送带» && L.«种类» c.«止» == some .«传送带»
     «元件的组» := H.«按级别排» (gs.filter (·.«是元件的»))
     «汇流器» := (L.«建成先后».filter fun u => L.«种类» u == some .«汇流器»).map fun j =>
-      (j, ((L.«进» j).map (·.1)).filter fun c => L.«种类» c.«起» != some .«分流器»)
+      (j, L.«进货表» j)
     «非运输单位» := (L.«建成先后».filter L.«是非运输单位»).map fun u =>
       (u, H.«按级别排» (gs.filter fun g =>
         match g with
@@ -76,6 +76,11 @@ def «历史».«立表» (H : «历史») : «判定表» :=
 def «元件先后» (cs : List «通道») (last : Option «通道») : List «通道» :=
   let i : Option (Fin cs.length) := last.bind fun c => cs.finIdxOf? c
   («元件轮询» cs.length i).map cs.get
+
+/-- 据：元件轮询、输入判定
+按当前条数循环读上次收货的位置；空表没有上次通道。 -/
+def «位置上的通道» (cs : List «通道») (p : Nat) : Option «通道» :=
+  cs[p % cs.length]?
 
 /-- 据：非运输单位轮询
 
@@ -110,7 +115,7 @@ def «整理» (T : «判定表») (port : «通道» → Nat) : Nat → «状�
 def «输入判定» (T : «判定表») (port : «通道» → Nat) (s : «状态») (j : «单位号») : Option «通道» :=
   match T.«汇流器».find? (·.1 == j) with
   | some p =>
-    («元件先后» p.2 (s.«进货上次» j)).find? fun c => (s.«可移动物品» T.«现布局» port c).isSome
+    («元件先后» p.2 («位置上的通道» p.2 (s.«进货上次» j))).find? fun c => (s.«可移动物品» T.«现布局» port c).isSome
   | none => none
 
 /-- 据：输入判定
@@ -131,7 +136,7 @@ def «汇流器收» (T : «判定表») (port : «通道» → Nat) (un : «未
       | .«再判一次» | .«每步判两次» => s3.«输入判定» T port c.«止» == some c
       | .«轮到的那条» =>
         match T.«汇流器».find? (·.1 == c.«止») with
-        | some p => («元件先后» p.2 (s1.«进货上次» c.«止»)).head? == some c
+        | some p => («元件先后» p.2 («位置上的通道» p.2 (s1.«进货上次» c.«止»))).head? == some c
         | none => false
 
 /-- 移动判定：物品尝试通过通道从起点移到另一个物品格的过程。一组通道按轮询依次进行移动判定，直到这组通道起点中的物品都已移出，或这组通道都已判定（被轮询跳过的通道也算已判定）
@@ -157,7 +162,9 @@ def «元件的移动判定» (T : «判定表») (port : «通道» → Nat) (s
     let last :=
       match p.1 with
       | .«分流器的» u => s.«分流器上次» u
-      | .«进同一个的» t => s.«进货上次» t
+      | .«进同一个的» t =>
+        let inputs := (T.«汇流器».find? (·.1 == t)).map Prod.snd
+        «位置上的通道» (inputs.getD p.2) (s.«进货上次» t)
       | _ => none
     s.«判一组» T port sel («元件先后» p.2 last)) s
 

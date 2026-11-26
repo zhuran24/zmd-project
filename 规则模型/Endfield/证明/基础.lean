@@ -132,6 +132,17 @@ private theorem nodup_filter_map {α β : Type} (xs : List α) (f : α → β) (
     (h : (xs.map f).Nodup) : ((xs.filter p).map f).Nodup :=
   List.Nodup.sublist ((List.filter_sublist).map f) h
 
+/-- 工具：重接只更新已有通道的时刻，每条通道仍能在原布局中找到。 -/
+theorem «重接前已有» (L : «布局») (t : «时刻») (c : «通道»)
+    (he : L.«容得下» (.«重接» c) = true) (p : «通道» × «时刻»)
+    (hp : p ∈ (L.«加» t (.«重接» c)).«通道表») : ∃ old, (p.1, old) ∈ L.«通道表» := by
+  simp only [«加», List.mem_append, List.mem_filter, List.mem_singleton] at hp
+  rcases hp with ⟨hp, _⟩ | rfl
+  · exact ⟨p.2, hp⟩
+  · obtain ⟨⟨d, old⟩, hd, hdc⟩ := List.any_eq_true.mp he
+    simp only [beq_iff_eq] at hdc
+    exact ⟨old, hdc ▸ hd⟩
+
 private theorem tidy_add (L : «布局») (t : «时刻») (e : «事件»)
     (hs : L.«整齐») (he : L.«容得下» e = true) : (L.«加» t e).«整齐» := by
   cases e with
@@ -186,6 +197,18 @@ private theorem tidy_add (L : «布局») (t : «时刻») (e : «事件»)
       rcases hp with hp | rfl
       · exact hs.«有运输的» p hp
       · exact htrans
+  | «重接» c =>
+    refine ⟨hs.«单位不重», ?_, ?_, ?_, ?_⟩
+    · simp only [«加», List.map_append, List.map_cons, List.map_nil, List.nodup_append]
+      refine ⟨nodup_filter_map _ _ _ hs.«通道不重», by simp, ?_⟩
+      simp
+    all_goals
+      intro p hp
+      obtain ⟨old, hold⟩ := «重接前已有» L t c he p hp
+      first
+        | exact hs.«两头都在» (p.1, old) hold
+        | exact hs.«不连自己» (p.1, old) hold
+        | exact hs.«有运输的» (p.1, old) hold
   | «拆除» u =>
     refine ⟨nodup_filter_map _ _ _ hs.«单位不重», nodup_filter_map _ _ _ hs.«通道不重», ?_, ?_, ?_⟩
     · intro p hp

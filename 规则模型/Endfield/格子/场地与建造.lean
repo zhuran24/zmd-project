@@ -63,19 +63,53 @@ def «场地».«接通事件» (s : «场地») (o : «接通先后») (p : «�
     | _ => none
   return es.flatten
 
+/-- 据：传送带、通道
+从一格带子的存货边或取货边，找同它正对紧贴的上一格或下一格普通带。 -/
+def «场地».«相邻带格» (s : «场地») (p : «摆件») («下游» : Bool) : Option {q // q ∈ s} := do
+  let .«传送带» a b := p.«种类» | none
+  let d := if «下游» then b else a
+  let cell ← p.«位置».«邻格» d
+  s.attach.find? fun ⟨q, _⟩ => q.«位置» == cell && match q.«种类» with
+    | .«传送带» i o => (if «下游» then i else o) == d.«对边»
+    | _ => false
+
+/-- 据：传送带、通道
+从相邻带格朝同一方向走到尽头；步数用尽表示绕圈，没有带端。 -/
+def «场地».«带端格» (s : «场地») («下游» : Bool) : Nat → {q // q ∈ s} → Option {q // q ∈ s}
+  | 0, _ => none
+  | n + 1, q => match s.«相邻带格» q.val «下游» with
+    | none => some q
+    | some r => s.«带端格» «下游» n r
+
+/-- 据：传送带、接通
+改动 p 时，从紧邻的普通带格往外找原有的带端通道，先上游后下游。
+s 只含这次保留的摆件，所以 p 自己的通道不会重接；缺口、断头和环都不产生通道。 -/
+def «场地».«重接通道» (s : «场地») (o : «接通先后») (p : «摆件») : List «通道» :=
+  [false, true].filterMap fun «下游» => do
+    let first ← s.«相邻带格» p «下游»
+    let last ← s.«带端格» «下游» s.length first
+    let es ← s.«接通事件» o last.val
+    let c ← (es.filterMap fun e => match e with
+      | .«接通» c => if (if «下游» then c.«起» else c.«止») == last.val.«号» then some c else none
+      | _ => none).head?
+    let ids := p.«单位».map Prod.fst
+    if ids.contains c.«起» || ids.contains c.«止» then none else some c
+
 /-- 据：接通、桥接器
-建成的单位先发出事件，再按新摆件的端口先后接通；期间没有走步。 -/
+建成的单位先发出事件，再按新摆件的端口先后接通，最后重接原有带端；期间没有走步。 -/
 def «场地».«建成» (s : «场地») (o : «接通先后») (p : «摆件») :
     Option («场地» × «历史») := do
   if !s.«摆得下» p then none else do
     let es ← s.«接通事件» o p
-    return (s ++ [p], (p.«单位».map fun (u,k) => .«建成» u k) ++ es)
+    return (s ++ [p], (p.«单位».map fun (u,k) => .«建成» u k) ++ es ++ (s.«重接通道» o p).map .«重接»)
 
 /-- 据：接通、桥接器、供电桩
-按摆件的号收回整件；桥接器四个单位依上右下左拆除，供电桩只移出场地。 -/
-def «场地».«收» (s : «场地») (u : Nat) : Option («场地» × «历史») :=
+按摆件的号收回整件；桥接器四个单位依上右下左拆除，供电桩只移出场地。收掉带格后重接剩下的带端。 -/
+def «场地».«收» (s : «场地») (u : Nat) (o : «接通先后» := ⟨fun _ _ => 0⟩) : Option («场地» × «历史») :=
   match s.filter (·.«号» == u) with
-  | [p] => some (s.filter (·.«号» != u), p.«单位».map fun (v,_) => .«拆除» v)
+  | [p] =>
+    let rest : «场地» := s.filter (·.«号» != u)
+    some (rest, (p.«单位».map fun (v,_) => .«拆除» v) ++ (rest.«重接通道» o p).map .«重接»)
   | _ => none
 
 /-- 据：物品准入口、传送带
@@ -92,7 +126,7 @@ def «场地».«建» (s : «场地») (o : «接通先后») (p : «摆件») 
       (match q.«种类» with | .«传送带» a b => a == b.«对边» && b == d | _ => false)
     match qs with
     | [q] =>
-      let (s', es) ← s.«收» q.«号»
+      let (s', es) ← s.«收» q.«号» o
       let (s'', fs) ← s'.«建成» o p
       return (s'', es ++ fs)
     | [] => «场地».«建成» s o p
