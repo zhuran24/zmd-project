@@ -1,0 +1,4 @@
+ERR Error executing tool box_watch: 1 validation error for box_watchArguments
+timeout
+  Input should be a valid integer, got a number with a fractional part [type=int_from_float, input_value=9.3, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.13/v/int_from_float
