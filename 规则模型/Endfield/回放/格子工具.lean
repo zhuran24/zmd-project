@@ -71,7 +71,8 @@ def «转布局» : Nat → List «摆件» → Option (List «摆件»)
   | 0, ps => some ps
   | n + 1, ps => (ps.mapM «转一次»).bind («转布局» n)
 
-/-- 回放：从历史中提取通道的接通先后，建成与拆除不列。 -/
+/-- 回放：从历史中提取各条通道头一次接通的先后，建成、拆除、重接不列。
+重接会把一条通道排到最后：要看现在的先后，看 `布局.通道表`。 -/
 def «接通表» (es : «历史») : List «通道» :=
   es.filterMap fun e => match e with | .«接通» c => some c | _ => none
 
