@@ -1,13 +1,16 @@
 # 在规则模型的副本里试的改法（2026-11-26，没有并进模型）：把「结束制造判定」从一步的开头挪到移动判定之后、开始制造判定之前。
-# 配上名额至少占 37 步（已并进模型），实测-2026-11-25「每件隔 9 步的货流过精炼炉」四行整套模型逐件相同（脚本：实测-2026-11-25-原始/脚本/九步货流过精炼炉-模型预计.lean）。
-# 副本里全量编译过不了的：证明至少 3 处（证明/物品格.lean 两处、证明/一步.lean 一处；靠这两个文件的后面那些没编到），旧核对 9 条（回放/配件机和带子 2、换配方 2、原料格堆满 3，例子/走步 2）。
-# 证明/一步.lean 那一处是命题「一步不看没定的先后」：命题原话（Endfield/命题.lean 的「一步照」）照着一步的先后写了一遍，并进模型时命题原话也要跟着改。
-# 看了其中三条在副本里变成什么：回放/配件机和带子「加工读数」第 33 步产物还没上后带（原来第 33 步上，晚 1 步）；
-# 回放/换配方「三路出货 false」各件的步数都正好加 1（17、25、33…变成 18、26、34…），间隔仍是 8；别的几条没逐条看。
-# 这几条当初的来源都是整秒（或 tick）上的读数，核对里的步号是模型自己算的。
-# 同一个副本里，实测-2026-11-26 第十节粉碎机那一批的十档读数也逐档相同（脚本：相位尺-粉碎机十档-模型算的.lean；没改的模型错两档）。
---- Endfield/判定.lean	2026-11-26 02:37:40.169100684 -0500
-+++ 副本/Endfield/判定.lean	2026-11-26 09:00:33.042690099 -0500
+# 产物晚 1 步上出口带，连着做还是 8 步一批。副本的名额已经是至少占 37 步（这一处已并进模型）。
+# 副本里逐件对得上的读数：
+#   实测-2026-11-25「每件隔 9 步的货流过精炼炉」四行（脚本：实测-2026-11-25-原始/脚本/九步货流过精炼炉-模型预计.lean）；
+#   实测-2026-11-26 第十节粉碎机那一批的十档（脚本：相位尺-粉碎机十档-模型算的.lean；没改的模型错两档）；
+#   实测-2026-11-26 第十一节「看到的四」限速放出来的单件过精炼炉（先算后做；没改的模型算错）。
+# 这份补丁改五个文件：判定.lean（一步的先后）、命题.lean（命题「一步不看没定的先后」里照着一步写的「一步照」，命题原话跟着变）、
+# 走步不改历史.lean、证明/一步.lean、证明/物品格.lean（三处证明只是把先后调过来）。副本里这样改以后 29 条命题都证得过。
+# 还过不了的只有 9 条旧核对：回放/配件机和带子 2、换配方 2、原料格堆满 3，例子/走步 2。看过其中三条：
+#   配件机和带子「加工读数」第 33 步产物还没上后带（原来第 33 步上，晚 1 步）；换配方「三路出货 false」各件的步数都正好加 1、间隔仍是 8。
+#   这几条当初的来源都是整秒（或 tick）上的读数，核对里的步号是模型自己算的；并进去时要逐条对回来源再改数。
+--- Endfield/判定.lean
++++ 副本/Endfield/判定.lean
 @@ -381,9 +381,10 @@
    let port := todo.«口» s
    let us := T.«非运输单位».map (·.1)
@@ -20,8 +23,22 @@
    let s5 := s4.«开始制造判定» T.«现布局» todo us
    «计时» un todo s5
  
---- Endfield/走步不改历史.lean	2026-11-12 10:27:05.176360568 -0500
-+++ 副本/Endfield/走步不改历史.lean	2026-11-26 09:00:46.798169321 -0500
+--- Endfield/命题.lean
++++ 副本/Endfield/命题.lean
+@@ -198,9 +198,10 @@
+   let T := «换排法» T bs js
+   let port := todo.«口» s
+   let s0 := «状态».«整理» T port T.«现布局».«单位表».length s
+-  let s1 := s0.«结束制造判定» T.«现布局» todo us₁
++  let s1 := s0
+   let s3 := s1.«元件的移动判定» T port (fun c => s1.«汇流器收» T port un s1 c)
+   let s4 := s3.«非运输单位的移动判定» T un todo port (fun c => s1.«汇流器收» T port un s3 c)
++  let s4 := s4.«结束制造判定» T.«现布局» todo us₁
+   let s5 := s4.«开始制造判定» T.«现布局» todo us₂
+   «计时» un todo s5
+ 
+--- Endfield/走步不改历史.lean
++++ 副本/Endfield/走步不改历史.lean
 @@ -131,8 +131,8 @@
    unfold «一步于»
    show («计时» un todo _).«历史» = _
@@ -33,3 +50,41 @@
  
  /-- 据：判定顺序、通道
  
+--- Endfield/证明/一步.lean
++++ 副本/Endfield/证明/一步.lean
+@@ -130,9 +130,10 @@
+   unfold «命题».«一步照» «一步于»
+   change (let port := todo.«口» s
+           let s0 := «状态».«整理» U port U.«现布局».«单位表».length s
+-          let s1 := s0.«结束制造判定» U.«现布局» todo us₁
++          let s1 := s0
+           let s3 := s1.«元件的移动判定» U port (fun c => s1.«汇流器收» U port un s1 c)
+           let s4 := s3.«非运输单位的移动判定» U un todo port (fun c => s1.«汇流器收» U port un s3 c)
++          let s4 := s4.«结束制造判定» U.«现布局» todo us₁
+           let s5 := s4.«开始制造判定» U.«现布局» todo us₂
+           «计时» un todo s5) = _
+   have ht' := ht
+--- Endfield/证明/物品格.lean
++++ 副本/Endfield/证明/物品格.lean
+@@ -719,9 +719,9 @@
+       goods T.«现布局» («计时» un todo s) := hs
+   apply clock
+   apply startcheck_goods
++  apply endcheck_goods _ _ _ _ ht
+   apply nontransport_goods _ _ _ _ _ _ ht
+   apply components_goods _ _ _ _ ht
+-  apply endcheck_goods _ _ _ _ ht
+   exact tidy_goods _ _ _ _ ht hs
+ 
+ private theorem cache_congr (s t : «状态») (u : «单位号») (k : «制造单位»)
+@@ -989,9 +989,9 @@
+   unfold «一步于»
+   apply clock_progress
+   apply startcheck_progress _ _ _ _ ht
++  apply endcheck_progress
+   apply nontransport_progress
+   apply components_progress
+-  apply endcheck_progress
+   exact tidy_progress _ _ _ _ hs
+ 
+ /-- 据：物品格、运输单位、协议储存箱、存货/取货物品格
