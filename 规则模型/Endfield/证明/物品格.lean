@@ -719,9 +719,9 @@ private theorem step_goods (T : «判定表») (un : «未定») (todo : «待�
       goods T.«现布局» («计时» un todo s) := hs
   apply clock
   apply startcheck_goods
+  apply endcheck_goods _ _ _ _ ht
   apply nontransport_goods _ _ _ _ _ _ ht
   apply components_goods _ _ _ _ ht
-  apply endcheck_goods _ _ _ _ ht
   exact tidy_goods _ _ _ _ ht hs
 
 private theorem cache_congr (s t : «状态») (u : «单位号») (k : «制造单位»)
@@ -989,9 +989,9 @@ private theorem step_progress (T : «判定表») (un : «未定») (todo : «�
   unfold «一步于»
   apply clock_progress
   apply startcheck_progress _ _ _ _ ht
+  apply endcheck_progress
   apply nontransport_progress
   apply components_progress
-  apply endcheck_progress
   exact tidy_progress _ _ _ _ hs
 
 /-- 据：物品格、运输单位、协议储存箱、存货/取货物品格

@@ -8,7 +8,7 @@ import Endfield.«回放».«工具»
 - 求解器/规则修订/2026-10-08-现象整理/现象.md，「制造与换料 3」。
 
 先列观察：
-1. 满载稳态，两套下游各运输单位同一步的有货/无货位置一一相同，每 tick 如此。
+1. 满载稳态，两套下游位置一一相同。清单第 27 条写「看不出整 tick 的先后差」，原始材料只有同一帧。
 2. 截图：普通一套前七格全有货；配件机一套前三格和后一个格全有货。
 3. 截图：两套上半圈各两件、下半圈各一件，汇流器后一格各一件，位置相同。
 4. 作者称加工时延 2 秒、三格带行走 6 秒，配件机流速与满带相当。
@@ -72,12 +72,17 @@ def «记录» (m : Bool) :=
 set_option maxRecDepth 8192
 set_option maxHeartbeats 0
 
--- 观察 1：同一步比较全部九个下游运输格；32 步无一例外，且两套各自 16 步重复。
+-- 观察 1：截图能对上各格；作者没有逐步记录。模型里两套各自 16 步重复，配件机晚一步。
+-- 比全部 32 步、每步全部九格。按周期把纯带末一帧接到开头，与配件机逐帧比；另核同一步有差别的全部步号。
 #guard match «记录» true, «记录» false with
   | some a, some b =>
-    a.length == 32 && b.length == 32 && a.map (·.1) == b.map (·.1) &&
-    (a.take 16).map (·.1) == (a.drop 16).map (·.1) &&
-    (b.take 16).map (·.1) == (b.drop 16).map (·.1)
+    let machine : List (List Bool) := a.map (fun r => r.1)
+    let belt : List (List Bool) := b.map (fun r => r.1)
+    let different := (machine.zip belt).zipIdx.filter (fun p => p.1.1 != p.1.2)
+    machine.length == 32 && belt.length == 32 &&
+      machine == belt.drop 31 ++ belt.take 31 &&
+      different.map (fun p => 160 + p.2) == [161, 169, 177, 185] &&
+      machine.take 16 == machine.drop 16 && belt.take 16 == belt.drop 16
   | _, _ => false
 
 -- 观察 2：整个固定窗口内，配件机前三带和后一带全有货，普通一套七格全有货。
@@ -105,14 +110,13 @@ set_option maxHeartbeats 0
   | _, _ => false
 
 /-- 回放：观察 4 的时延，记录首批开工剩余步数和后带物品。
-首件第 1 步上第一格，第 25 步越过三格带到机器（3 tick），第 33 步产物上后带（再 1 tick）。
-只按模型时间核对，来源的 2 秒、6 秒分别对应 1 tick、3 tick。 -/
+来源作者称加工 2 秒、三格带走 6 秒。模型里首件第 1 步上带，第 25 步到机器，第 33 步完工，第 34 步上后带。 -/
 def «加工读数» :=
   («演» «状态».«空» («布置» true)).map fun s =>
-    «逐次看» (fun s => ((s.«制造中» 4).map (·.2), «格里» s 7)) [24, 25, 32, 33] s
+    «逐次看» (fun s => ((s.«制造中» 4).map (·.2), «格里» s 7)) [24, 25, 32, 33, 34] s
 
--- 观察 4 的时延：第 25 步开工，第 32 步末计满，33 步开始时完工且送出；同一步下一批开工。
+-- 观察 4 的模型步号：第 32 步末计满，第 33 步移动后完工、下一批开工，后带仍空。第 34 步首件上后带。
 #guard «加工读数» == some [(none, none), (some 7, none), (some 0, none),
-  (some 7, some .«钢制零件»)]
+  (some 7, none), (some 6, some .«钢制零件»)]
 
 end Endfield.«回放».«配件机和带子»

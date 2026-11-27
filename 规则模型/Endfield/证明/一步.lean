@@ -129,11 +129,11 @@ theorem «一步不看没定的先后»
   change «命题».«一步照» T bs js us₁ us₂ un todo s = «一步于» T un todo s
   unfold «命题».«一步照» «一步于»
   change (let port := todo.«口» s
-          let s0 := «状态».«整理» U port U.«现布局».«单位表».length s
-          let s1 := s0.«结束制造判定» U.«现布局» todo us₁
+          let s1 := «状态».«整理» U port U.«现布局».«单位表».length s
           let s3 := s1.«元件的移动判定» U port (fun c => s1.«汇流器收» U port un s1 c)
           let s4 := s3.«非运输单位的移动判定» U un todo port (fun c => s1.«汇流器收» U port un s3 c)
-          let s5 := s4.«开始制造判定» U.«现布局» todo us₂
+          let finished := s4.«结束制造判定» U.«现布局» todo us₁
+          let s5 := finished.«开始制造判定» U.«现布局» todo us₂
           «计时» un todo s5) = _
   have ht' := ht
   simp only [hl] at ht'
