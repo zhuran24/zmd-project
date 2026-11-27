@@ -43,6 +43,13 @@ import Endfield.«回放».«格子工具»
 import Endfield.«回放».«格子边界»
 import Endfield.«回放».«格子»
 import Endfield.«回放».«桥接器各边的先后»
+import Endfield.«回放».«贴箱的分流器»
+import Endfield.«回放».«贴箱分流器争第一格»
+import Endfield.«回放».«种植机三条出口带»
+import Endfield.«回放».«蓝图里的准入口»
+import Endfield.«回放».«蓝图空格和直带相接»
+import Endfield.«回放».«供电范围右上角»
+import Endfield.«回放».«粉碎机整批进取货格»
 import Endfield.«回放».«制造单位头一条出口进汇流器»
 import Endfield.«回放».«准入口周期»
 import Endfield.«回放».«传输周期»

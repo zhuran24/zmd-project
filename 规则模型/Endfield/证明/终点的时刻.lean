@@ -53,11 +53,8 @@ private theorem endpoint_cases (L : «布局») (x : «单位号»)
       split at he
       next p hp =>
         have hx : p.1.«止» = x := Option.some.inj he
-        have ha : (L.«出» e).all (fun q => L.«是非运输单位» q.1.«止») = true := by
-          simp only [«布局».«是末端元件», Bool.and_eq_true] at ht
-          exact ht.2
-        simp only [hp, List.all_cons, List.all_nil, Bool.and_true] at ha
-        exact Or.inr (by simpa [hx] using ha)
+        simp only [«布局».«是末端元件», Bool.and_eq_true] at ht
+        exact Or.inr (by simpa [hp, hx] using ht.1.2)
       next => contradiction
 
 private theorem endpoint_present (L : «布局») (x : «单位号»)
@@ -134,7 +131,7 @@ private theorem endpoint_edge (L : «布局») (x : «单位号»)
         have hx : p.1.«止» = x := Option.some.inj he
         have hnon : L.«是非运输单位» x = true := by
           simp only [«布局».«是末端元件», Bool.and_eq_true] at ht
-          simpa [hp, hx] using ht.2
+          simpa [hp, hx] using ht.1.2
         cases hk' : L.«种类» e with
         | none => simp [«布局».«是运输单位», hk'] at htr
         | some k =>

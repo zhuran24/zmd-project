@@ -36,7 +36,7 @@ theorem «末端元件有终点» : «命题».«末端元件有终点» := by
   · simp [«布局».«终点», he, hk, hs]
   · have hl := L.«端口数合_出» e k hp hk
     rw [one_port k ht hs] at hl
-    have hn : (L.«出» e).isEmpty = false := by simpa using he'.1.2
+    have hn := he'.1.2
     cases ho : L.«出» e with
     | nil => simp [ho] at hn
     | cons p ps =>
@@ -68,6 +68,7 @@ private theorem group_in (L : «布局») (c : «通道») (t : «单位号»)
 private theorem source_data (L : «布局») (p : «通道» × «时刻») (t : «单位号»)
     (hp : L.«端口数合» = true) (hm : p ∈ L.«通道表»)
     (hg : L.«所在组» p.1 = some (.«进同一个的» t)) :
+    L.«所在元件» 1 p.1.«起» = some p.1.«起» ∧
     L.«出» p.1.«起» = [p] ∧
     L.«是末端元件» p.1.«起» = L.«是非运输单位» t ∧
     (L.«是非运输单位» t = true → L.«终点» p.1.«起» = some t) := by
@@ -93,8 +94,8 @@ private theorem source_data (L : «布局») (p : «通道» × «时刻») (t :
     cases k <;> simp_all [«布局».«所在元件», «单位种类».«是运输单位»]
   have hcomp : p.1.«起» ∈ L.«元件» := by simp [«布局».«元件», hb, hc]
   have ht : L.«是末端元件» p.1.«起» = L.«是非运输单位» t := by
-    simp [«布局».«是末端元件», hcomp, ho, hst]
-  refine ⟨ho, ht, ?_⟩
+    simp [«布局».«是末端元件», hcomp, ho, hst, hk, hks]
+  refine ⟨hc, ho, ht, ?_⟩
   intro hn
   simp [«布局».«终点», ht, hn, hk, hks, ho, hst]
 
@@ -130,22 +131,26 @@ private theorem candidates_equal (H : «历史») (now n : Nat)
     let ev := fun (P : List «单位号») =>
       ((P.getLast?.bind L.«终点»).bind (H.«终点的时刻» now)).map fun t => (t, P.length)
     (L.«运输带从» (n+1) p.1.«起»).filterMap ev =
-      (L.«运输带从» (n+1) q.1.«起»).filterMap ev := by
+      (L.«运输带从» (n+1) q.1.«起»).filterMap ev ∧
+      L.«待接箱的次序» (n+1) p.1.«起» = L.«待接箱的次序» (n+1) q.1.«起» := by
   dsimp only
   let L := H.«布局于» now
-  obtain ⟨hop, htp, hep⟩ := source_data L p t hp hpm hpg
-  obtain ⟨hoq, htq, heq⟩ := source_data L q t hp hqm hqg
+  obtain ⟨hcp, hop, htp, hep⟩ := source_data L p t hp hpm hpg
+  obtain ⟨hcq, hoq, htq, heq⟩ := source_data L q t hp hqm hqg
+  obtain ⟨hsp, kp, hkp, _, hnp, _⟩ := group_in L p.1 t hpg
+  obtain ⟨hsq, kq, hkq, _, hnq, _⟩ := group_in L q.1 t hqg
+  have hdown : L.«下游元件» p.1.«起» = L.«下游元件» q.1.«起» := by
+    simp [«布局».«下游元件», hop, hoq, List.filterMap_cons, hsp, hsq]
+  constructor
+  case right =>
+    simp [«布局».«待接箱的次序», hkp, hkq, hnp, hnq, hcp, hcq, hdown, L]
   let ev := fun (P : List «单位号») =>
     ((P.getLast?.bind L.«终点»).bind (H.«终点的时刻» now)).map fun t => (t, P.length)
   change (L.«运输带从» (n+1) p.1.«起»).filterMap ev =
     (L.«运输带从» (n+1) q.1.«起»).filterMap ev
   by_cases hn : L.«是非运输单位» t = true
   · simp [«布局».«运输带从», htp, htq, hn, ev, List.filterMap_cons, hep hn, heq hn]
-  · have hdown : L.«下游元件» p.1.«起» = L.«下游元件» q.1.«起» := by
-      have hsp := (group_in L p.1 t hpg).1
-      have hsq := (group_in L q.1 t hqg).1
-      simp [«布局».«下游元件», hop, hoq, List.filterMap_cons, hsp, hsq]
-    simp only [«布局».«运输带从», htp, htq, hn, Bool.false_eq_true, ↓reduceIte,
+  · simp only [«布局».«运输带从», htp, htq, hn, Bool.false_eq_true, ↓reduceIte,
       List.filterMap_flatMap, List.filterMap_map]
     rw [hdown]
     congr 1
@@ -173,7 +178,7 @@ theorem «同组次序相同» : «命题».«同组次序相同» := by
       (List.mem_filter.mp hpm).1 (List.mem_filter.mp hqm).1 hpg hqg
     unfold «历史».«次序»
     dsimp only at he ⊢
-    rw [he]
+    rw [he.1, he.2]
   | «出货的» u => simp [«组».«是元件的»] at hg
   | «进汇流器的» c => simp [«组».«是元件的»] at hg
 

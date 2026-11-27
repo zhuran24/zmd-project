@@ -14,10 +14,9 @@ private theorem terminal_time (H : «历史») (now e x : Nat)
   let L := H.«布局于» now
   change L.«是末端元件» e = true at he
   change L.«终点» e = some x at hx
-  have he' : e ∈ L.«元件» ∧ (L.«出» e).isEmpty = false ∧
-      (L.«出» e).all (fun p => L.«是非运输单位» p.1.«止») = true := by
-    simpa [«布局».«是末端元件», Bool.and_eq_true, and_assoc] using he
-  obtain ⟨hm, hn, ha⟩ := he'
+  have he' := he
+  simp only [«布局».«是末端元件», Bool.and_eq_true, List.contains_iff_mem] at he'
+  obtain ⟨⟨hm, ha⟩, _⟩ := he'
   have ht : L.«是终点» x = true := by
     apply List.any_eq_true.mpr
     exact ⟨e, hm, by simp [hx]⟩
@@ -27,11 +26,7 @@ private theorem terminal_time (H : «历史») (now e x : Nat)
     by_cases hs : L.«种类» e = some .«分流器»
     · have ex : e = x := by simpa [«布局».«终点», he, hs] using hx
       subst x
-      cases ho : L.«出» e with
-      | nil => simp [ho] at hn
-      | cons p ps =>
-        apply List.any_eq_true.mpr
-        exact ⟨p, by simp, List.all_eq_true.mp ha p (by simp [ho])⟩
+      exact ha
     · have ho : ∃ p, L.«出» e = [p] ∧ p.1.«止» = x := by
         simp only [«布局».«终点», he, Bool.not_true, Bool.false_eq_true,
           ↓reduceIte, beq_iff_eq, hs] at hx
@@ -39,8 +34,7 @@ private theorem terminal_time (H : «历史») (now e x : Nat)
         · exact ⟨_, by assumption, Option.some.inj hx⟩
         · contradiction
       obtain ⟨p, hp, hpx⟩ := ho
-      have := List.all_eq_true.mp ha p (by simp [hp])
-      simp [«布局».«是非运输单位», hpx, hk, «单位种类».«是运输单位»] at this
+      simp [hp, «布局».«是非运输单位», hpx, hk, «单位种类».«是运输单位»] at ha
   unfold «历史».«终点的时刻»
   change (if !L.«是终点» x then none else if L.«种类» x == some .«分流器» then _ else _).isSome = true
   simp only [ht, Bool.not_true, Bool.false_eq_true, ↓reduceIte]

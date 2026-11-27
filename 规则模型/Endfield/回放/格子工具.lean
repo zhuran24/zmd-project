@@ -46,6 +46,17 @@ def «等» (n : Nat) (s : Endfield.«格子».«状态») : Endfield.«格子»
     s.«模型».«历史».«立表» n s.«模型»
   { s with «模型» := t }
 
+/-- 回放：同一场地连续走步，保留第 0 步和以后每一步的读数。 -/
+def «逐步读» {α : Type} (s : Endfield.«格子».«状态») (n : Nat) («读» : Endfield.«状态» → α) :
+    Endfield.«格子».«状态» × List α := Id.run do
+  let step := «走» «取一种» (s.«场地».«待写» «端口先后» «无效口») s.«模型».«历史».«立表» 1
+  let mut m := s.«模型»
+  let mut rows := #[«读» m]
+  for _ in [:n] do
+    m := step m
+    rows := rows.push («读» m)
+  return ({s with «模型» := m}, rows.toList)
+
 /-- 回放：屏幕顺时针旋转摆件朝向。 -/
 def «转种类» : «摆件种类» → «摆件种类»
   | .«传送带» a b => .«传送带» a.«顺时针» b.«顺时针»
