@@ -1,0 +1,14 @@
+{
+ "rect": [
+  39,
+  35,
+  31,
+  35
+ ],
+ "P": 10,
+ "J": 0,
+ "case": "box",
+ "status": "INFEASIBLE",
+ "ortools": "9.15.6755",
+ "branches": 246135
+}

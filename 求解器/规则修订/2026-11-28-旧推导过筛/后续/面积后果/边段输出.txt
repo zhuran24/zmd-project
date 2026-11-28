@@ -1,0 +1,14 @@
+base A 1092 21x52 P,J 10,0 hmask 5 budget 30 survivors 10 sample 49,18 d,side 6,0 X0lb,Y0lb 13,9
+base A 1092 26x42 P,J 10,0 hmask 5 budget 30 survivors 19 sample 44,28 d,side 6,0 X0lb,Y0lb 14,8
+base A 1092 28x39 P,J 10,0 hmask 5 budget 30 survivors 22 sample 42,31 d,side 6,0 X0lb,Y0lb 14,8
+shaper A 1085 31x35 P,J 10,0 hmask 5 budget 24 survivors 1 sample 39,35 d,side 6,0 X0lb,Y0lb 13,7
+other-small A 1085 31x35 P,J 10,0 hmask 5 budget 22 survivors 1 sample 39,35 d,side 6,0 X0lb,Y0lb 13,7
+box A 1085 31x35 P,J 10,0 hmask 5 budget 22 survivors 1 sample 39,35 d,side 6,0 X0lb,Y0lb 13,7
+box-next A 1083 19x57 P,J 10,0 hmask 517 budget 30 survivors 8 sample 51,13 d,side 6,0 X0lb,Y0lb 12,8
+box-next A 1083 19x57 P,J 11,2 hmask 0 budget 18 survivors 1 sample 51,13 d,side 6,0 X0lb,Y0lb 11,6
+box+shaper A 1075 25x43 P,J 10,0 hmask 517 budget 28 survivors 56 sample 45,27 d,side 6,0 X0lb,Y0lb 11,6
+box+shaper A 1075 25x43 P,J 11,1 hmask 0 budget 14 survivors 1 sample 45,27 d,side 6,0 X0lb,Y0lb 11,3
+box+shaper A 1075 25x43 P,J 11,2 hmask 0 budget 16 survivors 1 sample 45,27 d,side 6,0 X0lb,Y0lb 11,3
+box+other-small A 1075 25x43 P,J 10,0 hmask 517 budget 26 survivors 20 sample 45,27 d,side 6,0 X0lb,Y0lb 11,6
+box+other-small A 1075 25x43 P,J 11,2 hmask 0 budget 14 survivors 1 sample 45,27 d,side 6,0 X0lb,Y0lb 11,3
+crusher+seed A 1060 20x53 P,J 10,0 hmask 5 budget 22 survivors 10 sample 50,17 d,side 6,0 X0lb,Y0lb 10,6
