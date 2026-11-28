@@ -33,6 +33,12 @@ fn rotate(cs: &[Channel], last: Option<&Channel>) -> Vec<Channel> {
 }
 
 impl State {
+    // 进货上次存的是进货表里的位置，装载和每次写入都保证它在表内；
+    // 表空时没有上次，其余情况直接取，越界即是程序错。
+    fn last_input<'a>(&self, t: &'a Tables, u: &Id) -> Option<&'a Channel> {
+        let inputs = &t.inputs[u];
+        (!inputs.is_empty()).then(|| &inputs[self.units[u].last_index])
+    }
     fn selections<R: MergerRule>(
         &self,
         t: &Tables,
@@ -43,7 +49,7 @@ impl State {
         for (u, k) in &t.layout.built {
             if *k == Kind::汇流器 {
                 let inputs = &t.inputs[u];
-                let order = rotate(inputs, inputs.get(self.units[u].last_index));
+                let order = rotate(inputs, self.last_input(t, u));
                 let chosen = order.iter().find(|c| self.source(c, p).is_some()).copied();
                 result.insert(*u, rule.record(&order, chosen));
             }
@@ -82,7 +88,7 @@ impl State {
                     };
                     last.as_ref()
                 }
-                ElementGroup::Into(u) => t.inputs[u].get(self.units[u].last_index),
+                ElementGroup::Into(u) => self.last_input(t, u),
             };
             self.judge(t, p, &rotate(cs, last), accept)
         }

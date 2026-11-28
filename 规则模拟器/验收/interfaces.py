@@ -169,7 +169,8 @@ def extras(root):
     for tag in [{"未知": None}, {"钢块": 1, "源矿": 2}, []]:
         action(["入库", tag, 0])
     state("仓库", [[{"钢块": {}}, 1]])
-    for note in [r"literal \ud800", "\ud800", "\udc00", "\ud800\udc00", "\ud800\ufeff"]:
+    # 孤立的 UTF-16 代理项转义不是合法文本：Lean 的解析器换成 U+FFFD 收下，Rust 有意拒绝（见 tests/replay_input.rs）。
+    for note in [r"literal \ud800", "\ud800\udc00"]:
         check("备注 UTF-16 转义", json.dumps(doc(dict(base, 备注=note))), True)
     check("不同转义还原出同名键", '{"版本":1,"段":[],"\\ud800":1,"\\ufffd":2}')
     for event in [["未知", 1], ["未知", 1, 2]]:

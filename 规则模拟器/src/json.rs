@@ -56,48 +56,8 @@ impl<'de> Deserialize<'de> for Object {
         d.deserialize_map(ObjectVisitor)
     }
 }
-// Lean.Json.Parser.escapedChar maps an unpaired UTF-16 escape to U+FFFD.
-// Normalize only those escapes, before checking uniqueness of decoded keys.
-fn unicode_escape(bytes: &[u8]) -> Option<u16> {
-    let digits = bytes.strip_prefix(br"\u")?.get(..4)?;
-    if !digits.iter().all(u8::is_ascii_hexdigit) {
-        return None;
-    }
-    u16::from_str_radix(std::str::from_utf8(digits).expect("hex digits"), 16).ok()
-}
-fn string_escapes(input: &str) -> String {
-    let mut bytes = input.as_bytes().to_vec();
-    let mut quoted = false;
-    let mut i = 0;
-    while i < bytes.len() {
-        match bytes[i] {
-            b'"' => {
-                quoted = !quoted;
-                i += 1
-            }
-            b'\\' if quoted => match unicode_escape(&bytes[i..]) {
-                Some(high)
-                    if (0xd800..0xdc00).contains(&high)
-                        && unicode_escape(&bytes[i + 6..])
-                            .is_some_and(|low| (0xdc00..0xe000).contains(&low)) =>
-                {
-                    i += 12
-                }
-                Some(code) if (0xd800..0xe000).contains(&code) => {
-                    bytes[i + 2..i + 6].copy_from_slice(b"fffd");
-                    i += 6
-                }
-                Some(_) => i += 6,
-                None => i += 2,
-            },
-            _ => i += 1,
-        }
-    }
-    String::from_utf8(bytes).expect("only ASCII hex digits changed")
-}
 pub fn parse(input: &str) -> Res<V> {
-    let normalized = string_escapes(input);
-    let raw: &RawValue = serde_json::from_str(&normalized).map_err(|e| e.to_string())?;
+    let raw: &RawValue = serde_json::from_str(input).map_err(|e| e.to_string())?;
     parse_raw(raw.get())
 }
 fn parse_raw(raw: &str) -> Res<V> {

@@ -31,6 +31,21 @@ fn replay_requires_plain_unsigned_numbers_and_string_names() {
 }
 
 #[test]
+fn lone_surrogate_escapes_are_rejected() {
+    // 备注写在段里；原文直接拼进去，转义不经 serde 重写。
+    let with_note = |note: &str| {
+        let seg = segment().to_string();
+        let seg = format!(r#"{{"备注":"{note}",{}"#, &seg[1..]);
+        OracleRunner::run(&format!(r#"{{"版本":1,"段":[{seg}]}}"#), &mut Vec::new())
+    };
+    assert!(with_note("plain").is_ok());
+    assert!(with_note(r"\ud800\udc00").is_ok());
+    for note in [r"\ud800", r"\udc00", r"\ud800\ufeff"] {
+        assert!(with_note(note).is_err());
+    }
+}
+
+#[test]
 fn native_integer_limits_are_checked() {
     let mut s = segment();
     s["历史"] = json!([["建成", u64::MAX, "物品准入口"]]);
